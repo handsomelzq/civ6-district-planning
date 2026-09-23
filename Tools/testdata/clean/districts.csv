@@ -1,0 +1,5 @@
+区域id,名称,区域类别,基础产出,生产成本,前置科技,前置市政,是否占区域配额,可建地形,是否特色区域,替换区域id,所属文明id,备注,数据来源,待核
+DISTRICT_CITY_CENTER,城市中心,城市中心,无,0,无,无,否,无,否,无,无,,一手,否
+DISTRICT_CAMPUS,学院,专业化,科技:1,54,TECH_WRITING,无,是,无,否,无,无,,一手,否
+DISTRICT_INDUSTRIAL_ZONE,工业区,专业化,生产力:1,54,TECH_APPRENTICESHIP,无,是,无,否,无,无,,一手,否
+DISTRICT_HANSA,汉萨,专业化,生产力:1,54,TECH_APPRENTICESHIP,无,是,无,是,DISTRICT_INDUSTRIAL_ZONE,CIVILIZATION_GERMANY,德国特色区域,一手,否

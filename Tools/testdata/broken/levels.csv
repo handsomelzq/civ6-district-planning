@@ -1,0 +1,4 @@
+关卡id,名称,文明id,领袖id,已解锁科技,已解锁市政,城市中心坐标,人口,目标类型,目标产出类型,目标值,约束类型,约束值,三星阈值,二星阈值,是否教学关,母题,贪心基线结果
+L-01,非教学关却被贪心过关,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,无,无,"0,0",4,单一产出,科技,10,区域数,3,2,1,否,A,12
+L-02,坐标人口约束阈值全错+未决母题+基线空,CIVILIZATION_NOPE,LEADER_NOPE,无,无,0-0,四,单一产出,科技,10,区域数,0,1,2,否,D,
+L-03,已解锁科技引用错+没有地块,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,TECH_WRITING|TECH_NOPE,无,"0,0",4,单一产出,科技,10,区域数,3,2,1,否,B,5

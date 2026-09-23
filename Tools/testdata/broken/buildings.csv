@@ -1,0 +1,2 @@
+建筑id,名称,所属区域id,基础产出,生产成本,前置科技,前置市政,前置建筑id,备注,数据来源,待核
+BUILDING_LIBRARY,图书馆,DISTRICT_CAMPUS,科技:2,90,TECH_WRITING,无,无,,一手,否
