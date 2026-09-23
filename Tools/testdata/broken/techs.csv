@@ -1,3 +1,4 @@
 科技id,名称,时代,备注,数据来源,待核
 TECH_WRITING,书写,ERA_ANCIENT,,一手,否
+TECH_MINING,采矿,ERA_ANCIENT,,一手,否
 TECH_APPRENTICESHIP,学徒制,ERA_MEDIEVAL,,一手,否

@@ -25,9 +25,11 @@ BASE = pathlib.Path(__file__).resolve().parent.parent / "配置表"
 # ---------------------------------------------------------------- 枚举
 ENUMS = {
     "产出类型": {"科技", "文化", "金币", "生产力", "信仰", "粮食"},
-    "目标类别": {"地形", "地貌", "资源", "海洋资源", "河流", "区域",
-                 "自然奇观", "改良设施", "同类区域"},
-    "资源类别": {"奢侈", "战略", "加成"},
+    # 目标类别与文明 6 原字段的映射见 设计/SDD-局面求值器.md §3.4（已由一手数据确定）
+    "目标类别": {"地形", "地貌", "区域", "改良设施", "资源类别", "任意其他区域",
+                 "海洋资源", "河流", "世界奇观", "自身", "自然奇观",
+                 "任意资源", "无目标"},
+    "资源类别": {"加成", "奢侈", "战略", "魔力节点"},
     "区域类别": {"城市中心", "专业化", "非专业化"},
     "兵种类别": {"近战", "反骑兵", "轻骑兵", "重骑兵", "远程",
                  "远程骑兵", "攻城", "海上", "支援"},
@@ -58,6 +60,9 @@ SCHEMA = {
         "科技id", "名称", "时代", "备注"]),
     "civics.csv": dict(id="市政id", prov=True, cols=[
         "市政id", "名称", "时代", "备注"]),
+    "improvements.csv": dict(id="改良设施id", prov=True, cols=[
+        "改良设施id", "名称", "基础产出", "可建地形", "前置科技",
+        "前置市政", "备注"]),
     "districts.csv": dict(id="区域id", prov=True, cols=[
         "区域id", "名称", "区域类别", "基础产出", "生产成本", "前置科技",
         "前置市政", "是否占区域配额", "可建地形", "是否特色区域",
@@ -95,14 +100,14 @@ SCHEMA = {
 TARGET_TABLE = {
     "地形": ("terrains.csv", "地形id"),
     "地貌": ("features.csv", "地貌id"),
-    "资源": ("resources.csv", "资源id"),
-    "海洋资源": ("resources.csv", "资源id"),
     "区域": ("districts.csv", "区域id"),
-    "自然奇观": ("wonders.csv", "奇观id"),
-    "改良设施": None,      # 表未定义，见 SDD-局面求值器 §10 D7
-    "河流": None,
-    "同类区域": None,
+    "改良设施": ("improvements.csv", "改良设施id"),
 }
+# 这些类别是布尔型（原字段值为 true），目标id 必须为「无」
+BOOL_TARGETS = {"任意其他区域", "海洋资源", "河流", "世界奇观",
+                "自身", "自然奇观", "任意资源", "无目标"}
+# 这个类别的目标id 是资源类别枚举，不是某张表的 id
+ENUM_TARGETS = {"资源类别": "资源类别"}
 
 ERR, WARN = [], []
 def err(m):  ERR.append(m)
@@ -292,6 +297,12 @@ def main(argv):
         elif rep != "无" or civ != "无":
             err(f"districts {i} 不是特色区域，但「替换区域id」或「所属文明id」非无")
 
+    for r in rows_of("improvements.csv"):
+        i = r.get("改良设施id", "?")
+        check_kv("improvements", i, "基础产出", r.get("基础产出", ""))
+        check_fk("improvements", i, "可建地形", r.get("可建地形", ""),
+                 pool("terrains.csv"), "地形")
+
     # 规则 1：buildings 外键
     for r in rows_of("buildings.csv"):
         i = r.get("建筑id", "?")
@@ -322,30 +333,28 @@ def main(argv):
         check_enum("adjacency", i, "产出类型", r.get("产出类型", ""), "产出类型")
         tid = r.get("目标id", "无").strip()
         if cat in TARGET_TABLE:
-            spec = TARGET_TABLE[cat]
-            if spec is None:
-                if cat == "改良设施" and tid != "无":
-                    warn(f"adjacency {i} 目标类别为改良设施，但本项目尚未定义"
-                         f"改良设施表（见 SDD-局面求值器 §10 D7）")
-                elif cat in ("河流", "同类区域") and tid != "无":
-                    err(f"adjacency {i} 目标类别为「{cat}」时，目标id 应为无，实为 {tid}")
+            tbl, _ = TARGET_TABLE[cat]
+            if tid == "无":
+                err(f"adjacency {i} 目标类别为「{cat}」时必须给出具体目标id")
             else:
-                tbl, col = spec
-                check_fk("adjacency", i, "目标id", tid, pool(tbl),
-                         f"{cat}（{tbl}）")
-                if cat == "海洋资源" and tid != "无" and tbl in T:
-                    sea = {x["资源id"].strip() for x in rows_of(tbl)
-                           if x.get("是否海洋资源", "").strip() == "是"}
-                    if tid not in sea and tid in (pool(tbl) or set()):
-                        err(f"adjacency {i} 目标类别为海洋资源，但 {tid} 的"
-                            f"「是否海洋资源」不为是")
-        # 规则 5：加成值恒正（combat_modifiers 不套用本条）
+                check_fk("adjacency", i, "目标id", tid, pool(tbl), f"{cat}（{tbl}）")
+        elif cat in ENUM_TARGETS:
+            check_enum("adjacency", i, "目标id", tid, ENUM_TARGETS[cat])
+        elif cat in BOOL_TARGETS:
+            if tid != "无":
+                err(f"adjacency {i} 目标类别为「{cat}」是布尔型，"
+                    f"目标id 应为无，实为 {tid}")
+        # 规则 5：加成值非零；负值合法但罕见，给警告不给错误。
+        #   文明 6 全库仅 1 条负值（韩国书院），所以新出现的负值大概率是配错。
+        #   combat_modifiers 的负值是常态，连警告都不给。
         v = r.get("加成值", "").strip()
         if not is_num(v):
             err(f"adjacency {i} 的「加成值」非数值：{v}")
-        elif float(v) <= 0:
-            err(f"adjacency {i} 的「加成值」非正：{v}"
-                f"（本作不做负向相邻，见 SDD-局面求值器 边界 E4）")
+        elif float(v) == 0:
+            err(f"adjacency {i} 的「加成值」为 0，无意义")
+        elif float(v) < 0:
+            warn(f"adjacency {i} 的「加成值」为负：{v}"
+                 f"（合法但罕见——文明 6 中仅韩国书院一条，请确认不是配错）")
         # 规则 4：所需数量 >= 1
         n = r.get("所需数量", "").strip()
         if not is_int(n):
@@ -389,6 +398,7 @@ def main(argv):
         "districts.csv": ("区域id", ["前置科技", "前置市政"]),
         "buildings.csv": ("建筑id", ["前置科技", "前置市政"]),
         "units.csv": ("单位id", ["前置科技", "前置市政"]),
+        "improvements.csv": ("改良设施id", ["前置科技", "前置市政"]),
         "adjacency_rules.csv": ("规则id",
                                 ["前置科技", "前置市政", "废弃科技", "废弃市政"]),
     }

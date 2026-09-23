@@ -1,0 +1,2 @@
+改良设施id,名称,基础产出,可建地形,前置科技,前置市政,备注,数据来源,待核
+IMPROVEMENT_MINE,可建地形引用错,生产力:1,TERRAIN_NOPE,TECH_MINING,无,,一手,否
