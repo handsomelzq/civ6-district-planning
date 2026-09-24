@@ -1,0 +1,3 @@
+traitid,所属文明id,所属领袖id,被排除规则标识,备注,数据来源,待核
+TRAIT_NO_OWNER,无,无,District_Science,两列同时为无,一手,否
+TRAIT_BAD_REF,CIVILIZATION_NOPE,LEADER_NOPE,Rule_Nope,三处引用全错,一手,否

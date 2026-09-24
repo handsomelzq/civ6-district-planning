@@ -1,6 +1,6 @@
 规则id,区域id,目标类别,目标id,产出类型,加成值,所需数量,前置科技,前置市政,废弃科技,废弃市政,原始标识,备注,数据来源,待核
 R-0001,DISTRICT_CAMPUS,地形,TERRAIN_MOUNTAIN,科技,1,1,无,无,无,无,Mountains_Science1,主要档,一手,否
-R-0002,DISTRICT_CAMPUS,地貌,FEATURE_FOREST,科技,1,2,无,无,无,无,Jungle_Science,标准档,一手,否
+R-0002,DISTRICT_CAMPUS,地貌,FEATURE_FOREST,科技,1,2,无,无,无,无,Campus_District,标准档,一手,否
 R-0003,DISTRICT_CAMPUS,任意其他区域,无,科技,1,2,无,无,无,无,District_Science,布尔型目标,一手,否
 R-0004,DISTRICT_HANSA,资源类别,战略,生产力,1,1,无,无,无,无,Strategic_Production,目标id是资源类别枚举,一手,否
 R-0005,DISTRICT_HANSA,改良设施,IMPROVEMENT_MINE,生产力,1,1,TECH_MINING,无,无,无,Mine_Production,,一手,否

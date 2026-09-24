@@ -78,6 +78,8 @@ SCHEMA = {
         "规则id", "区域id", "目标类别", "目标id", "产出类型", "加成值",
         "所需数量", "前置科技", "前置市政", "废弃科技", "废弃市政",
         "原始标识", "备注"]),
+    "excluded_adjacencies.csv": dict(id=None, prov=True, cols=[
+        "traitid", "所属文明id", "所属领袖id", "被排除规则标识", "备注"]),
     "combat_modifiers.csv": dict(id="修正id", prov=True, cols=[
         "修正id", "名称", "条件类别", "条件参数", "修正通道", "修正值",
         "作用时机", "是否可叠加", "叠加上限", "备注"]),
@@ -410,6 +412,23 @@ def main(argv):
                 lbl = "科技" if "科技" in c else "市政"
                 check_fk(name.removesuffix(".csv"), i, c, r.get(c, ""),
                          pool(tgt), lbl)
+
+    # excluded_adjacencies：trait 排除某条相邻规则（高卢/日本的核心特性）
+    #   「被排除规则标识」指向的是裸游戏 id，住在 adjacency_rules.原始标识 里，
+    #   不是主键列，所以单独建池。
+    raw_ids = ({r.get("原始标识", "").strip()
+                for r in rows_of("adjacency_rules.csv")} if "adjacency_rules.csv" in T
+               else None)
+    for r in rows_of("excluded_adjacencies.csv"):
+        i = r.get("traitid", "?")
+        civ, lead = r.get("所属文明id", "无").strip(), r.get("所属领袖id", "无").strip()
+        if civ == "无" and lead == "无":
+            err(f"excluded {i} 的「所属文明id」与「所属领袖id」同时为无，"
+                f"该排除规则无归属")
+        check_fk("excluded", i, "所属文明id", civ, pool("civs.csv"), "文明")
+        check_fk("excluded", i, "所属领袖id", lead, pool("leaders.csv"), "领袖")
+        check_fk("excluded", i, "被排除规则标识", r.get("被排除规则标识", ""),
+                 raw_ids, "相邻规则原始标识", allow_none=False)
 
     for r in rows_of("civs.csv"):
         i = r.get("文明id", "?")
