@@ -479,10 +479,15 @@ def main(argv):
             (err if delivery else warn)(
                 f"levels {i} 的母题 {r['母题'].strip()} 依赖未决项，"
                 f"不得进入交付（关卡设计.md §3）")
-        # 三星应严于二星
-        t3, t2 = r.get("三星阈值", ""), r.get("二星阈值", "")
+        # 星级阈值是**产出值**（2026-09-25 改，见 设计/关卡设计.md §8）：
+        #   必须满足 目标值 ≤ 二星阈值 ≤ 三星阈值。
+        #   二星＝三星是允许的：产出粒度 0.5，V−T<1 的紧关卡放不下三档。
+        t3, t2, tv = r.get("三星阈值", ""), r.get("二星阈值", ""), r.get("目标值", "")
         if is_num(t3) and is_num(t2) and float(t3) < float(t2):
             err(f"levels {i} 三星阈值 {t3} 低于二星阈值 {t2}")
+        if is_num(t2) and is_num(tv) and float(t2) < float(tv):
+            err(f"levels {i} 二星阈值 {t2} 低于目标值 {tv}"
+                f"（星级阈值是产出值，必须 目标值 ≤ 二星 ≤ 三星）")
 
     # 规则 8：level_tiles
     lv_ids = pool("levels.csv") or set()

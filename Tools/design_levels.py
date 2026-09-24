@@ -116,18 +116,23 @@ def level(lid, name, board, palette, budget, tutorial, motif, note, civ="CIVILIZ
     fr = frontier(board, palette, budget, civ)
     V = fr[budget][0]
     # 目标值：落在贪心与最优之间，靠最优一侧；取半整数网格上的一格
-    if V > G:
-        T = G + (V - G) * Fraction(2, 3)
-        T = Fraction(int(T * 2 + Fraction(1, 2)), 2)   # 对齐到 0.5
-        if T <= G:
-            T = G + Fraction(1, 2)
-    else:
-        T = V                                           # 教学关：贪心可达
-    # 最少几步能达标 → 星级阈值用「剩余预算」
+    # 目标值＝贪心基线 + 一个最小步长（0.5）。
+    #   2026-09-25 改：原先取 G 与 V 之间偏最优的一侧，但评级改为按产出值之后
+    #   逻辑反转了 —— 通关门槛应当贴近贪心（低门槛人人能过），挑战交给星级阈值。
+    #   把 T 压到最低，也把 V−T 这段空间全部留给三档星级。
+    T = (G + Fraction(1, 2)) if V > G else V            # V==G 时是教学关
+    # 星级阈值＝**产出值**（2026-09-25 改；原先按剩余预算，见 关卡设计.md §8）
+    #   三星 = 设计期穷举出的最优值 V（运行时只比数字，不需要求解器）
+    #   二星 = T 与 V 的中点，对齐到 0.5，且必须严格大于 T
+    #   产出粒度是 0.5，所以 V − T < 1 的紧关卡放不下三档，二星退化为等于三星
+    star3 = V
+    mid = Fraction(int((T + (V - T) / 2) * 2 + Fraction(1, 2)), 2)
+    star2 = mid if T < mid < V else V
     need = next((k for k in range(1, budget + 1) if fr[k][0] >= T), budget)
-    star3, star2 = budget - need, max(0, budget - need - 1)
+    tiers = 3 if star2 < star3 else 2
     LEVELS.append(dict(lid=lid, name=name, board=board, budget=budget, T=T, G=G, V=V,
-                       fr=fr, need=need, star3=star3, star2=star2, tutorial=tutorial,
+                       fr=fr, need=need, star3=star3, star2=star2, tiers=tiers,
+                       tutorial=tutorial,
                        motif=motif, note=note, civ=civ, leader=leader, steps=steps))
     print("\n" + "=" * 70)
     print("%s 「%s」　预算 %d　母题 %s%s" % (lid, name, budget, motif,
@@ -138,7 +143,10 @@ def level(lid, name, board, palette, budget, tutorial, motif, note, civ="CIVILIZ
     print("    贪心基线 = %s   最优(预算%d) = %s   目标值 = %s"
           % (fmt(G), budget, fmt(V), fmt(T)))
     print("    最优前沿 " + "  ".join("k=%d:%s" % (k, fmt(v)) for k, (v, _) in sorted(fr.items())))
-    print("    达标最少 %d 步 → 三星阈值(剩余) %d，二星 %d" % (need, star3, star2))
+    print("    星级阈值（产出值）：一星 %s（＝目标）  二星 %s  三星 %s（＝最优）%s"
+          % (fmt(T), fmt(star2), fmt(star3),
+             "" if tiers == 3 else "　⚠️ V−T<1，只有两档"))
+    print("    达标最少 %d 步（约束值 %d）" % (need, budget))
     if not tutorial:
         print("    %s" % ("✅ 贪心失败，关卡成立" if G < T else "❌ 贪心达标，关卡不合格"))
     else:
@@ -219,7 +227,7 @@ def emit():
         lv.append([L["lid"], L["name"], L["civ"], L["leader"],
                    "TECH_WRITING", "无", "%d,%d" % center, 4,
                    "单一产出", YT, fmt(L["T"]), "区域数", L["budget"],
-                   L["star3"], L["star2"], "是" if L["tutorial"] else "否",
+                   fmt(L["star3"]), fmt(L["star2"]), "是" if L["tutorial"] else "否",
                    L["motif"], fmt(L["G"])])
         for p in sorted(L["board"].tiles):
             t = L["board"].tiles[p]
