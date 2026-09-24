@@ -1,0 +1,242 @@
+#!/usr/bin/env python3
+"""关卡设计工具：为每关算最优前沿与贪心基线，据此定目标值与星级阈值，
+并生成 配置表/levels.csv 与 配置表/level_tiles.csv。
+
+跑：python3 Tools/design_levels.py
+
+为什么要工具：目标值与星级阈值**必须从数据推出来**（关卡设计.md §5.2），
+手拍的阈值没法保证「贪心必须失败」和「三星需要优于人工首解」。
+
+只用标准库。地图规模：半径 3 的六边形 37 格（关卡设计.md §4）。
+"""
+import csv, io, itertools, pathlib, sys
+from fractions import Fraction
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from prototype_eval import Rules, Board, eval_board, greedy, effective, fmt
+
+R = Rules()
+OUT = pathlib.Path(__file__).resolve().parent.parent / "配置表"
+
+FLAT, MTN, MTN2 = "TERRAIN_GRASS", "TERRAIN_GRASS_MOUNTAIN", "TERRAIN_PLAINS_MOUNTAIN"
+OCEAN = "TERRAIN_OCEAN"   # 海洋，是否可建区域=否；海岸(TERRAIN_COAST)在文明 6 里可建，不能当填充用
+FOREST, JUNGLE = "FEATURE_FOREST", "FEATURE_JUNGLE"
+CAMPUS, GOV, CENTER = "DISTRICT_CAMPUS", "DISTRICT_GOVERNMENT", "DISTRICT_CITY_CENTER"
+
+
+def ring3():
+    """半径 3 的轴向坐标全集（37 格）。"""
+    out = []
+    for q in range(-3, 4):
+        for r in range(-3, 4):
+            if max(abs(q), abs(r), abs(q + r)) <= 3:
+                out.append((q, r))
+    return out
+
+
+def make(center, mountains=(), forests=(), water=(), districts=(), land=None):
+    """默认草原；指定处放山脉/森林/水域；districts 是 (坐标, 区域id)。
+
+    land 若给出，则**只有列出的格子是陆地**，其余全为海岸（不可建）。
+    这是隔离「诱饵」与「协同块」的手段——见 设计/关卡设计.md §2.0.1：
+    两者若连通，贪心会顺着连通区把协同块自己填满。
+    """
+    t = {}
+    for p in ring3():
+        t[p] = {"地形": FLAT, "地貌": None, "区域": None}
+    if land is not None:
+        keep = set(land) | set(mountains) | {center}
+        for p in ring3():
+            if p not in keep:
+                t[p]["地形"] = OCEAN
+    for p in mountains:
+        t[p]["地形"] = MTN
+    for p in water:
+        t[p]["地形"] = OCEAN
+    for p in forests:
+        t[p]["地貌"] = FOREST
+    t[center]["区域"] = CENTER
+    for p, d in districts:
+        t[p]["区域"] = d
+    return Board(t)
+
+
+def frontier(board, palette, maxk, civ=None):
+    """最优前沿：{预算 k: 该预算下的最优目标产出}，以及各自的布局。"""
+    empties = sorted(board.empties(R))
+    best = {}
+    for k in range(1, maxk + 1):
+        bv, bp = Fraction(-1), None
+        for spots in itertools.combinations(empties, k):
+            for combo in itertools.product(palette, repeat=k):
+                b = board
+                for p, d0 in zip(spots, combo):
+                    b = b.copy_with(p, effective(R, d0, civ))
+                v = eval_board(R, b, civ)[0].get(YT, Fraction(0))
+                if v > bv:
+                    bv, bp = v, list(zip(spots, combo))
+        best[k] = (bv, bp)
+    return best
+
+
+def render(board):
+    """把盘面画成可眼检的 ASCII 图。"""
+    rows = []
+    for r in range(-3, 4):
+        cells = []
+        for q in range(-3, 4):
+            if max(abs(q), abs(r), abs(q + r)) > 3:
+                cells.append("  ")
+                continue
+            t = board.tiles[(q, r)]
+            if t["区域"] == CENTER:
+                c = "◎"
+            elif t["区域"]:
+                c = "■"
+            elif t["地形"] == MTN:
+                c = "▲"
+            elif t["地形"] == OCEAN:
+                c = "~"
+            elif t["地貌"] == FOREST:
+                c = "♣"
+            else:
+                c = "·"
+            cells.append(c + " ")
+        rows.append(" " * (r + 3) + "".join(cells))
+    return "\n".join("    " + x for x in rows)
+
+
+YT = "科技"
+LEVELS = []
+
+
+def level(lid, name, board, palette, budget, tutorial, motif, note, civ="CIVILIZATION_GERMANY",
+          leader="LEADER_BARBAROSSA"):
+    g_board, steps = greedy(R, board, palette, budget, YT, civ)
+    G = eval_board(R, g_board, civ)[0].get(YT, Fraction(0))
+    fr = frontier(board, palette, budget, civ)
+    V = fr[budget][0]
+    # 目标值：落在贪心与最优之间，靠最优一侧；取半整数网格上的一格
+    if V > G:
+        T = G + (V - G) * Fraction(2, 3)
+        T = Fraction(int(T * 2 + Fraction(1, 2)), 2)   # 对齐到 0.5
+        if T <= G:
+            T = G + Fraction(1, 2)
+    else:
+        T = V                                           # 教学关：贪心可达
+    # 最少几步能达标 → 星级阈值用「剩余预算」
+    need = next((k for k in range(1, budget + 1) if fr[k][0] >= T), budget)
+    star3, star2 = budget - need, max(0, budget - need - 1)
+    LEVELS.append(dict(lid=lid, name=name, board=board, budget=budget, T=T, G=G, V=V,
+                       fr=fr, need=need, star3=star3, star2=star2, tutorial=tutorial,
+                       motif=motif, note=note, civ=civ, leader=leader, steps=steps))
+    print("\n" + "=" * 70)
+    print("%s 「%s」　预算 %d　母题 %s%s" % (lid, name, budget, motif,
+                                        "　（教学关）" if tutorial else ""))
+    print(render(board))
+    print("    图例  ◎城市中心  ▲山脉  ♣森林  ~海洋  ·平地")
+    print("    %s" % note)
+    print("    贪心基线 = %s   最优(预算%d) = %s   目标值 = %s"
+          % (fmt(G), budget, fmt(V), fmt(T)))
+    print("    最优前沿 " + "  ".join("k=%d:%s" % (k, fmt(v)) for k, (v, _) in sorted(fr.items())))
+    print("    达标最少 %d 步 → 三星阈值(剩余) %d，二星 %d" % (need, star3, star2))
+    if not tutorial:
+        print("    %s" % ("✅ 贪心失败，关卡成立" if G < T else "❌ 贪心达标，关卡不合格"))
+    else:
+        print("    教学关：贪心可达标（关卡设计.md §1.1 的例外）")
+
+
+# ══════════════════════════════════════════════════════════════════════
+# 六关设计。外环（半径 3）一律设为海岸以压缩可建格，这既让搜索可穷举，
+# 也让地图更像一座真实的沿海城市而不是一张空棋盘。
+OUTER = [p for p in ring3() if max(abs(p[0]), abs(p[1]), abs(p[0] + p[1])) == 3]
+
+# ── L-01 教学 · 主要档相邻（山脉每座 +1）──────────────────────────
+level("L-01", "读山", make((0, 0), mountains=[(2, 0), (2, -1), (-2, 0), (-2, 1)],
+                           water=OUTER),
+      [CAMPUS], 2, True, "无",
+      "两侧各有一对山脉。目标：学会「每座山 +1」是主要档，挨得越多越好。")
+
+# ── L-02 教学 · 标准档相邻（区域之间每 2 个 +1）────────────────────
+level("L-02", "抱团", make((0, 0), water=OUTER),
+      [CAMPUS], 3, True, "无",
+      "全图无山无林。唯一的科技来源是区域互给的标准档加成——放两个比放一个的两倍更多。")
+
+# ── L-03 教学 · 政府广场（自身零产出，给每个邻居 +1）───────────────
+level("L-03", "枢纽", make((0, 0), water=OUTER),
+      [CAMPUS, GOV], 3, True, "无",
+      "政府广场自己不产科技，但给每个相邻区域 +1。学会「有的区域价值在别人身上」。")
+
+# ── L-04 母题 A · 争格 ────────────────────────────────────────────
+# (1,0) 同时挨 2 山 + 城市中心（最肥）；(3,-1) 与 (-3,1) 各挨 2 山（诱饵）。
+# 诱饵与争格之间隔海，互不连通。
+level("L-04", "一格双优",
+      make((0, 0),
+           mountains=[(2, 0), (2, -1), (3, -2), (3, 0), (-3, 2), (-3, 0)],
+           land=[(1, 0), (3, -1), (-3, 1)]),
+      [CAMPUS], 2, False, "A",
+      "(1,0) 挨 2 山又挨城市中心；两个诱饵各挨 2 山但孤立。贪心去吃两个诱饵，最优必须占住 (1,0)。")
+
+# ── L-05 母题 B · 集群中心（预算 4；低于 4 数学上不成立）────────────
+# 协同块＝城市中心周围 4 格互相相邻；诱饵＝4 个隔海的靠山孤格，各 +1。
+level("L-05", "组团",
+      make((0, 0),
+           mountains=[(3, -1), (0, 3), (-3, 1), (0, -3)],
+           land=[(1, 0), (1, -1), (0, 1), (-1, 1),          # 协同块
+                 (3, 0), (1, 2), (-3, 2), (1, -3)]),        # 诱饵（各挨 1 山）
+      [CAMPUS], 4, False, "B",
+      "4 个隔海孤格各挨 1 山（+1）；中心周围 4 格互相相邻。诱饵数=预算，贪心会全花在诱饵上。")
+
+# ── L-06 母题 C · 投资型放置 ──────────────────────────────────────
+# 协同块留一个轮毂位给政府广场；诱饵同上。
+level("L-06", "先修路",
+      make((0, 0),
+           mountains=[(3, -1), (0, 3), (-3, 1), (0, -3)],
+           land=[(2, 0), (2, -1), (1, -2), (2, -2), (3, -3),  # 远离中心的协同块
+                 (3, 0), (1, 2), (-3, 2), (1, -3)]),          # 诱饵
+      [CAMPUS, GOV], 4, False, "C",
+      "协同块远离城市中心，所以必须自己造一个枢纽。最优＝政府广场占轮毂位，周围学院各吃 +1。")
+
+
+# ══════════════════════════════════════════════════════════════════════
+# 写表
+def emit():
+    lv_h = ["关卡id", "名称", "文明id", "领袖id", "已解锁科技", "已解锁市政",
+            "城市中心坐标", "人口", "目标类型", "目标产出类型", "目标值",
+            "约束类型", "约束值", "三星阈值", "二星阈值", "是否教学关", "母题",
+            "贪心基线结果"]
+    ti_h = ["关卡id", "坐标", "地形", "地貌", "资源", "自然奇观", "河流边",
+            "初始区域", "初始建筑"]
+    lv, ti = [], []
+    skipped = []
+    for L in LEVELS:
+        # 不合格的关卡不入表。check_config 规则 14 也会拦（非教学关的贪心基线
+        # 必须严格小于目标值），这里提前挡掉，免得配置表进入已知非法状态。
+        if not L["tutorial"] and L["G"] >= L["T"]:
+            skipped.append("%s（%s，母题 %s）：贪心 %s ≥ 目标 %s"
+                           % (L["lid"], L["name"], L["motif"], fmt(L["G"]), fmt(L["T"])))
+            continue
+        center = [p for p, t in L["board"].tiles.items() if t["区域"] == CENTER][0]
+        lv.append([L["lid"], L["name"], L["civ"], L["leader"],
+                   "TECH_WRITING", "无", "%d,%d" % center, 4,
+                   "单一产出", YT, fmt(L["T"]), "区域数", L["budget"],
+                   L["star3"], L["star2"], "是" if L["tutorial"] else "否",
+                   L["motif"], fmt(L["G"])])
+        for p in sorted(L["board"].tiles):
+            t = L["board"].tiles[p]
+            ti.append([L["lid"], "%d,%d" % p, t["地形"], t["地貌"] or "无",
+                       "无", "无", "无", t["区域"] or "无", "无"])
+    if skipped:
+        print("\n⚠️ 以下关卡不合格，未写入配置表：")
+        for x in skipped:
+            print("   " + x)
+    for name, head, rows in (("levels.csv", lv_h, lv), ("level_tiles.csv", ti_h, ti)):
+        with io.open(str(OUT / name), "w", encoding="utf-8", newline="") as fh:
+            w = csv.writer(fh, lineterminator="\n")
+            w.writerow(head)
+            for r in rows:
+                w.writerow(r)
+        print("\n写出 %s：%d 行" % (name, len(rows)))
+
+
+if __name__ == "__main__":
+    emit()

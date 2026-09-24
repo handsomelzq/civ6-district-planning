@@ -71,9 +71,15 @@ class Board(object):
             if t is not None:
                 yield t
 
+    # 建区域会移除的地貌（文明 6 的实际行为：森林/雨林/沼泽等被清掉）
+    REMOVED_BY_DISTRICT = ("FEATURE_FOREST", "FEATURE_JUNGLE", "FEATURE_MARSH")
+
     def copy_with(self, pos, district):
         t = dict(self.tiles)
-        cell = dict(t[pos]); cell["区域"] = district; t[pos] = cell
+        cell = dict(t[pos]); cell["区域"] = district
+        if cell.get("地貌") in self.REMOVED_BY_DISTRICT:
+            cell["地貌"] = None       # 建区域移除地貌，之后不再作为相邻目标被计入
+        t[pos] = cell
         return Board(t)
 
     def empties(self, rules=None):
@@ -152,29 +158,55 @@ def effective(rules, did, civ):
     return rules.replace.get(civ, {}).get(did, did)
 
 
-def greedy(rules, board, palette, budget, yield_type, civ=None, leader=None):
+def greedy(rules, board, palette, budget, yield_type, civ=None, leader=None,
+           best_ties=True, branch_cap=8):
     """贪心基线，定义见 设计/关卡设计.md §7。
 
     增益 = 放置后**全局**目标产出 − 放置前，含对已有邻居的回溯加成。
-    平局按 (增益, 全产出和, 区域id, 坐标) 固定顺序打破，保证可复现。
+
+    best_ties=True（默认）时**在平局处取最优分支**：收集所有增益相同的候选，
+    各自递归下去，取最终结果最好的那条路。
+
+    为什么这样才是合格的基线：若只按坐标序打破平局，一个盘面可能仅因为
+    "贪心恰好挑了不相邻的那个同分格"而显得贪心失败 —— 但人类玩家一眼就
+    看出哪两格相邻，这种关卡对人毫无难度。**平局取最优的贪心才是配得上
+    「贪心必须失败」这条判据的对手。** 见 设计/关卡设计.md §7.2c。
+
+    branch_cap 限制每步展开的平局分支数，防止组合爆炸。
     """
-    cur, steps = board, []
-    for _ in range(budget):
+    def walk(cur, left, steps):
+        if left == 0:
+            return eval_board(rules, cur, civ, leader)[0].get(yield_type,
+                                                              Fraction(0)), steps
         base = eval_board(rules, cur, civ, leader)[0].get(yield_type, Fraction(0))
-        best = None
+        cands = []
         for pos in sorted(cur.empties(rules)):
             for d0 in palette:
                 d = effective(rules, d0, civ)
                 nxt = cur.copy_with(pos, d)
-                tot = eval_board(rules, nxt, civ, leader)[0]
-                gain = tot.get(yield_type, Fraction(0)) - base
-                key = (gain, sum(tot.values()), d, pos)
-                if best is None or key > best[0]:
-                    best = (key, pos, d, nxt)
-        if best is None or best[0][0] <= 0:
-            break
-        steps.append((best[1], best[2], best[0][0]))
-        cur = best[3]
+                gain = (eval_board(rules, nxt, civ, leader)[0]
+                        .get(yield_type, Fraction(0))) - base
+                cands.append((gain, pos, d, nxt))
+        if not cands:
+            return base, steps
+        top = max(c[0] for c in cands)
+        if top <= 0:
+            return base, steps
+        tied = [c for c in cands if c[0] == top]
+        if not best_ties:
+            tied = [min(tied, key=lambda c: (c[2], c[1]))]
+        tied = sorted(tied, key=lambda c: (c[2], c[1]))[:branch_cap]
+        best = None
+        for gain, pos, d, nxt in tied:
+            v, st = walk(nxt, left - 1, steps + [(pos, d, gain)])
+            if best is None or v > best[0]:
+                best = (v, st, nxt)
+        return best[0], best[1]
+
+    val, steps = walk(board, budget, [])
+    cur = board
+    for pos, d, _ in steps:
+        cur = cur.copy_with(pos, d)
     return cur, steps
 
 

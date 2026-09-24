@@ -1,0 +1,5 @@
+关卡id,名称,文明id,领袖id,已解锁科技,已解锁市政,城市中心坐标,人口,目标类型,目标产出类型,目标值,约束类型,约束值,三星阈值,二星阈值,是否教学关,母题,贪心基线结果
+L-01,读山,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,TECH_WRITING,无,"0,0",4,单一产出,科技,5,区域数,2,0,0,是,无,5
+L-02,抱团,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,TECH_WRITING,无,"0,0",4,单一产出,科技,4,区域数,3,0,0,是,无,4
+L-03,枢纽,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,TECH_WRITING,无,"0,0",4,单一产出,科技,5,区域数,3,0,0,是,无,5
+L-05,组团,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,TECH_WRITING,无,"0,0",4,单一产出,科技,4.5,区域数,4,0,0,否,B,4
