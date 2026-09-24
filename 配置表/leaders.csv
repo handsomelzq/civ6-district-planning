@@ -1,0 +1,127 @@
+领袖id,名称,所属文明id,领袖能力,是否首期纳入,备注,数据来源,待核
+LEADER_ABRAHAM_LINCOLN,亚伯拉罕·林肯,CIVILIZATION_AMERICA,解放黑奴宣言：工业区每回合提供的 宜居度 +2、忠诚度+3 ，但种植园每回合提供的忠诚度-2。建造工业区和其建筑后获得1个免费近战单位。免费单位的生成或维护不需要资源，并且+5 战斗力。,否,无,一手,否
+LEADER_ALEXANDER,亚历山大,CIVILIZATION_MACEDON,直到世界尽头：城市不会产生厌战情绪。此玩家占领拥有世界奇观的城市时，所有军事单位的体力值将完全恢复。,否,无,一手,否
+LEADER_AMANITORE,阿曼妮托尔,CIVILIZATION_NUBIA,麦罗埃的甘达刻：如果努比亚金字塔临近市中心，所有区域+20% 生产力的加成提升至+40%。,否,无,一手,否
+LEADER_AMBIORIX,安比奥里克斯,CIVILIZATION_GAUL,厄勃隆尼斯之王：生产出一个非平民单位时，您的文明将获得等同于该单位成本20%的 文化值。每与1个单位相邻，近战、抗骑兵和远程单位便+2 战斗力。,否,无,一手,否
+LEADER_BARBAROSSA,弗雷德里克·巴巴罗萨,CIVILIZATION_GERMANY,神圣罗马皇帝：额外的军事政策槽位。攻击城邦时，+7 战斗力。,否,无,一手,否
+LEADER_BASIL,巴兹尔二世,CIVILIZATION_BYZANTIUM,生于紫室：对所信仰宗教与拜占庭相同的城市发起进攻时，轻重骑兵将输出全额伤害。解锁“王权神授”市政后将获得特色单位“甲胄骑兵”。,否,无,一手,否
+LEADER_CATHERINE_DE_MEDICI,凯瑟琳·德·美第奇（黑王后）,CIVILIZATION_FRANCE,凯瑟琳的亲卫队：外交能见度比遇到的其他文明高1级。 解锁“城堡”科技后免费获得1个间谍（并增加1个间谍容量）。所有间谍初始便可免费升级为探员。,否,无,一手,否
+LEADER_CATHERINE_DE_MEDICI_ALT,凯瑟琳·德·美第奇（寻欢作乐）,CIVILIZATION_FRANCE,寻欢作乐的凯瑟琳：与剧院广场区域或法国特色城堡相邻的改良奢侈品资源提供的 文化值+2。可在拥有剧院广场区域的任意城市中开展“宫廷盛会”项目。,否,无,一手,否
+LEADER_CHANDRAGUPTA,旃陀罗笈多,CIVILIZATION_INDIA,政事论：解锁军事训练市政后可宣布领土扩张战争。宣布领土扩张战争后的10回合内+2 移动力、+5 战斗力。,否,无,一手,否
+LEADER_CLEOPATRA,克利欧佩特拉（埃及）,CIVILIZATION_EGYPT,地中海新娘：您通往其他文明的 贸易路线为埃及+4 金币。其他文明通往埃及的 贸易路线能为其+2 食物、为埃及+2 金币。与盟友进行贸易可获得双倍同盟点数。,否,无,一手,否
+LEADER_CLEOPATRA_ALT,克利欧佩特拉（托勒密）,CIVILIZATION_EGYPT,哈庇的降临：沿泛滥平原的资源+1 食物、+1 文化值。已拥有的泛滥平原单元格为相邻单元格提供的魅力+1，而非通常的-1。,否,无,一手,否
+LEADER_CYRUS,居鲁士,CIVILIZATION_PERSIA,巴比伦的陨落：对主要文明宣布突袭战争后的10回合内+2 移动力。拥有驻扎单位的占领城市每回合的忠诚度+5。宣布突袭战争的 不满和好战性与正式战争相同。,否,无,一手,否
+LEADER_DIDO,狄多,CIVILIZATION_PHOENICIA,迦太基建国者：在城市中完成特色项目后，可将原始 首都迁至任意拥有U型港的城市（必须为本方建立）。每个市政广场建筑与市政广场区域+1 贸易路线容量。在拥有市政广场的城市中建造区域时+50% 生产力。,否,无,一手,否
+LEADER_ELEANOR_ENGLAND,阿基坦的埃莉诺（英国）,CIVILIZATION_ENGLAND,爱之法庭：埃莉诺的城市中每个巨作可使9个单元格内的外国城市每回合减少1点忠诚度。城市因失去忠诚度而离开另一文明后，如其每回合对埃莉诺的忠诚度最高，则会跳过成为自由城市阶段直接加入埃莉诺的文明。,否,无,一手,否
+LEADER_ELEANOR_FRANCE,阿基坦的埃莉诺（法国）,CIVILIZATION_FRANCE,爱之法庭：埃莉诺的城市中每个巨作可使9个单元格内的外国城市每回合减少1点忠诚度。城市因失去忠诚度而离开另一文明后，如其每回合对埃莉诺的忠诚度最高，则会跳过成为自由城市阶段直接加入埃莉诺的文明。,否,无,一手,否
+LEADER_ELIZABETH,伊丽莎白一世,CIVILIZATION_ENGLAND,德瑞克的遗产：获得首位 海军统帅后，英国的 贸易路线容量+2。起源城市中每有一个特色区域， 通往任意城邦的贸易路线便+3 金币。用海军单位掠夺 贸易路线的收益+100%。,否,无,一手,否
+LEADER_FREE_CITIES,自由城市领袖,CIVILIZATION_FREE_CITIES,无,否,无,一手,否
+LEADER_GANDHI,甘地,CIVILIZATION_INDIA,非暴力不合作：所遇到的文明（包括印度）已创建了宗教且不在战争状态，均会+5信仰值 。与甘地交战的文明获得双倍厌战情绪。,否,无,一手,否
+LEADER_GENGHIS_KHAN,成吉思汗,CIVILIZATION_MONGOLIA,蒙古部落：所有骑兵类单位 战斗力+3，击败敌方骑兵类单位后有几率将其俘获。,否,无,一手,否
+LEADER_GILGAMESH,吉尔伽美什,CIVILIZATION_SUMERIA,恩奇都奇遇：与同一个敌人交战时，如果他们与其盟友位于5个单元格以内，则共享掠夺奖励和战斗经验值。其同盟针对同一个敌人作战可获得同盟点数。与本方及本方盟友的交战方作战时+5 战斗力。,否,无,一手,否
+LEADER_GITARJA,特丽布瓦娜,CIVILIZATION_INDONESIA,三界的崇高女神：可用 信仰值购买海军单位。宗教单位上船下船时无移动力消耗。与海岸或湖泊单元格相邻的市中心+2 信仰值。,否,无,一手,否
+LEADER_GORGO,戈尔戈,CIVILIZATION_GREECE,塞莫皮莱：战斗胜利后，获得等同于被击杀单位 战斗力50%的 文化值（标准速度下）。槽位中每有一项军事政策，则+1 战斗力。,否,无,一手,否
+LEADER_HAMMURABI,汉谟拉比,CIVILIZATION_BABYLON_STK,尼鲁-伊路-辛鲁：首次建造出一种特色区域（市政广场除外）时，获得当前可在该区域中建造的、所需 生产力最低的建筑。首次建造任意其他区域时，获得1名 使者。,否,无,一手,否
+LEADER_HARALD_ALT,哈拉尔德·哈德拉达（瓦良格）,CIVILIZATION_NORWAY,北欧卫队：所有单位金币维护花费-2 。征集单位的花费-75%，征集单位完成击杀时获得等同于对手 战斗力50%的 文化值、 信仰值和 科技值。木板教堂每回合+1影响力点数。,否,无,一手,否
+LEADER_HARDRADA,哈拉尔德·哈德拉达（北境王）,CIVILIZATION_NORWAY,北方惊雷：使所有海军近战单位均能发动海岸突袭，生产所有海军近战单位时+50% 生产力。对矿山发动掠夺或海岸扫荡时除 金币外还将获得 科技值。对采石场、牧场、种植园和露营地发动掠夺或海岸扫荡时除 信仰值外还将获得 文化值。解锁“航海术”科技后即可获得特色单位维京长船。,否,无,一手,否
+LEADER_HOJO,北条时宗,CIVILIZATION_JAPAN,神风：陆地单位处于相邻海岸的陆地单元格时+5 战斗力；浅水单元格上的海军单位+5 战斗力。建造军营、圣地和剧院广场的时间减半。单位不受飓风伤害。如文明与日本交战时单位处于日本领土内，遭遇飓风时受到的伤害将+100%。,否,无,一手,否
+LEADER_JADWIGA,雅德维加,CIVILIZATION_POLAND,立陶宛联邦：如城市在波兰文化炸弹的攻击下失去单元格，则波兰的主流宗教将成为此城的主流宗教。圣地可从相邻区域获得信仰值相邻加成。所有遗物均提供加成：+2信仰值、+2文化值、+4金币。,否,无,一手,否
+LEADER_JAYAVARMAN,阇耶跋摩七世,CIVILIZATION_KHMER,国王的修道院：圣地将拥有以下效果：与河流相邻时将获得大量相邻加成、可施放1次文化炸弹、将提供等同于其相邻加成的 食物、处于河流之上时+2 住房。,否,无,一手,否
+LEADER_JOAO_III,若昂三世,CIVILIZATION_PORTUGAL,关闸：所有单位+1视野。与1个文明相遇便+1 贸易路线容量。对所有城邦开放边界。,否,无,一手,否
+LEADER_JOHN_CURTIN,约翰·科廷,CIVILIZATION_AUSTRALIA,文明的大本营：若其在过去10回合内遭到宣战或曾解放城市，则+100% 生产力。,否,无,一手,否
+LEADER_JULIUS_CAESAR,尤里乌斯·凯撒,CIVILIZATION_ROME,我来，我见，我征服：首次征服一座城市或从蛮族哨站获得 金币时 +300 金币。研究完“金属铸造”之后，两者提供的 金币数量变为500，研究完“钢铁”之后，变为700（标准速度下）。当目标为蛮族时，获得+5 战斗力且总是获得正常经验值。,否,无,一手,否
+LEADER_KRISTINA,克里斯蒂娜,CIVILIZATION_SWEDEN,北方的弥涅耳瓦：全部槽位填满时，拥有3个或以上巨作槽位的建筑和2个或以上巨作槽位的奇观可自动获得主题。可在市政广场中建造女王图书馆。,否,无,一手,否
+LEADER_KUBLAI_KHAN_CHINA,忽必烈（中国）,CIVILIZATION_CHINA,腰牌：任意政体中额外增加一个经济政策槽位。首次在另一个文明的城市中建立 贸易站时随机获得一项 尤里卡和 鼓舞。,否,无,一手,否
+LEADER_KUBLAI_KHAN_MONGOLIA,忽必烈（蒙古）,CIVILIZATION_MONGOLIA,腰牌：任意政体中额外增加一个经济政策槽位。首次在另一个文明的城市中建立 贸易站时随机获得一项 尤里卡和 鼓舞。,否,无,一手,否
+LEADER_KUPE,库佩,CIVILIZATION_MAORI,库佩的航行：游戏开始时位于海洋单元格中。免费获得1名建造者，建立首座城市时+1 人口。宫殿获得+3 住房与+1 宜居度。建立首座城市前每回合获得+2 科技值与+2 文化值。,否,无,一手,否
+LEADER_LADY_SIX_SKY,六日夫人,CIVILIZATION_MAYA,穆塔尔忠烈之女：首都6单元格范围内的非首都城市所有产出+10%，且建成时将获得1名建造者。其他非首都城市的所有产出-15%。 首都6单元格范围内的单位+5 战斗力。,否,无,一手,否
+LEADER_LADY_TRIEU,赵夫人,CIVILIZATION_VIETNAM,驱除吴军：在雨林、沼泽或树林单元格中战斗的单位+5 战斗力。如果单位在回合开始时处于这些地貌中，则+1 移动力。而如果这些地貌单元格是您的领土，则以上加成均加倍。,否,无,一手,否
+LEADER_LAURIER,威尔弗里德·劳雷尔,CIVILIZATION_CANADA,西部净土：允许在冻土地貌上建造农场。解锁“土木工程”后，即可在冻土丘陵上建造农场。在雪地、冻土、雪地丘陵和冻土丘陵上的所有矿山提供的 生产力+2、伐木场提供的 生产力+2、营地提供的 食物+2、农场提供的 食物+2，战略资源积累速度+100%。这些地貌上的单元格购买费用降低50%。,否,无,一手,否
+LEADER_LAUTARO,莱夫扎茹,CIVILIZATION_MAPUCHE,迅捷之鹰：与自由城市或处在黄金/英雄时代中的文明作战时+10 战斗力。在敌方城市边界中击杀敌方单位后，将使此城损失20点忠诚度（如此文明正处在黄金/英雄时代中，则损失40点忠诚度）。,否,无,一手,否
+LEADER_LUDWIG,路德维希二世,CIVILIZATION_GERMANY,童话国王：奇观（即使未建成）从每个相邻区域处获得+2 文化值。这个 文化值显示在城市产出中。解锁“城堡”之后，所有文化 相邻加成将提供 旅游业绩。,否,无,一手,否
+LEADER_MANSA_MUSA,曼沙·穆萨,CIVILIZATION_MALI,萨赫勒商人：起始城市中的每个沙漠平原单元格为国际 贸易路线提供+1 金币。文明进入黄金时代后可获得+1 贸易路线容量。,否,无,一手,否
+LEADER_MATTHIAS_CORVINUS,匈雅提·马加什,CIVILIZATION_HUNGARY,渡鸦之王：征集单位+2 移动力、+5 战斗力。升级征集单位所花费的 金币和资源减少75%。征集城邦军队时可在该城邦增加2名 使者。研究“城堡”科技后获得特色单位“黑军”。,否,无,一手,否
+LEADER_MENELIK,孟尼利克二世,CIVILIZATION_ETHIOPIA,内阁会议：获得等同于建在丘陵上的城市所产生 信仰值15%的 科技值和 文化值。单位在丘陵上时+4 战斗力。,否,无,一手,否
+LEADER_MINOR_CIV_AKKAD,阿卡德,CIVILIZATION_AKKAD,阿卡德宗主国加成：近战与抗骑兵单位的攻击可对城墙造成全额伤害。,否,无,一手,否
+LEADER_MINOR_CIV_ANTANANARIVO,塔那那利佛,CIVILIZATION_ANTANANARIVO,塔那那利佛宗主国加成：您的文明每获得1位伟人， 文化值便+2%（上限为+30%）。,否,无,一手,否
+LEADER_MINOR_CIV_ANTIOCH,威尼斯,CIVILIZATION_ANTIOCH,威尼斯宗主国加成：您通往海外城市的 贸易路线可从目的地的每个奢侈品资源+1 金币。,否,无,一手,否
+LEADER_MINOR_CIV_ARMAGH,阿尔马,CIVILIZATION_ARMAGH,阿尔马宗主国加成：建造者现在能够建造修道院改良设施。 修道院提供+2 信仰值。此单元格上的友方宗教单位生命值恢复+15（前提是其当前回合未发动攻击）。每2个相邻的区域使其+1 信仰值。提供+1 住房。解锁“殖民主义”市政后获得额外1点 住房。无法建在另一座修道院旁。,否,无,一手,否
+LEADER_MINOR_CIV_AUCKLAND,奥克兰,CIVILIZATION_AUCKLAND,奥克兰宗主国加成：玩家拥有的浅水域单元格提供1点 生产力。到达工业时代后生产力额外+1。,否,无,一手,否
+LEADER_MINOR_CIV_AYUTTHAYA,阿瑜陀耶,CIVILIZATION_AYUTTHAYA,阿瑜陀耶宗主国加成：建筑建成时，获得等同于建筑花费10%的 文化值。,否,无,一手,否
+LEADER_MINOR_CIV_BABYLON,安善,CIVILIZATION_BABYLON,安善宗主国加成：每本 著作巨作+2 科技值。每件 遗物和 文物+1 科技值。,否,无,一手,否
+LEADER_MINOR_CIV_BOLOGNA,博洛尼亚,CIVILIZATION_BOLOGNA,博洛尼亚宗主国加成：拥有建筑的区域使相应类型的 伟人点数+1（拥有建筑的剧院广场区域提供 大作家、 大艺术家和 大音乐家点数）。,否,无,一手,否
+LEADER_MINOR_CIV_BRUSSELS,布鲁塞尔,CIVILIZATION_BRUSSELS,布鲁塞尔宗主国加成：您的城市在建造奇观时 生产力+15%。,否,无,一手,否
+LEADER_MINOR_CIV_BUENOS_AIRES,布宜诺斯艾利斯,CIVILIZATION_BUENOS_AIRES,布宜诺斯艾利斯宗主国加成：您的加成资源如同奢侈品资源一样，每种类型资源提供1点 宜居度。,否,无,一手,否
+LEADER_MINOR_CIV_CAGUANA,卡瓜纳,CIVILIZATION_CAGUANA,卡瓜纳宗主国加成：您的建造者现在可以建造改良设施巴特依。 +1 文化值。每与1座加成资源和娱乐设施相邻，则+1 文化值（拥有“探索”市政后+2 [Icon_Culture] 文化值）。研究完“飞行”后将产出 [Icon_Tourism] 旅游业绩。无法建造在另一座巴特依旁。,否,无,一手,否
+LEADER_MINOR_CIV_CAHOKIA,卡霍基亚,CIVILIZATION_CAHOKIA,卡霍基亚宗主国加成：建造者可以建造卡霍基亚土墩改良设施。 +3 金币。城市建造首座卡霍基亚土墩改良设施可提供+1点 宜居度。发现“自然历史”后，城市建造的第二座卡霍基亚土墩改良设施可提供+1点 宜居度。解锁“封建主义”后，每2个相邻区域+1 食物；或研究“零件规格化”后，每个相邻区域+1 食物。提供+1 住房；发现“文化遗产”后，可额外获得1点 住房。无法建造在另一个卡霍基亚土墩旁。,否,无,一手,否
+LEADER_MINOR_CIV_CARDIFF,加的夫,CIVILIZATION_CARDIFF,加的夫宗主国加成：每个港口内建筑向城市提供2点 电力。,否,无,一手,否
+LEADER_MINOR_CIV_CHINGUETTI,欣盖提,CIVILIZATION_CHINGUETTI,欣盖提宗主国加成：此城中每有1位您所创建（或主流）宗教的信徒，国际与国内 贸易路线提供的 信仰值便+1。,否,无,一手,否
+LEADER_MINOR_CIV_FEZ,非斯,CIVILIZATION_FEZ,非斯宗主国加成：利用宗教单位使城市首次改变信仰时，该城市每拥有1点 人口，则提供20点 科技值（标准速度下）。,否,无,一手,否
+LEADER_MINOR_CIV_GENEVA,日内瓦,CIVILIZATION_GENEVA,日内瓦宗主国加成：当您不与任何文明发生战争时，您的城市+15% 科技值。,否,无,一手,否
+LEADER_MINOR_CIV_GRANADA,格拉纳达,CIVILIZATION_GRANADA,格拉纳达宗主国加成：建造者现在能够建造阿卡萨城堡改良设施。 阿卡萨城堡提供+2 文化值。提供等于单元格魅力50%的 科技值。占领单位 防御力+4，并自动获得2回合防御工事。研究“飞行”科技后可提供 旅游业绩。无法建在另一座阿卡萨城堡旁。,否,无,一手,否
+LEADER_MINOR_CIV_HATTUSA,哈图沙,CIVILIZATION_HATTUSA,哈图沙宗主国加成：每回合提供2份文明已解锁、但尚未改良的战略资源。,否,无,一手,否
+LEADER_MINOR_CIV_HONG_KONG,香港,CIVILIZATION_HONG_KONG,香港宗主国加成：您的城市在进行项目时 生产力+20%。,否,无,一手,否
+LEADER_MINOR_CIV_HUNZA,罕萨,CIVILIZATION_HUNZA,罕萨宗主国加成：您的 贸易路线每经过5个单元格，其提供的 金币便+1。,否,无,一手,否
+LEADER_MINOR_CIV_JAKARTA,斯里巴加湾,CIVILIZATION_JAKARTA,斯里巴加湾宗主国加成：您海外城市中的 贸易站将使您途经或进入城市的 贸易路线+1 金币。,否,无,一手,否
+LEADER_MINOR_CIV_JERUSALEM,耶路撒冷,CIVILIZATION_JERUSALEM,耶路撒冷宗主国加成：您拥有圣地的城市将释放压力，效果与圣城相同。（对10个单元格范围内的所有城市施加4倍宗教压力。）,否,无,一手,否
+LEADER_MINOR_CIV_JOHANNESBURG,约翰内斯堡,CIVILIZATION_JOHANNESBURG,约翰内斯堡宗主国加成：每拥有1种类型的改良资源，城市便+1 生产力。研究“工业化”之后提升为+2 生产力。,否,无,一手,否
+LEADER_MINOR_CIV_KABUL,喀布尔,CIVILIZATION_KABUL,喀布尔宗主国加成：您的单位由他们发起的战斗中获得双倍经验值。,否,无,一手,否
+LEADER_MINOR_CIV_KANDY,康提,CIVILIZATION_KANDY,康提宗主国加成：每次您发现新的自然奇观，都会获得1个 遗物，并从所有 遗物中获得的 信仰值+50%。,否,无,一手,否
+LEADER_MINOR_CIV_KUMASI,库马西,CIVILIZATION_KUMASI,库马西宗主国加成：您通往任何城邦的 贸易路线都为起源城市的每个独立区域+2 文化值和+1 金币。,否,无,一手,否
+LEADER_MINOR_CIV_LAHORE,拉合尔,CIVILIZATION_LAHORE,拉合尔宗主国加成：您的城市现在可以生产尼杭战士。 这种单位拥有独特的升级树，可以通过 信仰值购买。首次建造出兵营、兵工厂和军事学院时，其 战斗力将得到提升。,否,无,一手,否
+LEADER_MINOR_CIV_LA_VENTA,拉文塔,CIVILIZATION_LA_VENTA,拉文塔宗主国加成：建造者现在能够建造巨神头像改良设施。 +2 信仰值。与每2个雨林相邻+1信仰值，而解锁“人文主义”市政后与每1个雨林相邻便能+1信仰值。与每2个树林相邻+1信仰值，而解锁“人文主义”市政后与每1个树林相邻便能+1信仰值。研究“飞行”科技后可通过 信仰值获得 旅游业绩。无法建在雪地或雪地丘陵上。,否,无,一手,否
+LEADER_MINOR_CIV_LISBON,摩加迪沙,CIVILIZATION_LISBON,摩加迪沙宗主国加成：您的商人单位对水域单元格的掠夺免疫。,否,无,一手,否
+LEADER_MINOR_CIV_MEXICO_CITY,墨西哥城,CIVILIZATION_MEXICO_CITY,墨西哥城宗主国加成：来自工业区、水上乐园和娱乐设施的区域效果范围增加3个单元格。,否,无,一手,否
+LEADER_MINOR_CIV_MOHENJO_DARO,摩亨朱-达罗,CIVILIZATION_MOHENJO_DARO,摩亨朱-达罗宗主国加成：若靠近河流，您的城市会从河流获得最高的 住房加成。,否,无,一手,否
+LEADER_MINOR_CIV_MUSCAT,马斯喀特,CIVILIZATION_MUSCAT,马斯喀特宗主国加成：拥有商业中心区域的城市 宜居度+1。,否,无,一手,否
+LEADER_MINOR_CIV_NALANDA,那烂陀,CIVILIZATION_NALANDA,那烂陀宗主国加成：您的建造者现在可以建造大寺改良设施。 +2 科技值、+1 [Icon_Housing] 住房。每与1座圣地区域相邻，则+1 信仰值；每与1座学院区域相邻，则+1 科技值。研究完“科学理论”之后，每与1座学院相邻则额外+1 [Icon_Science] 科技值。玩家首次建成大寺时将随机获得一项科技。必须建在平坦地貌上，不能与其他大寺相邻。,否,无,一手,否
+LEADER_MINOR_CIV_NAN_MADOL,南马都尔,CIVILIZATION_NAN_MADOL,南马都尔宗主国加成：与海岸或湖泊单元格相邻的区域+2 文化值。,否,无,一手,否
+LEADER_MINOR_CIV_NAZCA,纳斯卡,CIVILIZATION_NAZCA,纳斯卡宗主国加成：建造者可以建造纳斯卡巨画改良设施。 纳斯卡巨画向相邻单元格提供+1 信仰值；拥有资源的相邻单元格+1 信仰值。发现“行政部门”后，相邻的沙漠、沙漠丘陵单元格+1 食物。研究“大量生产”后，相邻的平原单元格+1 生产力；同时+1魅力。仅能建在沙漠平原中。此单元格无法派遣人口工作。,否,无,一手,否
+LEADER_MINOR_CIV_NGAZARGAMU,纳札加姆,CIVILIZATION_NGAZARGAMU,纳札加姆宗主国加成：城市中每拥有1个“军营”内建筑，购买陆地战斗或支援单位所需的 金币便减少20%。,否,无,一手,否
+LEADER_MINOR_CIV_PALENQUE,米特拉,CIVILIZATION_PALENQUE,米特拉宗主国加成：拥有学院区域的城市增长率将提升15%。,否,无,一手,否
+LEADER_MINOR_CIV_PRESLAV,普雷斯拉夫,CIVILIZATION_PRESLAV,普雷斯拉夫宗主国加成：城市中建成的每个军营区域建筑可使城市每回合的忠诚度+2。,否,无,一手,否
+LEADER_MINOR_CIV_RAPA_NUI,拉帕努伊,CIVILIZATION_RAPA_NUI,拉帕努伊宗主国加成：建造者可以建造摩艾石像改良设施。 摩艾石像提供+1 文化值。每2个相邻的摩艾石像+1 文化值。在火山土单元格之上或与其相邻时，+2 文化值。与海岸或湖泊单元格相邻时，+1 文化值。随着市政与科技树的发展，可获得额外的 文化值与 旅游业绩。可建在平原、平原丘陵、草原、草原丘陵或火山土之上。无法建在相邻树林或雨林的单元格上。,否,无,一手,否
+LEADER_MINOR_CIV_SAMARKAND,撒马尔罕,CIVILIZATION_SAMARKAND,撒马尔罕宗主国加成：您的建造者现在能够建造圆顶市集改良设施。 +2 金币。每与一个奢侈品资源相邻则+1 金币。起源城市每有一座圆顶市集，对外国际贸易 路线提供的 金币便+1。无法建在另一座圆顶市集旁。,否,无,一手,否
+LEADER_MINOR_CIV_SINGAPORE,新加坡,CIVILIZATION_SINGAPORE,新加坡宗主国加成：您城市的 贸易路线每连接到1个外国文明，便+2 生产力。,否,无,一手,否
+LEADER_MINOR_CIV_TARUGA,塔鲁加,CIVILIZATION_TARUGA,塔鲁加宗主国加成：所有城市每拥有一种不同的改良战略资源，便+5% 科技值。,否,无,一手,否
+LEADER_MINOR_CIV_VALLETTA,瓦莱塔,CIVILIZATION_VALLETTA,瓦莱塔宗主国加成：信仰值可用来购买市中心建筑和军营区的建筑。购买远古、中世纪、文艺复兴城墙的费用被降低，但只能通过 信仰值购买。,否,无,一手,否
+LEADER_MINOR_CIV_VATICAN_CITY,梵蒂冈城,CIVILIZATION_VATICAN_CITY,梵蒂冈城宗主国加成：当您激活一位 伟人时，其会将您所创立宗教（或您主流宗教）的400点宗教压力传播到10单元格内的城市。,否,无,一手,否
+LEADER_MINOR_CIV_VILNIUS,维尔纽斯,CIVILIZATION_VILNIUS,维尔纽斯宗主国加成：达到最高同盟级别后，所有剧院广场区域将获得50%的相邻加成。,否,无,一手,否
+LEADER_MINOR_CIV_WOLIN,沃林,CIVILIZATION_WOLIN,沃林宗主国加成：陆地单位击杀主要和小型文明的单位时，将获得 大将军点数，而海军单位完成击杀将获得 海军统帅点数，获得量等同于对方单位战斗力的25%（标准速度下）。,否,无,一手,否
+LEADER_MINOR_CIV_YEREVAN,埃里温,CIVILIZATION_YEREVAN,埃里温宗主国加成：您的使徒单位可以选择任何可用的升级，而不是随机升级。,否,无,一手,否
+LEADER_MINOR_CIV_ZANZIBAR,桑给巴尔,CIVILIZATION_ZANZIBAR,桑给巴尔宗主国加成：获得 肉桂和 丁香奢侈品资源。这些东西在游戏里不能通过其他方式获得，每种提供6 宜居度。,否,无,一手,否
+LEADER_MONTEZUMA,蒙特祖玛,CIVILIZATION_AZTEC,送给国王的礼物：其领土中的奢侈品资源为额外2座城市提供1点 宜居度。阿兹特克国土内每种改良的奢侈品资源将为军事单位+1 战斗力。,否,无,一手,否
+LEADER_MVEMBA,姆本巴·恩津加,CIVILIZATION_KONGO,宗教转换：无法建造圣地区、获得大预言家，或创建宗教。从已成为多数刚果城市信仰的宗教中获得信仰值。每次完成一个姆班赞或剧院广场区时获得一位（城市主流宗教的）使徒。,否,无,一手,否
+LEADER_NADER_SHAH,纳迪尔沙阿,CIVILIZATION_PERSIA,波斯之剑：攻击生命值全满的单位时+5 战斗力。非纳迪尔沙阿建造的城市从国内 贸易路线获得+2 [Icon_Faith] 信仰值和 +3 [Icon_Gold] 金币。,否,无,一手,否
+LEADER_NZINGA_MBANDE,恩津加·姆班德,CIVILIZATION_KONGO,恩东戈和马坦巴的女王：和你的 首都处于同一大陆的城市+10%产出（其中包括 首都）；如果出在不同大陆，则-15%产出。,否,无,一手,否
+LEADER_PACHACUTI,帕查库特克,CIVILIZATION_INCA,印加路网：起始城市中的每座山脉单元格为国内 贸易路线提供+1 食物。解锁“对外贸易”市政后可获得印加路网改良设施。,否,无,一手,否
+LEADER_PEDRO,佩德罗二世,CIVILIZATION_BRAZIL,宽宏大量：招募或赞助一位 伟人后，将返还所消耗 伟人点数的20%。,否,无,一手,否
+LEADER_PERICLES,伯里克利,CIVILIZATION_GREECE,被荣耀包围：作为宗主国时，每个下辖的城邦使您的 文化值+5%。,否,无,一手,否
+LEADER_PETER_GREAT,彼得,CIVILIZATION_RUSSIA,大使馆：如 贸易路线的目标文明与比俄罗斯更先进，则其将提供 科技值或 文化值（每领先3项科技或市政则+1）。,否,无,一手,否
+LEADER_PHILIP_II,菲利普二世,CIVILIZATION_SPAIN,艾思科里亚：审判官可额外进行一次“清除异教”操作。审判官能完全铲除其他宗教的势力。与信仰其他宗教的单位进行战斗时，战斗和宗教单位+5 战斗力。,否,无,一手,否
+LEADER_POUNDMAKER,庞德梅克,CIVILIZATION_CREE,有利条件：所有同盟类型均可形成共享视野。 输出的 贸易路线目的地城市中的每座营地或牧场可为庞德梅克提供+1 食物。 输入的国外 贸易路线目的地城市中的每座营地或牧场可为庞德梅克提供+1 金币。,否,无,一手,否
+LEADER_QIN,秦始皇（天命者）,CIVILIZATION_CHINA,秦始皇：建造远古和古典奇观时，可消耗建造者次数来加速奇观原始建造进程的15%。建造者会获得1个额外次数。解锁“砌砖”科技的同时也解锁“运河”。,否,无,一手,否
+LEADER_QIN_ALT,秦始皇（大一统）,CIVILIZATION_CHINA,三十六计：近战单位获得“蛮族归顺”操作。此操作能将蛮族单位转化为你的单位，但会移除近战单位。,否,无,一手,否
+LEADER_RAMSES,拉美西斯二世,CIVILIZATION_EGYPT,阿布辛贝：建筑建成时，获得等同于建筑花费15%的 文化值；奇观建成时则获得30%。,否,无,一手,否
+LEADER_ROBERT_THE_BRUCE,罗伯特一世,CIVILIZATION_SCOTLAND,班诺克本：解锁防御战术市政后即可宣布解放战争。宣布解放战争后的10回合内+100% 生产力、+2 移动力。,否,无,一手,否
+LEADER_SALADIN,萨拉丁（维齐尔）,CIVILIZATION_ARABIA,正义的信仰：玩家可以使用平时 信仰值消耗的1/10 来购买他们宗教的祭祀建筑。这种祭祀建筑为阿拉伯城市的 科技值、 信仰值、 文化值增加10%产量。,否,无,一手,否
+LEADER_SALADIN_ALT,萨拉丁（苏丹）,CIVILIZATION_ARABIA,王者之师：为所有战斗和宗教单位+100%夹击和支援加成。,否,无,一手,否
+LEADER_SEJONG,世宗大王,CIVILIZATION_KOREA,谚文：解锁新时代的首项科技时，获得两倍于每回合 科技值收益的 文化值。,否,无,一手,否
+LEADER_SEONDEOK,善德,CIVILIZATION_KOREA,花郎：总督在城市中就职后，每次升级（包括首次升级）都将提供+3% 文化值和 科技值。,否,无,一手,否
+LEADER_SHAKA,恰卡,CIVILIZATION_ZULU,伊布托：可更早组建军团（需雇佣兵市政）和军队（需民族主义市政）。使军团和军队的 基础战斗力额外+5。,否,无,一手,否
+LEADER_SIMON_BOLIVAR,西蒙·玻利瓦尔,CIVILIZATION_GRAN_COLOMBIA,荣耀之战：游戏进入新时代后获得1名总指挥。,否,无,一手,否
+LEADER_SULEIMAN,苏莱曼一世（立法者）,CIVILIZATION_OTTOMAN,大维齐尔：拥有军事与外交能力的专属特色总督。研究完“火药”科技后获得特色单位“苏丹亲兵”及1个 [Icon_Governor] 总督头衔。,否,无,一手,否
+LEADER_SULEIMAN_ALT,苏莱曼一世（大帝）,CIVILIZATION_OTTOMAN,大帝：处于 黄金时代或英雄时代时，+15% [Icon_Science] 科技值和 [Icon_Culture] 文化值。未处于 黄金时代或英雄时代时，和同样未处于 黄金时代或英雄时代的文明作战将+4 战斗力。,否,无,一手,否
+LEADER_SUNDIATA_KEITA,松迪亚塔·凯塔,CIVILIZATION_MALI,索格伦：招募伟人所花费的 金币-20%，马里所建城市的市场获得2个 著作巨作槽位。 著作巨作+4 黄金、+2 生产力。,否,无,一手,否
+LEADER_TAMAR,塔玛丽,CIVILIZATION_GEORGIA,世界、王国和信仰的荣光：战斗胜利后，获得等同于被击杀单位战斗力50%的 信仰值（标准速度下）。如城邦的主流宗教与本方相同，则派遣至其处的每名 使者将视为2名（必须拥有1个主流宗教）。,否,无,一手,否
+LEADER_THEODORA,狄奥多拉,CIVILIZATION_BYZANTIUM,悔改：圣地提供等于其相邻加成的 文化值。农场可以为跑马场和圣地提供+1的信仰 相邻加成。,否,无,一手,否
+LEADER_TOKUGAWA,德川家康,CIVILIZATION_JAPAN,幕藩：国际 贸易路线的产出和 旅游业绩-25%；目的地城市中每有一个特色区域，国内 贸易路线便提供+1 文化值、+1 科技值和+2 金币。在日本 首都6单元格内的城市为100%忠诚；研究完“飞行”后，每有一个区域则+1 旅游业绩。,否,无,一手,否
+LEADER_TOMYRIS,托米丽司,CIVILIZATION_SCYTHIA,居鲁士终结者：攻击受伤单位时，所有单位+5 战斗力。消灭一个单位时恢复30点生命值。,否,无,一手,否
+LEADER_TRAJAN,图拉真,CIVILIZATION_ROME,图拉真圆柱：所有城市建立时带有一个额外的市中心建筑。 （远古时代是纪念碑）。,否,无,一手,否
+LEADER_T_ROOSEVELT,泰迪·罗斯福（进步党）,CIVILIZATION_AMERICA,古迹与公园：与自然奇观或山脉相邻时，魅力值为“惊艳”的单元格+2 科技值。与自然奇观或树林相邻时，魅力值为“惊艳”的单元格+2 文化值。如拥有国家公园，城市的所有单元格+1魅力。,否,无,一手,否
+LEADER_T_ROOSEVELT_ROUGHRIDER,泰迪·罗斯福（莽骑兵）,CIVILIZATION_AMERICA,罗斯福推论：在首都所在大陆上时单位+5 战斗力。如与城邦之间存在 贸易路线，派往此处的1位 使者将视为2位。解锁“膛线”科技后获得特色单位“莽骑兵”。,否,无,一手,否
+LEADER_VICTORIA,维多利亚（帝国时代）,CIVILIZATION_ENGLAND,英国强权下的和平：在新大陆（非首都所在大陆）建造首座城市时免费获得1个近战单位与1条 贸易路线容量。建造“皇家海军船坞”后，获得可生产的最强海军单位。研究“军事学”科技后，获得特色单位“红衫军”。,否,无,一手,否
+LEADER_VICTORIA_ALT,维多利亚（蒸汽时代）,CIVILIZATION_ENGLAND,蒸汽时代：城市中每有一座工业区建筑，其便+10% 生产力。所有战略资源+2 生产力。,否,无,一手,否
+LEADER_WILHELMINA,威廉明娜,CIVILIZATION_NETHERLANDS,橙色电台：通向本方城市的本方 贸易路线每回合可为起源城市+2忠诚度。通往外国城市或起源于外国城市的 贸易路线+2 文化值。,否,无,一手,否
+LEADER_WU_ZETIAN,武则天,CIVILIZATION_CHINA,罗织经：进攻性间谍的行动效果提升1级。进攻性间谍任务成功时，获得目标城市该回合 信仰值、 文化值和 科技值的100%。解锁“防御战术”后获得1名免费间谍（和一个额外的间谍容量）。可以使用 信仰值购买间谍。,否,无,一手,否
+LEADER_YONGLE,永乐皇帝,CIVILIZATION_CHINA,里甲：所有城市都可进行“里甲”项目，专注于以每回合的城市生产力来转换为 [Icon_Food] 食物（50%）、[Icon_Faith] 信仰值（50%）或者 [Icon_GOLD] 金币（100%）。10个人口或以上的大型城市，每一个人口便提供+2 [Icon_Gold] 金币、+1 [Icon_Science] 科技值以及+1 [Icon_Culture] 文化值。,否,无,一手,否

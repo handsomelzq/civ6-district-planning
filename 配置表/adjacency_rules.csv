@@ -1,0 +1,104 @@
+规则id,区域id,目标类别,目标id,产出类型,加成值,所需数量,前置科技,前置市政,废弃科技,废弃市政,原始标识,备注,数据来源,待核
+DISTRICT_ACROPOLIS@District_Culture_City_Center,DISTRICT_ACROPOLIS,区域,DISTRICT_CITY_CENTER,文化,1,1,无,无,无,无,District_Culture_City_Center,+{1_num} 文化值来自相邻市中心。,一手,否
+DISTRICT_ACROPOLIS@District_Culture_Standard,DISTRICT_ACROPOLIS,任意其他区域,无,文化,1,1,无,无,无,无,District_Culture_Standard,+{1_num} 文化值来自相邻{1_Num : plural 1?区域; other?区域;}。,一手,否
+DISTRICT_ACROPOLIS@EntertainmentComplex_Culture,DISTRICT_ACROPOLIS,区域,DISTRICT_ENTERTAINMENT_COMPLEX,文化,2,1,无,无,无,无,EntertainmentComplex_Culture,相邻娱乐设施区域提供+{1_num} 文化值。,一手,否
+DISTRICT_ACROPOLIS@Government_Culture,DISTRICT_ACROPOLIS,区域,DISTRICT_GOVERNMENT,文化,1,1,无,无,无,无,Government_Culture,+{1_num} 文化值来自相邻市政广场。,一手,否
+DISTRICT_ACROPOLIS@Pamukkale_Culture,DISTRICT_ACROPOLIS,地貌,FEATURE_PAMUKKALE,文化,2,1,无,无,无,无,Pamukkale_Culture,+{1_num} 文化值来自相邻自然奇观棉花堡。,一手,否
+DISTRICT_ACROPOLIS@WaterPark_Culture,DISTRICT_ACROPOLIS,区域,DISTRICT_WATER_ENTERTAINMENT_COMPLEX,文化,2,1,无,无,无,无,WaterPark_Culture,相邻水上乐园区域提供+{1_num} 文化值。,一手,否
+DISTRICT_ACROPOLIS@Wonder_Culture,DISTRICT_ACROPOLIS,世界奇观,无,文化,2,1,无,无,无,无,Wonder_Culture,+{1_num} 文化值来自相邻{1_Num : plural 1?奇观; other?奇观;}。,一手,否
+DISTRICT_CAMPUS@District_Science,DISTRICT_CAMPUS,任意其他区域,无,科技,1,2,无,无,无,无,District_Science,+{1_num} 科技值来自相邻{1_Num : plural 1?区域; other?区域;}。,一手,否
+DISTRICT_CAMPUS@GBR_Science,DISTRICT_CAMPUS,地貌,FEATURE_BARRIER_REEF,科技,2,1,无,无,无,无,GBR_Science,+{1_num} 科技值，来自相邻自然奇观大堡礁。,一手,否
+DISTRICT_CAMPUS@Geothermal_Science,DISTRICT_CAMPUS,地貌,FEATURE_GEOTHERMAL_FISSURE,科技,2,1,无,无,无,无,Geothermal_Science,+{1_num} 科技值来自每个相邻的地热裂缝。,一手,否
+DISTRICT_CAMPUS@Government_Science,DISTRICT_CAMPUS,区域,DISTRICT_GOVERNMENT,科技,1,1,无,无,无,无,Government_Science,+{1_num} 科技值来自相邻市政广场。,一手,否
+DISTRICT_CAMPUS@Jungle_Science,DISTRICT_CAMPUS,地貌,FEATURE_JUNGLE,科技,1,2,无,无,无,无,Jungle_Science,+{1_num} 科技值来自相邻雨林单元格。,一手,否
+DISTRICT_CAMPUS@Mountains_Science1,DISTRICT_CAMPUS,地形,TERRAIN_GRASS_MOUNTAIN,科技,1,1,无,无,无,无,Mountains_Science1,+{1_num} 科技值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_CAMPUS@Mountains_Science2,DISTRICT_CAMPUS,地形,TERRAIN_PLAINS_MOUNTAIN,科技,1,1,无,无,无,无,Mountains_Science2,+{1_num} 科技值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_CAMPUS@Mountains_Science3,DISTRICT_CAMPUS,地形,TERRAIN_DESERT_MOUNTAIN,科技,1,1,无,无,无,无,Mountains_Science3,+{1_num} 科技值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_CAMPUS@Mountains_Science4,DISTRICT_CAMPUS,地形,TERRAIN_TUNDRA_MOUNTAIN,科技,1,1,无,无,无,无,Mountains_Science4,+{1_num} 科技值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_CAMPUS@Mountains_Science5,DISTRICT_CAMPUS,地形,TERRAIN_SNOW_MOUNTAIN,科技,1,1,无,无,无,无,Mountains_Science5,+{1_num} 科技值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_CAMPUS@Pamukkale_Science,DISTRICT_CAMPUS,地貌,FEATURE_PAMUKKALE,科技,2,1,无,无,无,无,Pamukkale_Science,+{1_num} 科技值来自相邻自然奇观棉花堡。,一手,否
+DISTRICT_CAMPUS@Reef_Science,DISTRICT_CAMPUS,地貌,FEATURE_REEF,科技,2,1,无,无,无,无,Reef_Science,每个相邻的礁石提供+{1_num} 科技值。,一手,否
+DISTRICT_COMMERCIAL_HUB@Cothon_Gold,DISTRICT_COMMERCIAL_HUB,区域,DISTRICT_COTHON,金币,2,1,无,无,无,无,Cothon_Gold,+{1_num} 金币来自相邻U型港区域。,一手,否
+DISTRICT_COMMERCIAL_HUB@District_Gold,DISTRICT_COMMERCIAL_HUB,任意其他区域,无,金币,1,2,无,无,无,无,District_Gold,+{1_num} 金币来自相邻{1_Num : plural 1?区域; other?区域;}。,一手,否
+DISTRICT_COMMERCIAL_HUB@Government_Gold,DISTRICT_COMMERCIAL_HUB,区域,DISTRICT_GOVERNMENT,金币,1,1,无,无,无,无,Government_Gold,+{1_num} 金币来自相邻市政广场。,一手,否
+DISTRICT_COMMERCIAL_HUB@Harbor_Gold,DISTRICT_COMMERCIAL_HUB,区域,DISTRICT_HARBOR,金币,2,1,无,无,无,无,Harbor_Gold,+{1_num} 金币来自相邻港口。,一手,否
+DISTRICT_COMMERCIAL_HUB@Pamukkale_Gold,DISTRICT_COMMERCIAL_HUB,地貌,FEATURE_PAMUKKALE,金币,2,1,无,无,无,无,Pamukkale_Gold,+{1_num} 金币来自相邻自然奇观棉花堡。,一手,否
+DISTRICT_COMMERCIAL_HUB@River_Gold,DISTRICT_COMMERCIAL_HUB,河流,无,金币,2,1,无,无,无,无,River_Gold,+{1_num} 金币来自相邻河流。,一手,否
+DISTRICT_COMMERCIAL_HUB@RoyalDock_Gold,DISTRICT_COMMERCIAL_HUB,区域,DISTRICT_ROYAL_NAVY_DOCKYARD,金币,2,1,无,无,无,无,RoyalDock_Gold,如靠近皇家海军造船厂区域+{1_num} 金币。,一手,否
+DISTRICT_COTHON@District_Gold,DISTRICT_COTHON,任意其他区域,无,金币,1,2,无,无,无,无,District_Gold,+{1_num} 金币来自相邻{1_Num : plural 1?区域; other?区域;}。,一手,否
+DISTRICT_COTHON@Government_Gold,DISTRICT_COTHON,区域,DISTRICT_GOVERNMENT,金币,1,1,无,无,无,无,Government_Gold,+{1_num} 金币来自相邻市政广场。,一手,否
+DISTRICT_COTHON@Harbor_City_Gold,DISTRICT_COTHON,区域,DISTRICT_CITY_CENTER,金币,2,1,无,无,无,无,Harbor_City_Gold,相邻市中心区域+{1_num} 金币。,一手,否
+DISTRICT_COTHON@SeaResource_Gold,DISTRICT_COTHON,海洋资源,无,金币,1,1,无,无,无,无,SeaResource_Gold,+{1_num} 金币来自相邻海洋{1_Num : plural 1?资源; other?资源;}。,一手,否
+DISTRICT_HANSA@Aqueduct_Production,DISTRICT_HANSA,区域,DISTRICT_AQUEDUCT,生产力,2,1,无,无,无,无,Aqueduct_Production,相邻水渠区域提供+{1_num} 生产力。,一手,否
+DISTRICT_HANSA@Canal_Production,DISTRICT_HANSA,区域,DISTRICT_CANAL,生产力,2,1,无,无,无,无,Canal_Production,相邻运河区域提供+{1_num} 生产力。,一手,否
+DISTRICT_HANSA@Commerical_Hub_Production,DISTRICT_HANSA,区域,DISTRICT_COMMERCIAL_HUB,生产力,2,1,无,无,无,无,Commerical_Hub_Production,+{1_num} 生产力来自相邻商业中心区域。,一手,否
+DISTRICT_HANSA@Dam_Production,DISTRICT_HANSA,区域,DISTRICT_DAM,生产力,2,1,无,无,无,无,Dam_Production,相邻堤坝区域提供+{1_num} 生产力。,一手,否
+DISTRICT_HANSA@District_Production,DISTRICT_HANSA,任意其他区域,无,生产力,1,2,无,无,无,无,District_Production,+{1_num} 生产力来自相邻{1_Num : plural 1?区域; other?区域;}。,一手,否
+DISTRICT_HANSA@Government_Production,DISTRICT_HANSA,区域,DISTRICT_GOVERNMENT,生产力,1,1,无,无,无,无,Government_Production,+{1_num} 生产力来自相邻市政广场。,一手,否
+DISTRICT_HANSA@Resource_Production,DISTRICT_HANSA,任意资源,无,生产力,1,1,无,无,无,无,Resource_Production,+{1_num} 生产力来自相邻{1_Num : plural 1?资源; other?资源;}。,一手,否
+DISTRICT_HARBOR@District_Gold,DISTRICT_HARBOR,任意其他区域,无,金币,1,2,无,无,无,无,District_Gold,+{1_num} 金币来自相邻{1_Num : plural 1?区域; other?区域;}。,一手,否
+DISTRICT_HARBOR@Government_Gold,DISTRICT_HARBOR,区域,DISTRICT_GOVERNMENT,金币,1,1,无,无,无,无,Government_Gold,+{1_num} 金币来自相邻市政广场。,一手,否
+DISTRICT_HARBOR@Harbor_City_Gold,DISTRICT_HARBOR,区域,DISTRICT_CITY_CENTER,金币,2,1,无,无,无,无,Harbor_City_Gold,相邻市中心区域+{1_num} 金币。,一手,否
+DISTRICT_HARBOR@SeaResource_Gold,DISTRICT_HARBOR,海洋资源,无,金币,1,1,无,无,无,无,SeaResource_Gold,+{1_num} 金币来自相邻海洋{1_Num : plural 1?资源; other?资源;}。,一手,否
+DISTRICT_HOLY_SITE@District_Faith,DISTRICT_HOLY_SITE,任意其他区域,无,信仰,1,2,无,无,无,无,District_Faith,+{1_num} 信仰值来自相邻区域。,一手,否
+DISTRICT_HOLY_SITE@Forest_Faith,DISTRICT_HOLY_SITE,地貌,FEATURE_FOREST,信仰,1,2,无,无,无,无,Forest_Faith,从相邻的树林单元格获得+{1_num} 信仰值。,一手,否
+DISTRICT_HOLY_SITE@Government_Faith,DISTRICT_HOLY_SITE,区域,DISTRICT_GOVERNMENT,信仰,1,1,无,无,无,无,Government_Faith,+{1_num} 信仰值来自相邻市政广场。,一手,否
+DISTRICT_HOLY_SITE@Mountain_Faith1,DISTRICT_HOLY_SITE,地形,TERRAIN_GRASS_MOUNTAIN,信仰,1,1,无,无,无,无,Mountain_Faith1,+{1_num} 信仰值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_HOLY_SITE@Mountain_Faith2,DISTRICT_HOLY_SITE,地形,TERRAIN_PLAINS_MOUNTAIN,信仰,1,1,无,无,无,无,Mountain_Faith2,+{1_num} 信仰值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_HOLY_SITE@Mountain_Faith3,DISTRICT_HOLY_SITE,地形,TERRAIN_DESERT_MOUNTAIN,信仰,1,1,无,无,无,无,Mountain_Faith3,+{1_num} 信仰值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_HOLY_SITE@Mountain_Faith4,DISTRICT_HOLY_SITE,地形,TERRAIN_TUNDRA_MOUNTAIN,信仰,1,1,无,无,无,无,Mountain_Faith4,+{1_num} 信仰值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_HOLY_SITE@Mountain_Faith5,DISTRICT_HOLY_SITE,地形,TERRAIN_SNOW_MOUNTAIN,信仰,1,1,无,无,无,无,Mountain_Faith5,+{1_num} 信仰值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_HOLY_SITE@NaturalWonder_Faith,DISTRICT_HOLY_SITE,自然奇观,无,信仰,2,1,无,无,无,无,NaturalWonder_Faith,+{1_num} 信仰值来自相邻自然{1_Num : plural 1?奇观; other?奇观;}。,一手,否
+DISTRICT_HOLY_SITE@Pamukkale_Faith,DISTRICT_HOLY_SITE,地貌,FEATURE_PAMUKKALE,信仰,1,1,无,无,无,无,Pamukkale_Faith,+{1_num} 信仰值来自相邻自然奇观棉花堡。,一手,否
+DISTRICT_INDUSTRIAL_ZONE@Aqueduct_Production,DISTRICT_INDUSTRIAL_ZONE,区域,DISTRICT_AQUEDUCT,生产力,2,1,无,无,无,无,Aqueduct_Production,相邻水渠区域提供+{1_num} 生产力。,一手,否
+DISTRICT_INDUSTRIAL_ZONE@Bath_Production,DISTRICT_INDUSTRIAL_ZONE,区域,DISTRICT_BATH,生产力,2,1,无,无,无,无,Bath_Production,+{1_num} 丛相邻的浴场中提供 {1_Num : plural 2?区域; other?区域;}。,一手,否
+DISTRICT_INDUSTRIAL_ZONE@Canal_Production,DISTRICT_INDUSTRIAL_ZONE,区域,DISTRICT_CANAL,生产力,2,1,无,无,无,无,Canal_Production,相邻运河区域提供+{1_num} 生产力。,一手,否
+DISTRICT_INDUSTRIAL_ZONE@Dam_Production,DISTRICT_INDUSTRIAL_ZONE,区域,DISTRICT_DAM,生产力,2,1,无,无,无,无,Dam_Production,相邻堤坝区域提供+{1_num} 生产力。,一手,否
+DISTRICT_INDUSTRIAL_ZONE@District_Production,DISTRICT_INDUSTRIAL_ZONE,任意其他区域,无,生产力,1,2,无,无,无,无,District_Production,+{1_num} 生产力来自相邻{1_Num : plural 1?区域; other?区域;}。,一手,否
+DISTRICT_INDUSTRIAL_ZONE@Government_Production,DISTRICT_INDUSTRIAL_ZONE,区域,DISTRICT_GOVERNMENT,生产力,1,1,无,无,无,无,Government_Production,+{1_num} 生产力来自相邻市政广场。,一手,否
+DISTRICT_INDUSTRIAL_ZONE@LumberMill_HalfProduction,DISTRICT_INDUSTRIAL_ZONE,改良设施,IMPROVEMENT_LUMBER_MILL,生产力,1,2,无,无,无,无,LumberMill_HalfProduction,相邻伐木场提供的 生产力+{1_num}。,一手,否
+DISTRICT_INDUSTRIAL_ZONE@Minel_HalfProduction,DISTRICT_INDUSTRIAL_ZONE,改良设施,IMPROVEMENT_MINE,生产力,1,2,无,无,无,无,Minel_HalfProduction,相邻矿山提供的 生产力+{1_num}。,一手,否
+DISTRICT_INDUSTRIAL_ZONE@Quarry_Production,DISTRICT_INDUSTRIAL_ZONE,改良设施,IMPROVEMENT_QUARRY,生产力,1,1,无,无,无,无,Quarry_Production,+{1_num} 生产力来自相邻{1_Num : plural 1?采石场; other?采石场;}。,一手,否
+DISTRICT_INDUSTRIAL_ZONE@Strategic_Production,DISTRICT_INDUSTRIAL_ZONE,资源类别,战略,生产力,1,1,无,无,无,无,Strategic_Production,相邻战略资源提供+{1_num} 生产力。,一手,否
+DISTRICT_LAVRA@District_Faith,DISTRICT_LAVRA,任意其他区域,无,信仰,1,2,无,无,无,无,District_Faith,+{1_num} 信仰值来自相邻区域。,一手,否
+DISTRICT_LAVRA@Forest_Faith,DISTRICT_LAVRA,地貌,FEATURE_FOREST,信仰,1,2,无,无,无,无,Forest_Faith,从相邻的树林单元格获得+{1_num} 信仰值。,一手,否
+DISTRICT_LAVRA@Government_Faith,DISTRICT_LAVRA,区域,DISTRICT_GOVERNMENT,信仰,1,1,无,无,无,无,Government_Faith,+{1_num} 信仰值来自相邻市政广场。,一手,否
+DISTRICT_LAVRA@Mountain_Faith1,DISTRICT_LAVRA,地形,TERRAIN_GRASS_MOUNTAIN,信仰,1,1,无,无,无,无,Mountain_Faith1,+{1_num} 信仰值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_LAVRA@Mountain_Faith2,DISTRICT_LAVRA,地形,TERRAIN_PLAINS_MOUNTAIN,信仰,1,1,无,无,无,无,Mountain_Faith2,+{1_num} 信仰值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_LAVRA@Mountain_Faith3,DISTRICT_LAVRA,地形,TERRAIN_DESERT_MOUNTAIN,信仰,1,1,无,无,无,无,Mountain_Faith3,+{1_num} 信仰值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_LAVRA@Mountain_Faith4,DISTRICT_LAVRA,地形,TERRAIN_TUNDRA_MOUNTAIN,信仰,1,1,无,无,无,无,Mountain_Faith4,+{1_num} 信仰值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_LAVRA@Mountain_Faith5,DISTRICT_LAVRA,地形,TERRAIN_SNOW_MOUNTAIN,信仰,1,1,无,无,无,无,Mountain_Faith5,+{1_num} 信仰值来自相邻山脉{1_Num : plural 1?单元格; other?单元格;}。,一手,否
+DISTRICT_LAVRA@NaturalWonder_Faith,DISTRICT_LAVRA,自然奇观,无,信仰,2,1,无,无,无,无,NaturalWonder_Faith,+{1_num} 信仰值来自相邻自然{1_Num : plural 1?奇观; other?奇观;}。,一手,否
+DISTRICT_LAVRA@Pamukkale_Faith,DISTRICT_LAVRA,地貌,FEATURE_PAMUKKALE,信仰,1,1,无,无,无,无,Pamukkale_Faith,+{1_num} 信仰值来自相邻自然奇观棉花堡。,一手,否
+DISTRICT_OBSERVATORY@District_Science,DISTRICT_OBSERVATORY,任意其他区域,无,科技,1,2,无,无,无,无,District_Science,+{1_num} 科技值来自相邻{1_Num : plural 1?区域; other?区域;}。,一手,否
+DISTRICT_OBSERVATORY@Farm_Science,DISTRICT_OBSERVATORY,改良设施,IMPROVEMENT_FARM,科技,1,2,无,无,无,无,Farm_Science,相邻农场单元格提供+{1_num} 科技值。,一手,否
+DISTRICT_OBSERVATORY@GBR_Science,DISTRICT_OBSERVATORY,地貌,FEATURE_BARRIER_REEF,科技,2,1,无,无,无,无,GBR_Science,+{1_num} 科技值，来自相邻自然奇观大堡礁。,一手,否
+DISTRICT_OBSERVATORY@Government_Science,DISTRICT_OBSERVATORY,区域,DISTRICT_GOVERNMENT,科技,1,1,无,无,无,无,Government_Science,+{1_num} 科技值来自相邻市政广场。,一手,否
+DISTRICT_OBSERVATORY@Pamukkale_Science,DISTRICT_OBSERVATORY,地貌,FEATURE_PAMUKKALE,科技,2,1,无,无,无,无,Pamukkale_Science,+{1_num} 科技值来自相邻自然奇观棉花堡。,一手,否
+DISTRICT_OBSERVATORY@Plantation_Science,DISTRICT_OBSERVATORY,改良设施,IMPROVEMENT_PLANTATION,科技,2,1,无,无,无,无,Plantation_Science,相邻种植园单元格提供+{1_num} 科技值。,一手,否
+DISTRICT_OPPIDUM@Government_Production,DISTRICT_OPPIDUM,区域,DISTRICT_GOVERNMENT,生产力,1,1,无,无,无,无,Government_Production,+{1_num} 生产力来自相邻市政广场。,一手,否
+DISTRICT_OPPIDUM@Quarry_Production2,DISTRICT_OPPIDUM,改良设施,IMPROVEMENT_QUARRY,生产力,2,1,无,无,无,无,Quarry_Production2,+{1_num} 生产力来自相邻{1_Num : plural 1?采石场; other?采石场;}。,一手,否
+DISTRICT_OPPIDUM@Strategic_Production2,DISTRICT_OPPIDUM,资源类别,战略,生产力,2,1,无,无,无,无,Strategic_Production2,相邻战略资源提供+{1_num} 生产力。,一手,否
+DISTRICT_ROYAL_NAVY_DOCKYARD@District_Gold,DISTRICT_ROYAL_NAVY_DOCKYARD,任意其他区域,无,金币,1,2,无,无,无,无,District_Gold,+{1_num} 金币来自相邻{1_Num : plural 1?区域; other?区域;}。,一手,否
+DISTRICT_ROYAL_NAVY_DOCKYARD@Government_Gold,DISTRICT_ROYAL_NAVY_DOCKYARD,区域,DISTRICT_GOVERNMENT,金币,1,1,无,无,无,无,Government_Gold,+{1_num} 金币来自相邻市政广场。,一手,否
+DISTRICT_ROYAL_NAVY_DOCKYARD@RoyalDock_City_Gold,DISTRICT_ROYAL_NAVY_DOCKYARD,区域,DISTRICT_CITY_CENTER,金币,2,1,无,无,无,无,RoyalDock_City_Gold,相邻市中心区域+{1_num} 金币。,一手,否
+DISTRICT_ROYAL_NAVY_DOCKYARD@SeaResource_Gold,DISTRICT_ROYAL_NAVY_DOCKYARD,海洋资源,无,金币,1,1,无,无,无,无,SeaResource_Gold,+{1_num} 金币来自相邻海洋{1_Num : plural 1?资源; other?资源;}。,一手,否
+DISTRICT_SEOWON@BaseDistrict_Science,DISTRICT_SEOWON,自身,无,科技,4,1,无,无,无,无,BaseDistrict_Science,+{1_Num}点 科技值。,一手,否
+DISTRICT_SEOWON@Government_Science,DISTRICT_SEOWON,区域,DISTRICT_GOVERNMENT,科技,1,1,无,无,无,无,Government_Science,+{1_num} 科技值来自相邻市政广场。,一手,否
+DISTRICT_SEOWON@NegativeDistrict_Science,DISTRICT_SEOWON,任意其他区域,无,科技,-1,1,无,无,无,无,NegativeDistrict_Science,"{1_num: number +#,###;-#,###} 科技值来自相邻区域。",一手,否
+DISTRICT_SUGUBA@District_Gold,DISTRICT_SUGUBA,任意其他区域,无,金币,1,2,无,无,无,无,District_Gold,+{1_num} 金币来自相邻{1_Num : plural 1?区域; other?区域;}。,一手,否
+DISTRICT_SUGUBA@Government_Gold,DISTRICT_SUGUBA,区域,DISTRICT_GOVERNMENT,金币,1,1,无,无,无,无,Government_Gold,+{1_num} 金币来自相邻市政广场。,一手,否
+DISTRICT_SUGUBA@Holy_Site_Gold,DISTRICT_SUGUBA,区域,DISTRICT_HOLY_SITE,金币,2,1,无,无,无,无,Holy_Site_Gold,+{1_num} 金币来自相邻圣地区域。,一手,否
+DISTRICT_SUGUBA@Lavra_Gold,DISTRICT_SUGUBA,区域,DISTRICT_LAVRA,金币,2,1,无,无,无,无,Lavra_Gold,+{1_num} 金币来自相邻修道院区域。,一手,否
+DISTRICT_SUGUBA@Pamukkale_Gold,DISTRICT_SUGUBA,地貌,FEATURE_PAMUKKALE,金币,2,1,无,无,无,无,Pamukkale_Gold,+{1_num} 金币来自相邻自然奇观棉花堡。,一手,否
+DISTRICT_SUGUBA@River_Gold,DISTRICT_SUGUBA,河流,无,金币,2,1,无,无,无,无,River_Gold,+{1_num} 金币来自相邻河流。,一手,否
+DISTRICT_THANH@District_Culture_Major,DISTRICT_THANH,任意其他区域,无,文化,2,1,无,无,无,无,District_Culture_Major,相邻区域提供+{1_num} 文化值。,一手,否
+DISTRICT_THEATER@Copacabana_Culture,DISTRICT_THEATER,区域,DISTRICT_WATER_STREET_CARNIVAL,文化,2,1,无,无,无,无,Copacabana_Culture,相邻科帕卡瓦纳区域提供+{1_num} 文化值。,一手,否
+DISTRICT_THEATER@District_Culture,DISTRICT_THEATER,任意其他区域,无,文化,1,2,无,无,无,无,District_Culture,+{1_num} 文化值来自相邻{1_Num : plural 1?区域; other?区域;}。,一手,否
+DISTRICT_THEATER@EntertainmentComplex_Culture,DISTRICT_THEATER,区域,DISTRICT_ENTERTAINMENT_COMPLEX,文化,2,1,无,无,无,无,EntertainmentComplex_Culture,相邻娱乐设施区域提供+{1_num} 文化值。,一手,否
+DISTRICT_THEATER@Government_Culture,DISTRICT_THEATER,区域,DISTRICT_GOVERNMENT,文化,1,1,无,无,无,无,Government_Culture,+{1_num} 文化值来自相邻市政广场。,一手,否
+DISTRICT_THEATER@Hippodrome_Culture,DISTRICT_THEATER,区域,DISTRICT_HIPPODROME,文化,2,1,无,无,无,无,Hippodrome_Culture,相邻跑马场区域提供+{1_num} 文化值。,一手,否
+DISTRICT_THEATER@Pamukkale_Culture,DISTRICT_THEATER,地貌,FEATURE_PAMUKKALE,文化,2,1,无,无,无,无,Pamukkale_Culture,+{1_num} 文化值来自相邻自然奇观棉花堡。,一手,否
+DISTRICT_THEATER@StreetCarnival_Culture,DISTRICT_THEATER,区域,DISTRICT_STREET_CARNIVAL,文化,2,1,无,无,无,无,StreetCarnival_Culture,相邻街头狂欢节区域提供+{1_num} 文化值。,一手,否
+DISTRICT_THEATER@WaterPark_Culture,DISTRICT_THEATER,区域,DISTRICT_WATER_ENTERTAINMENT_COMPLEX,文化,2,1,无,无,无,无,WaterPark_Culture,相邻水上乐园区域提供+{1_num} 文化值。,一手,否
+DISTRICT_THEATER@Wonder_Culture,DISTRICT_THEATER,世界奇观,无,文化,2,1,无,无,无,无,Wonder_Culture,+{1_num} 文化值来自相邻{1_Num : plural 1?奇观; other?奇观;}。,一手,否
