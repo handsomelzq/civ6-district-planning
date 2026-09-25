@@ -1,0 +1,10 @@
+{
+  "name": "civ6-district-planning",
+  "private": true,
+  "type": "module",
+  "description": "文明 6 区域规划 · 局面求值器。零依赖：Node 24 原生跑 TypeScript，测试用内置 node:test。",
+  "engines": { "node": ">=23" },
+  "scripts": {
+    "test": "node --test 'tests/*.test.ts'"
+  }
+}

@@ -25,6 +25,7 @@
 | 3 | [拆解/文明6-产出与相邻加成体系.md](拆解/文明6-产出与相邻加成体系.md) §4.4 | **为什么算法只能靠实测**：规则与数值全在 XML 里（可读），但计算方式在编译后的 C++ gameplay core 里，而文明 6 与文明 5 不同，**没有开放 gameplay DLL 源码** |
 | 4 | [设计/关卡设计.md](设计/关卡设计.md) §2.0 + §2.0.1 | 关卡质量有一个**可计算的定义**（贪心必须失败），以及一条量化判据 `母题成立 ⟺ V > w × min(m,k)`。四个旋钮 `w/m/k/V` 可直接用 |
 | 5 | [设计/数值设计.md](设计/数值设计.md) §1.1 | **同一个事实被两条独立路径验证**：关卡侧测出"韩国结构性地不可能让贪心失败"，数据侧算出"书院是全表唯一相邻上界与邻格无关的区域" |
+| 6 | [tests/crosscheck.test.ts](tests/crosscheck.test.ts) | **两份独立实现在 60 个盘面上逐项对账**。它能抓出的是「我理解错了」，而单测只能抓出「代码与我的理解不符」 |
 
 想看**我改错的记录**（这个项目最想展示的部分）：[记录/进度记录.md](记录/进度记录.md) 是一份只追加的事实日志，每条都写了当时错在哪、怎么发现的、连带改了什么。
 
@@ -51,6 +52,16 @@
 ├── 配置表/                   ← 唯一事实来源，由解析脚本生成
 │   ├── 字段说明.md                17 张表、21 条校验规则
 │   └── *.csv
+├── src/                      ← 求值器（TypeScript，零依赖）
+│   ├── evaluate.ts               ★ evaluate(rules, board) -> 产出明细树
+│   ├── rational.ts               精确有理数，全程不用浮点
+│   ├── rules.ts / board.ts / hex.ts / csv.ts
+├── tests/                    ← node:test，44 条
+│   ├── calibration.test.ts       对照游戏内实测读数（不过就别看后面了）
+│   ├── crosscheck.test.ts        与 Python 原型 60 盘面逐项对账
+│   ├── invariants.test.ts        I1–I4
+│   ├── categories.test.ts        8 个目标类别定向测
+│   └── levels.test.ts            9 关的三星阈值由产品求值器重算
 ├── Tools/                    ← 全部只用 Python 标准库
 └── 记录/进度记录.md           ← 只追加的事实日志
 ```
@@ -67,6 +78,12 @@ python3 Tools/test_check_config.py         # 校验器自己的回归测试（66
 python3 Tools/analyze_yields.py            # 产出量级分析（数值设计.md 的数字来源）
 python3 Tools/design_levels.py             # 重算关卡目标值与星级阈值，重新生成关卡表
 python3 Tools/motif_check.py               # 关卡母题验证（先校准，校准不过就停）
+```
+
+求值器（TypeScript）。也是零依赖 —— **Node 24 原生跑 TypeScript**，测试用内置 `node:test`：
+
+```bash
+npm test                                   # 44 条测试：校准 / 不变量 / 交叉校验 / 关卡阈值
 ```
 
 需要装了文明 6 才能跑的：
@@ -86,9 +103,9 @@ python3 Tools/parse_civ6_xml.py            # 游戏 XML → 配置表 CSV
 | 拆解案 | 3/4 篇由一手数据填实；军事篇仍为二手，标 `待核=是` |
 | 配置表 | 13 张生成表 + 2 张关卡表；`units` / `combat_modifiers` 阻塞于军事实测 |
 | 关卡 | **10 关全部落地**：3 教学 + 5 普通 + 1 对照（另 1 关作废但留作回归用例） |
-| 求值器 | 规格完成（29 条边界情况）；设计期原型已写，**产品代码未开始** |
+| **求值器** | ✅ **已实现**（TypeScript，零依赖），44 条测试全过：5 个游戏内实测读数校准 + 四条不变量 + 8 个目标类别定向测 + **与 Python 原型 60 盘面交叉校验** + 9 关阈值双签 |
 | 两模式 UI | 规格完成；**未实现** |
-| 技术栈 | 🔴 **未定**（TS+Web 还是 Unity C#）。文档层全部 engine-neutral |
+| 技术栈 | ✅ **TypeScript + Web**（2026-09-25 定）。Node 24 原生跑 TS，测试用内置 `node:test`，`package.json` 里零依赖 |
 
 表行数：`adjacency_rules` 103、`buildings` 85、`districts` 36、`civs` 100、`leaders` 126、`techs` 77、`civics` 61、`improvements` 59、`resources` 54、`features` 50、`wonders` 34、`terrains` 17、`excluded_adjacencies` 12。
 
@@ -122,7 +139,9 @@ python3 Tools/parse_civ6_xml.py            # 游戏 XML → 配置表 CSV
 - **`districts.OnePerCity` / `MaxPerPlayer` 未补**：所以 [设计/数值设计.md](设计/数值设计.md) §1 的相邻上界是「忽略全局唯一性」的上界
 - **预算 6+ 的关卡做不了**：穷举最优在预算 6 以上吃不住，需要束搜索求解器（在暂缓清单里）
 - **多产出关卡的难度度量不够好**：`V−G`（合计差）在多维目标上失真，见 [设计/数值设计.md](设计/数值设计.md) §4.1
-- **产品代码一行没写**：技术栈未定。这是有意的——规格先定，栈后定，文档层保持 engine-neutral
+- **两模式 UI 未实现**：求值器已完成并测透，但地图渲染、悬停预览、拆解面板、关卡加载都还没写
+- **没有类型检查**：Node 的 TypeScript 支持是「类型剥离」，只去掉类型不检查类型。要真查需要装 `typescript` 跑 `tsc --noEmit` —— 这是唯一一个值得加的开发依赖，目前刻意还没加
+- **🔴 `自身` 类别的语义未经实测**（SDD §10 D10）：全库唯一一条是韩国书院的 +4 科技。实现按「固定值」处理并收在 `evaluate.ts` 的 `SELF_IS_FIXED_VALUE` 一处，但 L-09 / L-10 的全部读数都压在这个假设上
 
 ---
 

@@ -1,0 +1,5520 @@
+{
+ "说明": "由 Tools/gen_oracle.py 用 Python 原型求值器生成，勿手改。覆盖 地形/地貌/区域/任意其他区域/自身 五个目标类别。",
+ "生成脚本": "Tools/gen_oracle.py",
+ "种子": 20260925,
+ "用例数": 60,
+ "cases": [
+  {
+   "id": "case-00",
+   "半径": 1,
+   "文明": "CIVILIZATION_GERMANY",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN"
+    }
+   },
+   "期望产出": {}
+  },
+  {
+   "id": "case-01",
+   "半径": 2,
+   "文明": "CIVILIZATION_KOREA",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    }
+   },
+   "期望产出": {
+    "科技": "3",
+    "文化": "1",
+    "信仰": "13"
+   }
+  },
+  {
+   "id": "case-02",
+   "半径": 3,
+   "文明": "CIVILIZATION_GREECE",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "2,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "3,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    }
+   },
+   "期望产出": {
+    "科技": "11",
+    "金币": "6.5",
+    "生产力": "2",
+    "信仰": "6.5"
+   }
+  },
+  {
+   "id": "case-03",
+   "半径": 1,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    }
+   },
+   "期望产出": {}
+  },
+  {
+   "id": "case-04",
+   "半径": 2,
+   "文明": "CIVILIZATION_GREECE",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    }
+   },
+   "期望产出": {
+    "文化": "6",
+    "金币": "3.5",
+    "生产力": "2",
+    "信仰": "4"
+   }
+  },
+  {
+   "id": "case-05",
+   "半径": 3,
+   "文明": null,
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,2": {
+     "地形": "TERRAIN_COAST"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "3,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    }
+   },
+   "期望产出": {
+    "科技": "1.5",
+    "文化": "0.5",
+    "金币": "2.5",
+    "生产力": "0.5",
+    "信仰": "5"
+   }
+  },
+  {
+   "id": "case-06",
+   "半径": 1,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    }
+   },
+   "期望产出": {
+    "科技": "2.5",
+    "生产力": "2"
+   }
+  },
+  {
+   "id": "case-07",
+   "半径": 2,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    }
+   },
+   "期望产出": {
+    "科技": "3",
+    "文化": "2"
+   }
+  },
+  {
+   "id": "case-08",
+   "半径": 3,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "2,1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "3,0": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    }
+   },
+   "期望产出": {
+    "科技": "6",
+    "信仰": "1"
+   }
+  },
+  {
+   "id": "case-09",
+   "半径": 1,
+   "文明": "CIVILIZATION_GREECE",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_COAST"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    }
+   },
+   "期望产出": {
+    "文化": "2"
+   }
+  },
+  {
+   "id": "case-10",
+   "半径": 2,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    }
+   },
+   "期望产出": {
+    "文化": "3.5",
+    "金币": "2.5",
+    "生产力": "1.5",
+    "信仰": "11.5"
+   }
+  },
+  {
+   "id": "case-11",
+   "半径": 3,
+   "文明": "CIVILIZATION_GREECE",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_COAST"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_COAST"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "2,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,0": {
+     "地形": "TERRAIN_COAST"
+    }
+   },
+   "期望产出": {
+    "科技": "5.5",
+    "文化": "4",
+    "生产力": "0.5",
+    "信仰": "5"
+   }
+  },
+  {
+   "id": "case-12",
+   "半径": 1,
+   "文明": null,
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    }
+   },
+   "期望产出": {}
+  },
+  {
+   "id": "case-13",
+   "半径": 2,
+   "文明": "CIVILIZATION_GERMANY",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,2": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    }
+   },
+   "期望产出": {
+    "科技": "5",
+    "生产力": "2",
+    "信仰": "8.5"
+   }
+  },
+  {
+   "id": "case-14",
+   "半径": 3,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_COAST"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "3,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    }
+   },
+   "期望产出": {
+    "科技": "15.5",
+    "金币": "2",
+    "信仰": "17.5"
+   }
+  },
+  {
+   "id": "case-15",
+   "半径": 1,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    }
+   },
+   "期望产出": {
+    "科技": "1"
+   }
+  },
+  {
+   "id": "case-16",
+   "半径": 2,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    }
+   },
+   "期望产出": {
+    "文化": "1",
+    "生产力": "1"
+   }
+  },
+  {
+   "id": "case-17",
+   "半径": 3,
+   "文明": "CIVILIZATION_GERMANY",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_COAST"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "3,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    }
+   },
+   "期望产出": {
+    "科技": "6",
+    "金币": "5.5",
+    "生产力": "5",
+    "信仰": "3"
+   }
+  },
+  {
+   "id": "case-18",
+   "半径": 1,
+   "文明": "CIVILIZATION_GERMANY",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    }
+   },
+   "期望产出": {}
+  },
+  {
+   "id": "case-19",
+   "半径": 2,
+   "文明": "CIVILIZATION_KOREA",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    }
+   },
+   "期望产出": {
+    "科技": "6",
+    "文化": "2",
+    "金币": "3",
+    "生产力": "2"
+   }
+  },
+  {
+   "id": "case-20",
+   "半径": 3,
+   "文明": "CIVILIZATION_GERMANY",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,3": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "3,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    }
+   },
+   "期望产出": {
+    "科技": "2.5",
+    "文化": "0.5",
+    "金币": "0.5",
+    "生产力": "8.5",
+    "信仰": "2"
+   }
+  },
+  {
+   "id": "case-21",
+   "半径": 1,
+   "文明": null,
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    }
+   },
+   "期望产出": {
+    "信仰": "5"
+   }
+  },
+  {
+   "id": "case-22",
+   "半径": 2,
+   "文明": "CIVILIZATION_GREECE",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    }
+   },
+   "期望产出": {
+    "科技": "7",
+    "金币": "3.5",
+    "信仰": "2.5"
+   }
+  },
+  {
+   "id": "case-23",
+   "半径": 3,
+   "文明": "CIVILIZATION_GERMANY",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_COAST"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "2,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    }
+   },
+   "期望产出": {
+    "科技": "9",
+    "文化": "3.5",
+    "金币": "2.5",
+    "生产力": "1",
+    "信仰": "4"
+   }
+  },
+  {
+   "id": "case-24",
+   "半径": 1,
+   "文明": null,
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    }
+   },
+   "期望产出": {}
+  },
+  {
+   "id": "case-25",
+   "半径": 2,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_COAST"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "1,1": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    }
+   },
+   "期望产出": {
+    "科技": "6",
+    "金币": "1"
+   }
+  },
+  {
+   "id": "case-26",
+   "半径": 3,
+   "文明": null,
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,1": {
+     "地形": "TERRAIN_COAST"
+    },
+    "1,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "2,1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_COAST"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "3,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    }
+   },
+   "期望产出": {
+    "科技": "2",
+    "金币": "3",
+    "生产力": "2",
+    "信仰": "11.5"
+   }
+  },
+  {
+   "id": "case-27",
+   "半径": 1,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN"
+    }
+   },
+   "期望产出": {
+    "科技": "1"
+   }
+  },
+  {
+   "id": "case-28",
+   "半径": 2,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "2,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    }
+   },
+   "期望产出": {
+    "科技": "7.5",
+    "文化": "2",
+    "金币": "1",
+    "信仰": "4.5"
+   }
+  },
+  {
+   "id": "case-29",
+   "半径": 3,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "3,0": {
+     "地形": "TERRAIN_OCEAN"
+    }
+   },
+   "期望产出": {
+    "科技": "6",
+    "信仰": "4.5"
+   }
+  },
+  {
+   "id": "case-30",
+   "半径": 1,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    }
+   },
+   "期望产出": {
+    "科技": "1",
+    "信仰": "1.5"
+   }
+  },
+  {
+   "id": "case-31",
+   "半径": 2,
+   "文明": "CIVILIZATION_KOREA",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,0": {
+     "地形": "TERRAIN_OCEAN"
+    }
+   },
+   "期望产出": {
+    "科技": "4",
+    "文化": "2",
+    "生产力": "0.5"
+   }
+  },
+  {
+   "id": "case-32",
+   "半径": 3,
+   "文明": "CIVILIZATION_KOREA",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "1,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "3,0": {
+     "地形": "TERRAIN_COAST"
+    }
+   },
+   "期望产出": {
+    "科技": "3",
+    "文化": "0.5"
+   }
+  },
+  {
+   "id": "case-33",
+   "半径": 1,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    }
+   },
+   "期望产出": {
+    "信仰": "4"
+   }
+  },
+  {
+   "id": "case-34",
+   "半径": 2,
+   "文明": "CIVILIZATION_GREECE",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    }
+   },
+   "期望产出": {
+    "科技": "1",
+    "文化": "4",
+    "信仰": "5"
+   }
+  },
+  {
+   "id": "case-35",
+   "半径": 3,
+   "文明": "CIVILIZATION_KOREA",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "3,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    }
+   },
+   "期望产出": {
+    "科技": "12",
+    "文化": "1",
+    "信仰": "3.5"
+   }
+  },
+  {
+   "id": "case-36",
+   "半径": 1,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    }
+   },
+   "期望产出": {
+    "科技": "0.5",
+    "生产力": "1.5"
+   }
+  },
+  {
+   "id": "case-37",
+   "半径": 2,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    }
+   },
+   "期望产出": {
+    "科技": "3.5",
+    "生产力": "1.5",
+    "信仰": "5"
+   }
+  },
+  {
+   "id": "case-38",
+   "半径": 3,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    }
+   },
+   "期望产出": {
+    "科技": "9.5",
+    "生产力": "1",
+    "信仰": "3"
+   }
+  },
+  {
+   "id": "case-39",
+   "半径": 1,
+   "文明": "CIVILIZATION_KOREA",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    }
+   },
+   "期望产出": {
+    "科技": "3",
+    "信仰": "5.5"
+   }
+  },
+  {
+   "id": "case-40",
+   "半径": 2,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS"
+    }
+   },
+   "期望产出": {
+    "信仰": "8.5"
+   }
+  },
+  {
+   "id": "case-41",
+   "半径": 3,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_COAST"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_COAST"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,1": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "3,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    }
+   },
+   "期望产出": {
+    "科技": "6",
+    "信仰": "5"
+   }
+  },
+  {
+   "id": "case-42",
+   "半径": 1,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    }
+   },
+   "期望产出": {}
+  },
+  {
+   "id": "case-43",
+   "半径": 2,
+   "文明": "CIVILIZATION_KOREA",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "2,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    }
+   },
+   "期望产出": {
+    "生产力": "2.5",
+    "信仰": "5.5"
+   }
+  },
+  {
+   "id": "case-44",
+   "半径": 3,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "3,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    }
+   },
+   "期望产出": {
+    "科技": "5",
+    "金币": "0.5",
+    "生产力": "11.5"
+   }
+  },
+  {
+   "id": "case-45",
+   "半径": 1,
+   "文明": "CIVILIZATION_GERMANY",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    }
+   },
+   "期望产出": {}
+  },
+  {
+   "id": "case-46",
+   "半径": 2,
+   "文明": "CIVILIZATION_GREECE",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "1,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    }
+   },
+   "期望产出": {
+    "文化": "3",
+    "金币": "0.5"
+   }
+  },
+  {
+   "id": "case-47",
+   "半径": 3,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,2": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "3,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    }
+   },
+   "期望产出": {
+    "文化": "1",
+    "金币": "1",
+    "生产力": "3"
+   }
+  },
+  {
+   "id": "case-48",
+   "半径": 1,
+   "文明": "CIVILIZATION_GAUL",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    }
+   },
+   "期望产出": {}
+  },
+  {
+   "id": "case-49",
+   "半径": 2,
+   "文明": "CIVILIZATION_GREECE",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    }
+   },
+   "期望产出": {
+    "文化": "2",
+    "信仰": "7"
+   }
+  },
+  {
+   "id": "case-50",
+   "半径": 3,
+   "文明": "CIVILIZATION_KOREA",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "3,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    }
+   },
+   "期望产出": {
+    "科技": "8",
+    "文化": "6",
+    "金币": "0.5",
+    "生产力": "2",
+    "信仰": "5.5"
+   }
+  },
+  {
+   "id": "case-51",
+   "半径": 1,
+   "文明": "CIVILIZATION_GERMANY",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    }
+   },
+   "期望产出": {}
+  },
+  {
+   "id": "case-52",
+   "半径": 2,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_THEATER"
+    }
+   },
+   "期望产出": {
+    "科技": "3.5",
+    "文化": "1",
+    "生产力": "1",
+    "信仰": "5"
+   }
+  },
+  {
+   "id": "case-53",
+   "半径": 3,
+   "文明": "CIVILIZATION_GREECE",
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,3": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "3,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    }
+   },
+   "期望产出": {
+    "科技": "5.5",
+    "文化": "4",
+    "生产力": "0.5",
+    "信仰": "7"
+   }
+  },
+  {
+   "id": "case-54",
+   "半径": 1,
+   "文明": "CIVILIZATION_VIETNAM",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    }
+   },
+   "期望产出": {
+    "科技": "1.5",
+    "金币": "1"
+   }
+  },
+  {
+   "id": "case-55",
+   "半径": 2,
+   "文明": "CIVILIZATION_KOREA",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_HOLY_SITE"
+    }
+   },
+   "期望产出": {
+    "金币": "0.5",
+    "生产力": "1",
+    "信仰": "4.5"
+   }
+  },
+  {
+   "id": "case-56",
+   "半径": 3,
+   "文明": null,
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "0,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "2,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "3,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    }
+   },
+   "期望产出": {
+    "科技": "2",
+    "文化": "0.5",
+    "金币": "1.5",
+    "生产力": "2",
+    "信仰": "4.5"
+   }
+  },
+  {
+   "id": "case-57",
+   "半径": 1,
+   "文明": "CIVILIZATION_GREECE",
+   "tiles": {
+    "-1,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    }
+   },
+   "期望产出": {
+    "金币": "0.5"
+   }
+  },
+  {
+   "id": "case-58",
+   "半径": 2,
+   "文明": "CIVILIZATION_KOREA",
+   "tiles": {
+    "-2,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_PLAINS"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_THEATER"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    }
+   },
+   "期望产出": {
+    "文化": "0.5",
+    "金币": "0.5",
+    "生产力": "1",
+    "信仰": "0.5"
+   }
+  },
+  {
+   "id": "case-59",
+   "半径": 3,
+   "文明": null,
+   "tiles": {
+    "-3,0": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_MARSH"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_COAST",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_THEATER"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "0,2": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN",
+     "地貌": "FEATURE_JUNGLE"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "1,1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "1,2": {
+     "地形": "TERRAIN_PLAINS",
+     "地貌": "FEATURE_FOREST"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_PLAINS",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_INDUSTRIAL_ZONE"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    "2,0": {
+     "地形": "TERRAIN_COAST",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    "2,1": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_FOREST"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_PLAINS_MOUNTAIN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_OCEAN",
+     "地貌": "FEATURE_MARSH"
+    },
+    "3,0": {
+     "地形": "TERRAIN_GRASS",
+     "地貌": "FEATURE_JUNGLE"
+    }
+   },
+   "期望产出": {
+    "科技": "10",
+    "生产力": "3"
+   }
+  }
+ ]
+}

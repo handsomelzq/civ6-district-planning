@@ -1,21 +1,3 @@
-# macOS
+node_modules/
+*.log
 .DS_Store
-
-# Python
-__pycache__/
-*.py[cod]
-
-# 从游戏本体提取的原始数据 —— 不入库
-# 理由：那是 Firaxis 的游戏文件，提交等于再分发。
-# 入库的是「解析脚本」+「解析出的配置表」，前者是我们写的，
-# 后者是事实性数值的转换结果，且由脚本可完全重建（见 设计/立项书.md §五）。
-原始数据/
-*.sqlite
-*.modinfo
-
-# 交付产物（构建输出与录屏）
-交付/
-
-# 技术栈未定，选定后在此追加对应忽略项：
-#   Unity  → Library/ Temp/ Obj/ Build/ Logs/ UserSettings/ *.csproj *.sln
-#   Node   → node_modules/ dist/

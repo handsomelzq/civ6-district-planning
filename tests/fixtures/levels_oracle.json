@@ -1,0 +1,1315 @@
+{
+ "说明": "由 Tools/design_levels.py 导出，勿手改。每关一条：最优布局 + 它的产出，用于 TS 产品求值器与设计期原型对账。",
+ "生成脚本": "Tools/design_levels.py",
+ "cases": [
+  {
+   "关卡id": "L-01",
+   "名称": "读山",
+   "文明": "CIVILIZATION_GERMANY",
+   "预算": 2,
+   "目标产出": [
+    "科技"
+   ],
+   "最优布局": [
+    {
+     "坐标": "-1,0",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "-1,1",
+     "区域": "DISTRICT_CAMPUS"
+    }
+   ],
+   "最优产出": {
+    "科技": "5"
+   },
+   "三星阈值": "5",
+   "地块": {
+    "-3,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,0": {
+     "地形": "TERRAIN_OCEAN"
+    }
+   }
+  },
+  {
+   "关卡id": "L-02",
+   "名称": "抱团",
+   "文明": "CIVILIZATION_GERMANY",
+   "预算": 3,
+   "目标产出": [
+    "科技"
+   ],
+   "最优布局": [
+    {
+     "坐标": "-2,1",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "-1,0",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "-1,1",
+     "区域": "DISTRICT_CAMPUS"
+    }
+   ],
+   "最优产出": {
+    "科技": "4"
+   },
+   "三星阈值": "4",
+   "地块": {
+    "-3,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,0": {
+     "地形": "TERRAIN_OCEAN"
+    }
+   }
+  },
+  {
+   "关卡id": "L-03",
+   "名称": "枢纽",
+   "文明": "CIVILIZATION_GERMANY",
+   "预算": 3,
+   "目标产出": [
+    "科技"
+   ],
+   "最优布局": [
+    {
+     "坐标": "-2,1",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    {
+     "坐标": "-1,0",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "-1,1",
+     "区域": "DISTRICT_CAMPUS"
+    }
+   ],
+   "最优产出": {
+    "科技": "5"
+   },
+   "三星阈值": "5",
+   "地块": {
+    "-3,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,0": {
+     "地形": "TERRAIN_OCEAN"
+    }
+   }
+  },
+  {
+   "关卡id": "L-05",
+   "名称": "组团",
+   "文明": "CIVILIZATION_GERMANY",
+   "预算": 4,
+   "目标产出": [
+    "科技"
+   ],
+   "最优布局": [
+    {
+     "坐标": "-1,1",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "0,1",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "1,-1",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "1,0",
+     "区域": "DISTRICT_CAMPUS"
+    }
+   ],
+   "最优产出": {
+    "科技": "5"
+   },
+   "三星阈值": "5",
+   "地块": {
+    "-3,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "3,0": {
+     "地形": "TERRAIN_GRASS"
+    }
+   }
+  },
+  {
+   "关卡id": "L-06",
+   "名称": "先修路",
+   "文明": "CIVILIZATION_GERMANY",
+   "预算": 4,
+   "目标产出": [
+    "科技"
+   ],
+   "最优布局": [
+    {
+     "坐标": "2,0",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "2,1",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    {
+     "坐标": "3,-1",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    {
+     "坐标": "3,0",
+     "区域": "DISTRICT_CAMPUS"
+    }
+   ],
+   "最优产出": {
+    "科技": "7"
+   },
+   "三星阈值": "7",
+   "地块": {
+    "-3,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "3,0": {
+     "地形": "TERRAIN_GRASS"
+    }
+   }
+  },
+  {
+   "关卡id": "L-08",
+   "名称": "成团",
+   "文明": "CIVILIZATION_GERMANY",
+   "预算": 5,
+   "目标产出": [
+    "科技"
+   ],
+   "最优布局": [
+    {
+     "坐标": "2,-1",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "2,0",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "2,1",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    {
+     "坐标": "3,-1",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    {
+     "坐标": "3,0",
+     "区域": "DISTRICT_CAMPUS"
+    }
+   ],
+   "最优产出": {
+    "科技": "9.5"
+   },
+   "三星阈值": "9.5",
+   "地块": {
+    "-3,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "3,0": {
+     "地形": "TERRAIN_GRASS"
+    }
+   }
+  },
+  {
+   "关卡id": "L-09",
+   "名称": "各自为政",
+   "文明": "CIVILIZATION_KOREA",
+   "预算": 5,
+   "目标产出": [
+    "科技"
+   ],
+   "最优布局": [
+    {
+     "坐标": "-3,0",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "-3,3",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "0,-3",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "0,2",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "2,-1",
+     "区域": "DISTRICT_CAMPUS"
+    }
+   ],
+   "最优产出": {
+    "科技": "20"
+   },
+   "三星阈值": "20",
+   "地块": {
+    "-3,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "3,0": {
+     "地形": "TERRAIN_GRASS"
+    }
+   }
+  },
+  {
+   "关卡id": "L-07",
+   "名称": "两头顾",
+   "文明": "CIVILIZATION_GERMANY",
+   "预算": 5,
+   "目标产出": [
+    "信仰",
+    "科技"
+   ],
+   "最优布局": [
+    {
+     "坐标": "-3,0",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "-1,3",
+     "区域": "DISTRICT_GOVERNMENT"
+    },
+    {
+     "坐标": "0,2",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "0,3",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    {
+     "坐标": "1,2",
+     "区域": "DISTRICT_GOVERNMENT"
+    }
+   ],
+   "最优产出": {
+    "信仰": "3.5",
+    "科技": "4.5"
+   },
+   "三星阈值": "8",
+   "地块": {
+    "-3,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,0": {
+     "地形": "TERRAIN_GRASS"
+    }
+   }
+  },
+  {
+   "关卡id": "L-10",
+   "名称": "反着来",
+   "文明": "CIVILIZATION_KOREA",
+   "预算": 5,
+   "目标产出": [
+    "信仰",
+    "科技"
+   ],
+   "最优布局": [
+    {
+     "坐标": "-3,0",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "-3,3",
+     "区域": "DISTRICT_CAMPUS"
+    },
+    {
+     "坐标": "-1,3",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    {
+     "坐标": "0,2",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    {
+     "坐标": "0,3",
+     "区域": "DISTRICT_GOVERNMENT"
+    }
+   ],
+   "最优产出": {
+    "信仰": "4",
+    "科技": "8"
+   },
+   "三星阈值": "12",
+   "地块": {
+    "-3,0": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-3,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-3,3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "-2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-2,2": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "-2,3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "-1,3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,-3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,0": {
+     "地形": "TERRAIN_GRASS",
+     "区域": "DISTRICT_CITY_CENTER"
+    },
+    "0,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "0,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "0,3": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "1,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "1,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,0": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "1,2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,-3": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,-2": {
+     "地形": "TERRAIN_GRASS"
+    },
+    "2,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "2,0": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "2,1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-3": {
+     "地形": "TERRAIN_GRASS_MOUNTAIN"
+    },
+    "3,-2": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,-1": {
+     "地形": "TERRAIN_OCEAN"
+    },
+    "3,0": {
+     "地形": "TERRAIN_GRASS"
+    }
+   }
+  }
+ ]
+}

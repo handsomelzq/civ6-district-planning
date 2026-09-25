@@ -9,7 +9,7 @@
 
 只用标准库。地图规模：半径 3 的六边形 37 格（关卡设计.md §4）。
 """
-import csv, io, itertools, pathlib, sys
+import csv, io, itertools, json, pathlib, sys
 from fractions import Fraction
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from prototype_eval import (Rules, Board, eval_board, greedy, effective, fmt,
@@ -489,6 +489,7 @@ def emit():
         print("\n⚠️ 以下关卡不合格，未写入配置表：")
         for x in skipped:
             print("   " + x)
+    emit_level_oracle()
     for name, head, rows in (("levels.csv", lv_h, lv), ("level_tiles.csv", ti_h, ti)):
         with io.open(str(OUT / name), "w", encoding="utf-8", newline="") as fh:
             w = csv.writer(fh, lineterminator="\n")
@@ -496,6 +497,45 @@ def emit():
             for r in rows:
                 w.writerow(r)
         print("\n写出 %s：%d 行" % (name, len(rows)))
+
+
+def emit_level_oracle():
+    """把每关的**最优布局**写成 fixture，供 TS 产品求值器对账。
+
+    为什么要这一步：`levels.csv` 里只有三星阈值这个**数**，没有达到它的布局。
+    于是那个数只有本脚本能验证 —— 一旦产品求值器算出别的结果，没人会发现。
+    把布局也导出来，TS 侧就能独立重算一遍：**关卡表的阈值因此被两份实现共同背书。**
+    """
+    out = {"说明": "由 Tools/design_levels.py 导出，勿手改。每关一条：最优布局 + "
+                   "它的产出，用于 TS 产品求值器与设计期原型对账。",
+           "生成脚本": "Tools/design_levels.py",
+           "cases": []}
+    for L in LEVELS:
+        if L["kind"] == "普通" and not qualifies(L):
+            continue                      # 不合格的关卡不入表，也不进 fixture
+        plan = L["fr"][L["budget"]][1]
+        yields = sorted(L["targets"]) if "targets" in L else [YT]
+        b = L["board"]
+        for p, d0 in plan:
+            b = b.copy_with(p, effective(R, d0, L["civ"]))
+        tot = eval_board(R, b, L["civ"])[0]
+        out["cases"].append({
+            "关卡id": L["lid"], "名称": L["name"], "文明": L["civ"],
+            "预算": L["budget"], "目标产出": yields,
+            "最优布局": [{"坐标": "%d,%d" % p, "区域": d0} for p, d0 in plan],
+            "最优产出": dict((y, fmt(tot.get(y, Fraction(0)))) for y in yields),
+            "三星阈值": fmt(L["star3"]),
+            "地块": dict(("%d,%d" % q,
+                          dict((k, v) for k, v in t.items() if v is not None))
+                         for q, t in sorted(L["board"].tiles.items())),
+        })
+    path = OUT.parent / "tests" / "fixtures" / "levels_oracle.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with io.open(str(path), "w", encoding="utf-8", newline="\n") as fh:
+        json.dump(out, fh, ensure_ascii=False, indent=1, sort_keys=False)
+        fh.write("\n")
+    print("\n写出 tests/fixtures/levels_oracle.json：%d 关的最优布局"
+          % len(out["cases"]))
 
 
 if __name__ == "__main__":
