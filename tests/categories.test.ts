@@ -8,9 +8,9 @@
  */
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { evaluate, total } from "../src/evaluate.ts";
+import { evaluate, total, countSameTypeNeighbors } from "../src/evaluate.ts";
 import { fmt } from "../src/rational.ts";
-import { R, board } from "./helpers.ts";
+import { R, board, at } from "./helpers.ts";
 
 const y = (spec: Record<string, object>, yieldType: string, opts = {}) =>
   fmt(total(evaluate(R, board(spec as never, opts)), yieldType));
@@ -51,8 +51,9 @@ describe("布尔型类别：与邻格数量无关，只记一次", () => {
   });
 
   test("自身：书院固定 +4 科技，与邻格无关（SEOWON@BaseDistrict_Science，4/1）", () => {
-    // ⚠️ 这条的语义仍未经游戏内实测确认（SDD §10 D10），实现收在
-    //    evaluate.ts 的 SELF_IS_FIXED_VALUE 一处。它决定 L-09/L-10 的全部读数。
+    // ⚠️ 这条按**读法 A**（无条件常数）实现，语义仍未经游戏内实测确认（SDD §10 D10）。
+    //    开关收在 evaluate.ts 的 SELF_IS_FIXED_VALUE 一处，决定 L-09/L-10 的全部读数。
+    //    读法 B 的计数器见下一条测试 —— 它必须被覆盖，否则翻盘那天才发现写错了。
     assert.equal(y({ "0,0": { 区域: "DISTRICT_SEOWON" } }, "科技"), "4");
     // 相邻一个区域：4 − 1 = 3（NegativeDistrict_Science 是主要档 −1）
     assert.equal(y({
@@ -63,6 +64,35 @@ describe("布尔型类别：与邻格数量无关，只记一次", () => {
     assert.equal(y({
       "0,0": { 区域: "DISTRICT_SEOWON" }, "1,0": { 区域: "DISTRICT_GOVERNMENT" },
     }, "科技"), "4");
+  });
+
+  test("自身 · 读法 B 的计数器：数邻格里的同类型区域（SDD §10 D10 的备选实现）", () => {
+    // 这条不测当前行为，测的是**翻盘后**要用的那段代码。理由见 evaluate.ts 的注释：
+    // 没被覆盖的备选分支等于没有备选。
+    const c = (spec: Parameters<typeof board>[0], civ?: string) =>
+      countSameTypeNeighbors(R, board(spec, { 文明: civ }), at(0, 0));
+
+    // 孤立：0。这正是两种读法唯一有判别力的局面（A 给 4，B 给 0）。
+    assert.equal(c({ "0,0": { 区域: "DISTRICT_SEOWON" } }), 0);
+    // 挨 1 座同类：1
+    assert.equal(c({
+      "0,0": { 区域: "DISTRICT_SEOWON" }, "1,0": { 区域: "DISTRICT_SEOWON" },
+    }), 1);
+    // 挨 2 座同类：2 —— 按座数叠加，不是布尔
+    assert.equal(c({
+      "0,0": { 区域: "DISTRICT_SEOWON" }, "1,0": { 区域: "DISTRICT_SEOWON" },
+      "0,1": { 区域: "DISTRICT_SEOWON" },
+    }), 2);
+    // 挨的是别的区域：不算
+    assert.equal(c({
+      "0,0": { 区域: "DISTRICT_SEOWON" }, "1,0": { 区域: "DISTRICT_HOLY_SITE" },
+    }), 0);
+    // 本格没有区域：0（防御性分支）
+    assert.equal(c({ "0,0": {}, "1,0": { 区域: "DISTRICT_SEOWON" } }), 0);
+    // 比较走**替换后的有效 id**：韩国的学院解析成书院，两者应当算同类（E10/E15b）
+    assert.equal(c({
+      "0,0": { 区域: "DISTRICT_CAMPUS" }, "1,0": { 区域: "DISTRICT_CAMPUS" },
+    }, "CIVILIZATION_KOREA"), 1);
   });
 });
 

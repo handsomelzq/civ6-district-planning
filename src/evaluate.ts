@@ -71,15 +71,42 @@ const tierOf = (r: AdjacencyRule): Tier =>
 
 // ── 目标匹配（SDD §3.4）──────────────────────────────────────────────
 /**
- * ⚠️ `自身` 类别的语义仍未核实（SDD §10 D10）。
+ * ⚠️ `自身` 类别的语义仍未实测核实（SDD §10 D10）。
  *
- * 全库唯一一条是韩国书院的 `BaseDistrict_Science`（+4 科技，`Self="true"`）。
- * 两种读法：「固定 +4」还是「与自己同类相邻则 +4」。后者在文明 6 里永远不成立
- * （一个区域不可能与自己相邻），会让书院恒为 0 —— 与书院实际有 +4 的表现矛盾。
- * **所以这里按「固定值」实现，并把它收在这一个常量里：** 若实测推翻，只改这里。
- * 受影响的已算数值：L-09 / L-10 的全部读数。
+ * 全库唯一一条是韩国书院的 `BaseDistrict_Science`（+4 科技，`Self="true"`）。两种读法：
+ *   A（本常量为 true）：`Self` 是「给自己加成」的标记，+4 是无条件常数项。
+ *   B（本常量为 false）：字面的「与同类相邻」，即挨着**另一座书院**才 +4，可叠加计数。
+ *
+ * 曾用「一个区域不可能与自己相邻」否掉 B —— 那个论证是无效的，已撤回：B 说的是
+ * 相邻另一座同类型区域（两座书院并排），几何上完全可能。
+ *
+ * 按 A 实现的依据是提示文本：103 条相邻规则里 102 条点明来源（`相邻X`/`来自X`/
+ * `如靠近X`），唯独这一条只说「+{1_Num}点 科技值。」。这是先验而非结论 —— 拆解案
+ * §4.3 记过一次文案与算法脱节的先例，所以仍须游戏内实测。
+ *
+ * 两种读法只在**孤立书院**上分叉（A 给 +4，B 给 0）；挨着 1 座书院时两者都给 +3，
+ * 所以实测必须用孤立书院这个局面。受影响的已算数值：L-09 / L-10 的全部读数。
  */
 export const SELF_IS_FIXED_VALUE = true;
+
+/** 读法 B 的计数：邻格里有几座**同类型**区域（按替换后的有效 id 比较，见 E10/E15b）。
+ *
+ *  即便当前按读法 A 实现，这个函数也保持导出且被单测覆盖 —— 否则它就是一段没人
+ *  验证过的死代码，等实测真翻盘时才发现写错了。`SELF_IS_FIXED_VALUE` 于是是一个
+ *  **真正的二选一开关**，而不是「开」与「关」。
+ */
+export function countSameTypeNeighbors(
+  rules: Rules, board: BoardState, p: Axial,
+): number {
+  const self = tileAt(board, p)?.区域;
+  if (self === undefined) return 0;
+  const selfId = rules.effective(self, board.文明);
+  let same = 0;
+  for (const nb of neighborTiles(board, p)) {
+    if (nb.区域 !== undefined && rules.effective(nb.区域, board.文明) === selfId) same++;
+  }
+  return same;
+}
 
 /** 该邻格是否命中这条规则的目标。`自身` 与 `河流` 不走这里（与邻格无关）。 */
 function matchesNeighbor(
@@ -128,7 +155,8 @@ function matchesNeighbor(
 function countFor(
   rules: Rules, rule: AdjacencyRule, board: BoardState, p: Axial,
 ): number {
-  if (rule.目标类别 === "自身") return SELF_IS_FIXED_VALUE ? 1 : 0;
+  if (rule.目标类别 === "自身")
+    return SELF_IS_FIXED_VALUE ? 1 : countSameTypeNeighbors(rules, board, p);
   if (rule.目标类别 === "河流") return tileAt(board, p)?.河流边 ? 1 : 0;
   const civ = board.文明;
   let n = 0;

@@ -10,3 +10,5 @@ R-0008,DISTRICT_CAMPUS,资源类别,瞎写的类别,生产力,1,1,无,无,无,�
 R-0009,DISTRICT_CAMPUS,瞎写的类别,无,瞎写的产出,1,2,无,无,无,无,i,两个枚举都错,一手,否
 R-0010,DISTRICT_CAMPUS,地形,TERRAIN_GRASS,科技,1,1,TECH_TYPO,CIVIC_TYPO,无,无,j,科技市政引用错,一手,否
 R-0011,DISTRICT_CAMPUS,地形,TERRAIN_GRASS,科技,-3,1,无,无,无,无,k,负值：应为警告而非错误,一手,否
+R-0012,DISTRICT_CAMPUS,地形,TERRAIN_GRASS,科技,1,1,无,无,无,无,l,+{1_num} 科技值。,一手,否
+R-0013,DISTRICT_CAMPUS,自身,无,科技,4,1,无,无,无,无,m,+{1_num} 科技值来自相邻学院。,一手,否
