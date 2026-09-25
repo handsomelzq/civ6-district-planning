@@ -109,8 +109,10 @@ YT = "科技"
 LEVELS = []
 
 
-def level(lid, name, board, palette, budget, tutorial, motif, note, civ="CIVILIZATION_GERMANY",
+def level(lid, name, board, palette, budget, kind, motif, note, civ="CIVILIZATION_GERMANY",
           leader="LEADER_BARBAROSSA"):
+    """kind ∈ {普通, 教学, 对照}，语义见 设计/关卡设计.md §1.1 / §1.2。"""
+    assert kind in ("普通", "教学", "对照"), kind
     g_board, steps = greedy(R, board, palette, budget, YT, civ)
     G = eval_board(R, g_board, civ)[0].get(YT, Fraction(0))
     fr = frontier(board, palette, budget, civ)
@@ -120,7 +122,7 @@ def level(lid, name, board, palette, budget, tutorial, motif, note, civ="CIVILIZ
     #   2026-09-25 改：原先取 G 与 V 之间偏最优的一侧，但评级改为按产出值之后
     #   逻辑反转了 —— 通关门槛应当贴近贪心（低门槛人人能过），挑战交给星级阈值。
     #   把 T 压到最低，也把 V−T 这段空间全部留给三档星级。
-    T = (G + Fraction(1, 2)) if V > G else V            # V==G 时是教学关
+    T = (G + Fraction(1, 2)) if V > G else V            # V==G 时是教学关/对照关
     # 星级阈值＝**产出值**（2026-09-25 改；原先按剩余预算，见 关卡设计.md §8）
     #   三星 = 设计期穷举出的最优值 V（运行时只比数字，不需要求解器）
     #   二星 = T 与 V 的中点，对齐到 0.5，且必须严格大于 T
@@ -132,11 +134,11 @@ def level(lid, name, board, palette, budget, tutorial, motif, note, civ="CIVILIZ
     tiers = 3 if star2 < star3 else 2
     LEVELS.append(dict(lid=lid, name=name, board=board, budget=budget, T=T, G=G, V=V,
                        fr=fr, need=need, star3=star3, star2=star2, tiers=tiers,
-                       tutorial=tutorial,
+                       kind=kind, palette=palette,
                        motif=motif, note=note, civ=civ, leader=leader, steps=steps))
     print("\n" + "=" * 70)
-    print("%s 「%s」　预算 %d　母题 %s%s" % (lid, name, budget, motif,
-                                        "　（教学关）" if tutorial else ""))
+    print("%s 「%s」　预算 %d　母题 %s　类别 %s　文明 %s"
+          % (lid, name, budget, motif, kind, civ.replace("CIVILIZATION_", "")))
     print(render(board))
     print("    图例  ◎城市中心  ▲山脉  ♣森林  ~海洋  ·平地")
     print("    %s" % note)
@@ -147,10 +149,12 @@ def level(lid, name, board, palette, budget, tutorial, motif, note, civ="CIVILIZ
           % (fmt(T), fmt(star2), fmt(star3),
              "" if tiers == 3 else "　⚠️ V−T<1，只有两档"))
     print("    达标最少 %d 步（约束值 %d）" % (need, budget))
-    if not tutorial:
+    if kind == "普通":
         print("    %s" % ("✅ 贪心失败，关卡成立" if G < T else "❌ 贪心达标，关卡不合格"))
-    else:
+    elif kind == "教学":
         print("    教学关：贪心可达标（关卡设计.md §1.1 的例外）")
+    else:
+        print("    对照关：判据是交叉代入劣化，不要求贪心失败（关卡设计.md §1.2）")
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -161,17 +165,17 @@ OUTER = [p for p in ring3() if max(abs(p[0]), abs(p[1]), abs(p[0] + p[1])) == 3]
 # ── L-01 教学 · 主要档相邻（山脉每座 +1）──────────────────────────
 level("L-01", "读山", make((0, 0), mountains=[(2, 0), (2, -1), (-2, 0), (-2, 1)],
                            water=OUTER),
-      [CAMPUS], 2, True, "无",
+      [CAMPUS], 2, "教学", "无",
       "两侧各有一对山脉。目标：学会「每座山 +1」是主要档，挨得越多越好。")
 
 # ── L-02 教学 · 标准档相邻（区域之间每 2 个 +1）────────────────────
 level("L-02", "抱团", make((0, 0), water=OUTER),
-      [CAMPUS], 3, True, "无",
+      [CAMPUS], 3, "教学", "无",
       "全图无山无林。唯一的科技来源是区域互给的标准档加成——放两个比放一个的两倍更多。")
 
 # ── L-03 教学 · 政府广场（自身零产出，给每个邻居 +1）───────────────
 level("L-03", "枢纽", make((0, 0), water=OUTER),
-      [CAMPUS, GOV], 3, True, "无",
+      [CAMPUS, GOV], 3, "教学", "无",
       "政府广场自己不产科技，但给每个相邻区域 +1。学会「有的区域价值在别人身上」。")
 
 # ── L-04 母题 A · 争格 ── **故意保留的反向回归用例** ────────────────
@@ -183,7 +187,7 @@ level("L-04", "一格双优",
       make((0, 0),
            mountains=[(2, 0), (2, -1), (3, -2), (3, 0), (-3, 2), (-3, 0)],
            land=[(1, 0), (3, -1), (-3, 1)]),
-      [CAMPUS], 2, False, "A",
+      [CAMPUS], 2, "普通", "A",
       "(1,0) 挨 2 山又挨城市中心；两个诱饵各挨 2 山但孤立。贪心去吃两个诱饵，最优必须占住 (1,0)。")
 
 # ── L-05 母题 B · 集群中心（预算 4；低于 4 数学上不成立）────────────
@@ -193,7 +197,7 @@ level("L-05", "组团",
            mountains=[(3, -1), (0, 3), (-3, 1), (0, -3)],
            land=[(1, 0), (1, -1), (0, 1), (-1, 1),          # 协同块
                  (3, 0), (1, 2), (-3, 2), (1, -3)]),        # 诱饵（各挨 1 山）
-      [CAMPUS], 4, False, "B",
+      [CAMPUS], 4, "普通", "B",
       "4 个隔海孤格各挨 1 山（+1）；中心周围 4 格互相相邻。诱饵数=预算，贪心会全花在诱饵上。")
 
 # ── L-06 母题 C · 投资型放置 ──────────────────────────────────────
@@ -211,8 +215,89 @@ COMBO_MTN = [(-2, 0), (-2, 3), (0, -2), (0, 3)]
 
 level("L-06", "先修路",
       make((0, 0), mountains=COMBO_MTN, land=COMBO_CLUSTER + COMBO_BAITS),
-      [CAMPUS, GOV], 4, False, "C",
+      [CAMPUS, GOV], 4, "普通", "C",
       "协同块远离城市中心与山脉，单独放一个区域进去一分不得。最优＝两座政府广场夹两座学院。")
+
+# ── L-08 / L-09 母题 E · 同一片地形，只换文明 ────────────────────────
+# 这一对是 GDD §6 验证指标「文明有差异」的实测关卡，所以**地形必须逐格相同**
+# （check_config 规则 18 会校验这一点）。
+#
+# 协同块扩到紧凑 5 格（内部 7 对相邻，是 5 格的上限），预算 5，诱饵 5 个。
+# 德国在这一关等价于常规文明：汉萨替换的是工业区、只影响生产力，与科技无关。
+E_CLUSTER = [(2, 0), (3, 0), (3, -1), (2, 1), (2, -1)]
+E_BAITS = [(-3, 0), (-3, 3), (0, -3), (0, 2), (3, -3)]
+E_MTN = [(-2, 0), (-2, 3), (0, -2), (0, 3), (2, -3)]
+
+
+def e_board():
+    return make((0, 0), mountains=E_MTN, land=E_CLUSTER + E_BAITS)
+
+
+level("L-08", "成团",
+      e_board(), [CAMPUS, GOV], 5, "普通", "E",
+      "常规文明版。学院要抱团、要贴山：最优是把 5 个预算全砸进东边那块协同块。")
+
+level("L-09", "各自为政",
+      e_board(), [CAMPUS, GOV], 5, "对照", "E",
+      "与 L-08 同一片地形，换韩国。书院固定 +4 但每相邻一区域 −1，且完全不吃山脉——"
+      "最优解从「抱团」反转为「尽量分开」。",
+      civ="CIVILIZATION_KOREA", leader="LEADER_SEONDEOK")
+
+
+# ══════════════════════════════════════════════════════════════════════
+def terrain_key(board):
+    """盘面的地形指纹（只含地形/地貌，不含区域）。对照关必须同地形。"""
+    return tuple(sorted((p, t["地形"], t["地貌"]) for p, t in board.tiles.items()))
+
+
+def apply_plan(board, plan, civ):
+    b = board
+    for p, d0 in plan:
+        b = b.copy_with(p, effective(R, d0, civ))
+    return eval_board(R, b, civ)[0].get(YT, Fraction(0))
+
+
+def cross_check():
+    """对照关的判据：交叉代入劣化（关卡设计.md §1.2）。
+
+    把 A 文明的最优布局照搬给 B 文明，B 的得分必须显著低于 B 自己的最优；
+    反向亦然。两边都劣化，才说明「最优布局的结构真的随文明改变」，
+    而不只是数值高低不同。
+    """
+    ok = True
+    for L in LEVELS:
+        if L["kind"] != "对照":
+            continue
+        twins = [O for O in LEVELS
+                 if O is not L and terrain_key(O["board"]) == terrain_key(L["board"])]
+        print("\n" + "=" * 70)
+        if not twins:
+            print("❌ %s 是对照关，但没有同地形的对照对象" % L["lid"])
+            ok = False
+            continue
+        for O in twins:
+            if O["civ"] == L["civ"]:
+                print("❌ %s 与 %s 同地形但文明相同，对照不成立" % (L["lid"], O["lid"]))
+                ok = False
+                continue
+            print("【交叉代入】%s（%s） ↔ %s（%s）　同地形，预算 %d"
+                  % (O["lid"], O["civ"].replace("CIVILIZATION_", ""),
+                     L["lid"], L["civ"].replace("CIVILIZATION_", ""), L["budget"]))
+            for X, Y in ((O, L), (L, O)):
+                plan = X["fr"][X["budget"]][1]
+                cross = apply_plan(Y["board"], plan, Y["civ"])
+                drop = (Y["V"] - cross) / Y["V"] if Y["V"] else Fraction(0)
+                flag = "✅" if cross < Y["V"] else "❌"
+                print("    %s 把 %s 的最优布局给 %s：%s（%s 自己的最优 %s，劣化 %.0f%%）"
+                      % (flag, X["lid"], Y["civ"].replace("CIVILIZATION_", ""),
+                         fmt(cross), Y["lid"], fmt(Y["V"]), 100.0 * float(drop)))
+                if cross >= Y["V"]:
+                    ok = False
+            sa = {p for p, _ in O["fr"][O["budget"]][1]}
+            sb = {p for p, _ in L["fr"][L["budget"]][1]}
+            print("    两最优布局的格子交集：%s（越小越说明结构不同）"
+                  % (sorted(sa & sb) or "空集"))
+    return ok
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -220,16 +305,17 @@ level("L-06", "先修路",
 def emit():
     lv_h = ["关卡id", "名称", "文明id", "领袖id", "已解锁科技", "已解锁市政",
             "城市中心坐标", "人口", "目标类型", "目标产出类型", "目标值",
-            "约束类型", "约束值", "三星阈值", "二星阈值", "是否教学关", "母题",
+            "约束类型", "约束值", "三星阈值", "二星阈值", "关卡类别", "母题",
             "贪心基线结果"]
     ti_h = ["关卡id", "坐标", "地形", "地貌", "资源", "自然奇观", "河流边",
             "初始区域", "初始建筑"]
     lv, ti = [], []
     skipped = []
     for L in LEVELS:
-        # 不合格的关卡不入表。check_config 规则 14 也会拦（非教学关的贪心基线
+        # 不合格的关卡不入表。check_config 规则 14 也会拦（普通关的贪心基线
         # 必须严格小于目标值），这里提前挡掉，免得配置表进入已知非法状态。
-        if not L["tutorial"] and L["G"] >= L["T"]:
+        # 教学关与对照关豁免，各有自己的判据（关卡设计.md §1.1 / §1.2）。
+        if L["kind"] == "普通" and L["G"] >= L["T"]:
             skipped.append("%s（%s，母题 %s）：贪心 %s ≥ 目标 %s"
                            % (L["lid"], L["name"], L["motif"], fmt(L["G"]), fmt(L["T"])))
             continue
@@ -237,7 +323,7 @@ def emit():
         lv.append([L["lid"], L["name"], L["civ"], L["leader"],
                    "TECH_WRITING", "无", "%d,%d" % center, 4,
                    "单一产出", YT, fmt(L["T"]), "区域数", L["budget"],
-                   fmt(L["star3"]), fmt(L["star2"]), "是" if L["tutorial"] else "否",
+                   fmt(L["star3"]), fmt(L["star2"]), L["kind"],
                    L["motif"], fmt(L["G"])])
         for p in sorted(L["board"].tiles):
             t = L["board"].tiles[p]
@@ -257,4 +343,8 @@ def emit():
 
 
 if __name__ == "__main__":
+    ok = cross_check()
     emit()
+    if not ok:
+        print("\n❌ 对照关的交叉代入判据未通过（关卡设计.md §1.2）")
+        sys.exit(1)

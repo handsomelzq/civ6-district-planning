@@ -40,6 +40,9 @@ ENUMS = {
                  "政策卡", "宗教", "奇观", "文明领袖", "难度"},
     "数据来源": {"一手", "二手"},
     "母题": {"A", "B", "C", "D", "E", "F", "无"},
+    # 关卡类别（关卡设计.md §1.1/§1.2）：普通关要求贪心失败；教学关与对照关各有
+    # 自己的判据 —— 对照关的判据是「交叉代入劣化」，由 §1.2 定义。
+    "关卡类别": {"普通", "教学", "对照"},
 }
 BOOL = {"是", "否"}
 # 依赖未决项、不得进入交付关卡的母题（关卡设计.md §3）
@@ -92,7 +95,7 @@ SCHEMA = {
         "关卡id", "名称", "文明id", "领袖id", "已解锁科技", "已解锁市政",
         "城市中心坐标", "人口", "目标类型", "目标产出类型", "目标值",
         "约束类型", "约束值", "三星阈值", "二星阈值",
-        "是否教学关", "母题", "贪心基线结果"]),
+        "关卡类别", "母题", "贪心基线结果"]),
     "level_tiles.csv": dict(id=None, prov=False, cols=[
         "关卡id", "坐标", "地形", "地貌", "资源", "自然奇观",
         "河流边", "初始区域", "初始建筑"]),
@@ -454,7 +457,7 @@ def main(argv):
         check_fk("levels", i, "已解锁市政", r.get("已解锁市政", ""),
                  pool("civics.csv"), "市政")
         check_enum("levels", i, "母题", r.get("母题", "无"), "母题")
-        check_bool("levels", i, "是否教学关", r.get("是否教学关", ""))
+        check_enum("levels", i, "关卡类别", r.get("关卡类别", ""), "关卡类别")
         if not re.fullmatch(r"-?\d+,-?\d+", r.get("城市中心坐标", "").strip()):
             err(f"levels {i} 的「城市中心坐标」格式非法（应为 q,r）："
                 f"{r.get('城市中心坐标','')}")
@@ -463,14 +466,17 @@ def main(argv):
                 err(f"levels {i} 的「{c}」非数值：{r.get(c,'')}")
         if is_num(r.get("约束值", "")) and float(r["约束值"]) <= 0:
             err(f"levels {i} 的「约束值」不为正（见 SDD-挑战模式 边界 G3）")
-        # 规则 9 / 14：贪心基线
-        tutor = r.get("是否教学关", "").strip() == "是"
+        # 规则 9 / 14：贪心基线。
+        #   只有「普通」关要求贪心失败。教学关（§1.1）与对照关（§1.2）各有自己的
+        #   判据：教学关本就要让贪心能过，对照关的判据是交叉代入劣化，而韩国书院
+        #   这类全负交互的规则集在结构上不可能让贪心失败。
+        exempt = r.get("关卡类别", "").strip() in ("教学", "对照")
         base = r.get("贪心基线结果", "").strip()
         if base in ("", "无"):
             (err if delivery else warn)(
                 f"levels {i} 的「贪心基线结果」为空"
                 f"（见 SDD-挑战模式 边界 G10，交付模式下为错误）")
-        elif is_num(base) and is_num(r.get("目标值", "")) and not tutor:
+        elif is_num(base) and is_num(r.get("目标值", "")) and not exempt:
             if float(base) >= float(r["目标值"]):
                 err(f"levels {i} 贪心基线 {base} ≥ 目标值 {r['目标值']}，"
                     f"关卡不合格（关卡设计.md §5.2）")
@@ -518,6 +524,32 @@ def main(argv):
     for lid in lv_ids:
         if lid not in seen_xy:
             warn(f"levels {lid} 在 level_tiles.csv 中没有任何地块")
+
+    # 规则 18：对照关必须与另一关**同地形**。
+    #   对照关的存在意义是「同一片地形，只换文明，最优布局结构性改变」
+    #   （关卡设计.md §1.2、GDD §6 验证指标「文明有差异」）。地形只要差一格，
+    #   这个结论就不成立 —— 差异可能来自地形而不是文明。所以这条必须机器校验。
+    if "levels.csv" in T and "level_tiles.csv" in T:
+        terra = defaultdict(dict)
+        for r in rows_of("level_tiles.csv"):
+            terra[r.get("关卡id", "").strip()][r.get("坐标", "").strip()] = (
+                r.get("地形", ""), r.get("地貌", ""), r.get("资源", ""),
+                r.get("自然奇观", ""), r.get("河流边", ""))
+        for r in rows_of("levels.csv"):
+            if r.get("关卡类别", "").strip() != "对照":
+                continue
+            i = r.get("关卡id", "?")
+            mine = terra.get(i)
+            twins = [o for o in terra if o != i and terra[o] == mine]
+            if not mine:
+                continue          # 已由上面的「没有任何地块」警告覆盖
+            if not twins:
+                err(f"levels {i} 是对照关，但没有任何另一关与它同地形"
+                    f"（对照关必须成对，见 关卡设计.md §1.2）")
+            elif all(r2.get("文明id") == r.get("文明id")
+                     for r2 in rows_of("levels.csv") if r2.get("关卡id") in twins):
+                err(f"levels {i} 的同地形关卡与它文明相同，对照不成立"
+                    f"（对照关要换的是文明，不是地形，见 关卡设计.md §1.2）")
 
     # 规则 13：来源检查
     pending = defaultdict(int)
