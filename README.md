@@ -3,6 +3,9 @@
 > 一个**高保真还原《文明 VI》产出规则**的区域规划工具与残局关卡集。
 > 面向 **系统策划 + 数值策划** 岗位的作品集项目。
 > 数据版本：文明 VI 1.4.6（buildid 15296837）完整版，提取日 2026-09-24。
+>
+> **▶ 在线试玩：https://handsomelzq.github.io/civ6-district-planning/**
+> 零依赖、零构建工具链；每次 push 先跑 44 条测试，**测试不过就不发**。
 
 ---
 
@@ -165,3 +168,29 @@ python3 Tools/parse_civ6_xml.py            # 游戏 XML → 配置表 CSV
 | 理由 | 试错本身是核心玩法 | 算清楚才是核心玩法 |
 
 同一个问题两个相反答案、且都能说出理由——这个对照本身是作品集素材，写在 [设计/GDD总纲.md](设计/GDD总纲.md) §4。
+
+---
+
+## 数据出处与版权
+
+配置表里的全部数值与名称，由 **《席德·梅尔的文明 VI》（Sid Meier's Civilization VI）本体数据解析得到**（`Base/Assets/Gameplay/Data/*.xml` 与各 DLC 的对应文件），解析脚本是 [Tools/parse_civ6_xml.py](Tools/parse_civ6_xml.py)，过程完全可复现。
+
+- 本仓库**不含任何游戏美术、音频或可执行资源**，只有从明文 XML 解析出的规则与数值表
+- 用途限于**个人学习与求职作品集**，不用于商业目的，也不作为游戏数据的再分发渠道
+- 文明 VI 的玩法数据以明文 XML 随游戏发布，Firaxis 官方提供 mod 工具与 SDK；本项目的解析方式与社区 mod 实践一致
+- **Sid Meier's Civilization VI © Firaxis Games / 2K Games.** 本项目与 Firaxis、2K 无任何关联
+
+代码（`src/` `web/` `Tools/`）与文档（`设计/` `拆解/`）为本人原创。
+
+---
+
+## 本机怎么跑解析脚本
+
+解析脚本需要装了文明 6 的机器。它按 `$CIV6_ASSETS` → 各平台 Steam / Epic 默认位置的顺序找游戏目录：
+
+```bash
+python3 Tools/parse_civ6_xml.py                      # 自动找
+CIV6_ASSETS=/path/to/Assets python3 Tools/parse_civ6_xml.py   # 手动指定
+```
+
+**可复现性是硬指标**：删掉 `配置表/*.csv` 再跑一次，13 张生成表逐字节一致。

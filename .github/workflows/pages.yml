@@ -1,0 +1,58 @@
+# 先跑全部检查，**通过了才部署**。测试不过就不发 —— 一份以「数值精度」立身的
+# 作品集，线上版本与校准读数对不上是最不能接受的失败方式。
+name: 检查并部署
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  检查:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      # 全部工具只用标准库，没有 npm install / pip install 这一步
+      - name: 求值器测试（44 条）
+        run: npm test
+      - name: 配置表跨表校验
+        run: python3 Tools/check_config.py
+      - name: 校验器自己的回归测试（66 条断言）
+        run: python3 Tools/test_check_config.py
+      - name: 关卡母题验证（先校准，校准不过就停）
+        run: python3 Tools/motif_check.py
+      - name: 文档坏链检查
+        run: python3 Tools/check_links.py
+
+  部署:
+    needs: 检查
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: 构建网页
+        run: node Tools/build_web.mjs
+      - uses: actions/configure-pages@v5
+      # 只把 web/ 当站点根目录，链接因此是 .../civ6-district-planning/ 而不是 /web/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+      - id: deployment
+        uses: actions/deploy-pages@v4

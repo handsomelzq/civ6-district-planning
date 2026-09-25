@@ -84,6 +84,7 @@ criteria 是 RULESET_SCENARIO_*，在这套判定下自然被排除。
 
 import argparse
 import csv
+import os
 import pathlib
 import re
 import sys
@@ -91,8 +92,35 @@ import xml.etree.ElementTree as ET
 from collections import OrderedDict, defaultdict
 
 # ── 常量 ────────────────────────────────────────────────────────────────
-DEFAULT_ASSETS = ("/Users/liuziqiang/Library/Application Support/Steam/steamapps/"
-                  "common/Sid Meier's Civilization VI/Civ6.app/Contents/Assets")
+# 文明 6 的 Assets 目录。按 环境变量 → 各平台默认位置 的顺序找第一个存在的。
+# 不写死本机路径：一来别人跑不了，二来「删掉 CSV 重跑能完全重建」这条可复现性
+# 声明，只有在别人的机器上也成立时才算数。
+CIV6_ASSETS_ENV = "CIV6_ASSETS"
+_CANDIDATES = [
+    # macOS（Steam）
+    "~/Library/Application Support/Steam/steamapps/common/"
+    "Sid Meier's Civilization VI/Civ6.app/Contents/Assets",
+    # Windows（Steam，默认盘）
+    "C:/Program Files (x86)/Steam/steamapps/common/Sid Meier's Civilization VI/Base/../",
+    # Linux（Steam）
+    "~/.steam/steam/steamapps/common/Sid Meier's Civilization VI/Base/../",
+    # Epic（macOS）
+    "~/Library/Application Support/Epic/CivilizationVI/Civ6.app/Contents/Assets",
+]
+
+
+def _default_assets():
+    env = os.environ.get(CIV6_ASSETS_ENV)
+    if env:
+        return env
+    for c in _CANDIDATES:
+        p = pathlib.Path(c).expanduser()
+        if p.is_dir():
+            return str(p)
+    return str(pathlib.Path(_CANDIDATES[0]).expanduser())      # 报错时给个可读路径
+
+
+DEFAULT_ASSETS = _default_assets()
 
 TARGET_RULESET = "RULESET_EXPANSION_2"   # 风云变幻（完整版默认规则集）
 TARGET_GAMECORE = "Expansion2"
@@ -1075,7 +1103,8 @@ def main(argv):
     ap = argparse.ArgumentParser(
         description="把文明 6 的 XML 玩法数据解析成本项目的配置表 CSV")
     ap.add_argument("--assets", default=DEFAULT_ASSETS,
-                    help="文明 6 的 Assets 目录（默认为本机 Steam 安装位置）")
+                    help="文明 6 的 Assets 目录。默认按 $%s → 各平台 Steam/Epic "
+                         "默认位置 依次查找" % CIV6_ASSETS_ENV)
     here = pathlib.Path(__file__).resolve().parent.parent
     ap.add_argument("--out", default=str(here / "配置表"), help="输出目录")
     ap.add_argument("--modes", action="store_true",
@@ -1087,7 +1116,8 @@ def main(argv):
 
     assets = pathlib.Path(args.assets).expanduser()
     if not assets.is_dir():
-        die("Assets 目录不存在：%s" % assets)
+        die("Assets 目录不存在：%s\n"
+            "   用 --assets 指定，或设环境变量 %s" % (assets, CIV6_ASSETS_ENV))
     sql = assets / "Base/Assets/Gameplay/Data/Schema/01_GameplaySchema.sql"
     if not sql.exists():
         die("找不到表结构文件：%s" % sql)
