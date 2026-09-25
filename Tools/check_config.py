@@ -43,6 +43,8 @@ ENUMS = {
     # 关卡类别（关卡设计.md §1.1/§1.2）：普通关要求贪心失败；教学关与对照关各有
     # 自己的判据 —— 对照关的判据是「交叉代入劣化」，由 §1.2 定义。
     "关卡类别": {"普通", "教学", "对照"},
+    # 目标形态（SDD-挑战模式.md §3.2）。多产出的目标值写成 `产出类型:值` 用 | 分隔。
+    "目标类型": {"单一产出达标", "多产出同时达标", "军事叠力达标"},
 }
 BOOL = {"是", "否"}
 # 依赖未决项、不得进入交付关卡的母题（关卡设计.md §3）
@@ -136,6 +138,32 @@ def is_int(v):
 
 def is_num(v):
     return bool(re.fullmatch(r"-?\d+(\.\d+)?", v.strip()))
+
+
+def parse_goal(v):
+    """解析 `目标值` / `贪心基线结果`，两种形态都要支持：
+
+      "4.5"                  → {None: 4.5}            单产出
+      "科技:3.5|信仰:3.5"     → {"科技":3.5, "信仰":3.5} 多产出（SDD-挑战模式 §3.2）
+
+    不可解析返回 None。多产出的两个字段必须用**同一种形态**，否则 §七 规则 14
+    没法逐项比较 —— 这也是为什么 `贪心基线结果` 在多产出关卡里也写成向量。
+    """
+    v = (v or "").strip()
+    if not v:
+        return None
+    if is_num(v):
+        return {None: float(v)}
+    out = {}
+    for part in v.split("|"):
+        if ":" not in part:
+            return None
+        k, _, x = part.partition(":")
+        if not is_num(x) or not k.strip():
+            return None
+        out[k.strip()] = float(x)
+    return out or None
+
 
 def check_kv(tag, rid, col, val):
     """校验 `键:值|键:值` 或 `无` 形式的字段。"""
@@ -456,12 +484,26 @@ def main(argv):
                  pool("techs.csv"), "科技")
         check_fk("levels", i, "已解锁市政", r.get("已解锁市政", ""),
                  pool("civics.csv"), "市政")
-        check_enum("levels", i, "母题", r.get("母题", "无"), "母题")
+        # 母题可以是组合，用 `+` 连接（L-07 = B+C，L-10 = B+C+E），逐段校验
+        motifs = [x.strip() for x in (r.get("母题") or "无").split("+")]
+        for m in motifs:
+            check_enum("levels", i, "母题", m, "母题")
         check_enum("levels", i, "关卡类别", r.get("关卡类别", ""), "关卡类别")
+        check_enum("levels", i, "目标类型", r.get("目标类型", ""), "目标类型")
         if not re.fullmatch(r"-?\d+,-?\d+", r.get("城市中心坐标", "").strip()):
             err(f"levels {i} 的「城市中心坐标」格式非法（应为 q,r）："
                 f"{r.get('城市中心坐标','')}")
-        for c in ("目标值", "约束值", "人口"):
+        goal = parse_goal(r.get("目标值", ""))
+        if goal is None:
+            err(f"levels {i} 的「目标值」格式非法（应为数值，或 `产出类型:值` 用 | 分隔）："
+                f"{r.get('目标值','')}")
+        multi = r.get("目标类型", "").strip() == "多产出同时达标"
+        if goal is not None and multi and None in goal:
+            err(f"levels {i} 是多产出关卡，「目标值」必须写成 `产出类型:值`："
+                f"{r.get('目标值','')}")
+        if goal is not None and not multi and None not in goal:
+            err(f"levels {i} 不是多产出关卡，「目标值」不该是向量：{r.get('目标值','')}")
+        for c in ("约束值", "人口"):
             if not is_num(r.get(c, "")):
                 err(f"levels {i} 的「{c}」非数值：{r.get(c,'')}")
         if is_num(r.get("约束值", "")) and float(r["约束值"]) <= 0:
@@ -470,29 +512,43 @@ def main(argv):
         #   只有「普通」关要求贪心失败。教学关（§1.1）与对照关（§1.2）各有自己的
         #   判据：教学关本就要让贪心能过，对照关的判据是交叉代入劣化，而韩国书院
         #   这类全负交互的规则集在结构上不可能让贪心失败。
+        #
+        #   多产出关卡按**逐项**比较，不比合计：贪心可能把预算全倒进一种产出，
+        #   合计超过目标合计却有一项没达标 —— 比合计会把合格关卡误判成不合格。
+        #   这也是为什么多产出关卡的 `贪心基线结果` 也写成向量。
         exempt = r.get("关卡类别", "").strip() in ("教学", "对照")
-        base = r.get("贪心基线结果", "").strip()
-        if base in ("", "无"):
+        base_raw = r.get("贪心基线结果", "").strip()
+        base = parse_goal(base_raw)
+        if base_raw in ("", "无"):
             (err if delivery else warn)(
                 f"levels {i} 的「贪心基线结果」为空"
                 f"（见 SDD-挑战模式 边界 G10，交付模式下为错误）")
-        elif is_num(base) and is_num(r.get("目标值", "")) and not exempt:
-            if float(base) >= float(r["目标值"]):
-                err(f"levels {i} 贪心基线 {base} ≥ 目标值 {r['目标值']}，"
+        elif base is None:
+            err(f"levels {i} 的「贪心基线结果」格式非法：{base_raw}")
+        elif goal is not None and set(base) != set(goal):
+            err(f"levels {i} 的「贪心基线结果」与「目标值」形态不一致，无法比较："
+                f"{base_raw} vs {r.get('目标值','')}")
+        elif goal is not None and not exempt:
+            if all(base[y] >= goal[y] for y in goal):
+                err(f"levels {i} 贪心基线 {base_raw} 已达成目标 {r['目标值']}，"
                     f"关卡不合格（关卡设计.md §5.2）")
-        # 规则 15：依赖未决项的母题不得进交付
-        if r.get("母题", "").strip() in BLOCKED_MOTIFS:
+        # 规则 15：依赖未决项的母题不得进交付。母题可以是组合，任一段被阻塞即拦。
+        blocked = [m for m in motifs if m in BLOCKED_MOTIFS]
+        if blocked:
             (err if delivery else warn)(
-                f"levels {i} 的母题 {r['母题'].strip()} 依赖未决项，"
+                f"levels {i} 的母题 {'+'.join(blocked)} 依赖未决项，"
                 f"不得进入交付（关卡设计.md §3）")
         # 星级阈值是**产出值**（2026-09-25 改，见 设计/关卡设计.md §8）：
         #   必须满足 目标值 ≤ 二星阈值 ≤ 三星阈值。
         #   二星＝三星是允许的：产出粒度 0.5，V−T<1 的紧关卡放不下三档。
-        t3, t2, tv = r.get("三星阈值", ""), r.get("二星阈值", ""), r.get("目标值", "")
+        #   多产出关卡的星级阈值是**各产出的合计**（单一标量），所以与目标值比较时
+        #   用目标向量的合计。
+        t3, t2 = r.get("三星阈值", ""), r.get("二星阈值", "")
+        floor = sum(goal.values()) if goal else None
         if is_num(t3) and is_num(t2) and float(t3) < float(t2):
             err(f"levels {i} 三星阈值 {t3} 低于二星阈值 {t2}")
-        if is_num(t2) and is_num(tv) and float(t2) < float(tv):
-            err(f"levels {i} 二星阈值 {t2} 低于目标值 {tv}"
+        if is_num(t2) and floor is not None and float(t2) < floor:
+            err(f"levels {i} 二星阈值 {t2} 低于目标值 {r.get('目标值','')}"
                 f"（星级阈值是产出值，必须 目标值 ≤ 二星 ≤ 三星）")
 
     # 规则 8：level_tiles

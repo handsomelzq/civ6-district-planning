@@ -1,6 +1,9 @@
 关卡id,名称,文明id,领袖id,已解锁科技,已解锁市政,城市中心坐标,人口,目标类型,目标产出类型,目标值,约束类型,约束值,三星阈值,二星阈值,关卡类别,母题,贪心基线结果
-L-01,普通关却被贪心过关,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,无,无,"0,0",4,单一产出,科技,10,区域数,3,2,1,普通,B,12
-L-02,坐标人口约束阈值全错+未决母题+基线空,CIVILIZATION_NOPE,LEADER_NOPE,无,无,0-0,四,单一产出,科技,10,区域数,0,1,2,普通,D,
-L-03,已解锁科技引用错+没有地块,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,TECH_WRITING|TECH_NOPE,无,"0,0",4,单一产出,科技,10,区域数,3,2,1,普通,B,5
-L-04,关卡类别不在枚举里,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,无,无,"0,0",4,单一产出,科技,10,区域数,3,12,11,示范,B,5
-L-05,对照关但没有同地形的对照对象,CIVILIZATION_KOREA,LEADER_SEONDEOK,无,无,"0,0",4,单一产出,科技,10,区域数,3,12,11,对照,E,10
+L-01,普通关却被贪心过关,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,无,无,"0,0",4,单一产出达标,科技,10,区域数,3,2,1,普通,B,12
+L-02,坐标人口约束阈值全错+未决母题+基线空,CIVILIZATION_NOPE,LEADER_NOPE,无,无,0-0,四,单一产出达标,科技,10,区域数,0,1,2,普通,D,
+L-03,已解锁科技引用错+没有地块,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,TECH_WRITING|TECH_NOPE,无,"0,0",4,单一产出达标,科技,10,区域数,3,2,1,普通,B,5
+L-04,关卡类别不在枚举里,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,无,无,"0,0",4,单一产出达标,科技,10,区域数,3,12,11,示范,B,5
+L-05,对照关但没有同地形的对照对象,CIVILIZATION_KOREA,LEADER_SEONDEOK,无,无,"0,0",4,单一产出达标,科技,10,区域数,3,12,11,对照,E,10
+L-06,目标值格式非法,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,无,无,"0,0",4,单一产出达标,科技,很多,区域数,3,12,11,普通,B,5
+L-07,多产出却把目标值写成标量,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,无,无,"0,0",4,多产出同时达标,科技|信仰,7,区域数,3,12,11,普通,B,5
+L-08,基线与目标形态不一致,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,无,无,"0,0",4,多产出同时达标,科技|信仰,科技:4|信仰:3,区域数,3,12,11,普通,B,5

@@ -159,7 +159,7 @@ def effective(rules, did, civ):
 
 
 def greedy(rules, board, palette, budget, yield_type, civ=None, leader=None,
-           best_ties=True, branch_cap=8):
+           best_ties=True, branch_cap=8, score=None):
     """贪心基线，定义见 设计/关卡设计.md §7。
 
     增益 = 放置后**全局**目标产出 − 放置前，含对已有邻居的回溯加成。
@@ -173,20 +173,27 @@ def greedy(rules, board, palette, budget, yield_type, civ=None, leader=None,
     「贪心必须失败」这条判据的对手。** 见 设计/关卡设计.md §7.2c。
 
     branch_cap 限制每步展开的平局分支数，防止组合爆炸。
+
+    score：可选的标量化函数 `{产出类型: Fraction} -> Fraction`。给多产出关卡用
+    （见 设计/关卡设计.md §7.4）。不传则退化为「只看 yield_type 一种产出」。
     """
+    if score is None:
+        def score(tot):
+            return tot.get(yield_type, Fraction(0))
+
+    def val(b):
+        return score(eval_board(rules, b, civ, leader)[0])
+
     def walk(cur, left, steps):
         if left == 0:
-            return eval_board(rules, cur, civ, leader)[0].get(yield_type,
-                                                              Fraction(0)), steps
-        base = eval_board(rules, cur, civ, leader)[0].get(yield_type, Fraction(0))
+            return val(cur), steps
+        base = val(cur)
         cands = []
         for pos in sorted(cur.empties(rules)):
             for d0 in palette:
                 d = effective(rules, d0, civ)
                 nxt = cur.copy_with(pos, d)
-                gain = (eval_board(rules, nxt, civ, leader)[0]
-                        .get(yield_type, Fraction(0))) - base
-                cands.append((gain, pos, d, nxt))
+                cands.append((val(nxt) - base, pos, d, nxt))
         if not cands:
             return base, steps
         top = max(c[0] for c in cands)
@@ -203,11 +210,25 @@ def greedy(rules, board, palette, budget, yield_type, civ=None, leader=None,
                 best = (v, st, nxt)
         return best[0], best[1]
 
-    val, steps = walk(board, budget, [])
+    val_, steps = walk(board, budget, [])
     cur = board
     for pos, d, _ in steps:
         cur = cur.copy_with(pos, d)
     return cur, steps
+
+
+def capped_progress(targets):
+    """多产出关卡的贪心标量化：Σ 各产出**封顶在目标值**后的和。
+
+    为什么要封顶（设计/关卡设计.md §7.4）：不封顶的求和贪心会把预算全倒进
+    最便宜的那种产出，于是关卡只是在考"玩家有没有注意到有两个目标"，
+    而不是考规划。封顶让基线真的去同时满足两个目标 —— 一个称职的玩家就会
+    这么做，而基线必须配得上判据（§7.2c 同一条原则）。
+    """
+    def f(tot):
+        return sum((min(tot.get(y, Fraction(0)), v) for y, v in targets.items()),
+                   Fraction(0))
+    return f
 
 
 def show(rules, board, title, yield_type, civ=None, leader=None):
