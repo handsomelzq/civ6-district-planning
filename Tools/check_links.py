@@ -29,8 +29,15 @@ def main():
             if target.startswith(("http://", "https://", "mailto:")):
                 continue
             checked += 1
-            if not (md.parent / target).resolve().exists():
-                bad.append("%s → %s" % (md.relative_to(ROOT), target))
+            dest = (md.parent / target).resolve()
+            if not dest.exists():
+                bad.append("%s → %s（文件不存在）" % (md.relative_to(ROOT), target))
+            elif not str(dest).startswith(str(ROOT) + "/"):
+                # **本机能打开、仓库里打不开**的那一类。CI 第一次跑就抓到一条：
+                # SDD 里引了一份放在仓库外的个人工程规范。本机查不出来，因为
+                # 那个文件在本机确实存在 —— 所以这一条必须单独判。
+                bad.append("%s → %s（指向仓库外，克隆下来就是死链）"
+                           % (md.relative_to(ROOT), target))
     for b in bad:
         sys.stderr.write("✗ 坏链 %s\n" % b)
     print("检查了 %d 条本地链接，坏链 %d 条" % (checked, len(bad)))
