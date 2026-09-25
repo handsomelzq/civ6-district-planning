@@ -2,9 +2,6 @@
  *
  * 读的是 配置表/*.csv，唯一事实来源见 配置表/字段说明.md。
  */
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import * as path from "node:path";
 import { parseCsv, parseKv, parseList, isNone, type Row } from "./csv.ts";
 import { parseRat, type Rat } from "./rational.ts";
 
@@ -60,6 +57,17 @@ export type Building = {
   readonly 前置建筑id: string[];
 };
 
+/** 求值器需要的表。浏览器与 Node 各自负责把它们读成文本，`Rules` 只认文本 ——
+ *  **核心层零 I/O**，这样同一份代码能跑在 Node、浏览器和将来任何宿主里。 */
+export const TABLE_FILES = [
+  "adjacency_rules.csv", "districts.csv", "buildings.csv",
+  "resources.csv", "terrains.csv", "features.csv", "excluded_adjacencies.csv",
+  // 只为把 id 显示成可读名（文明 / 领袖），求值本身用不到
+  "civs.csv", "leaders.csv",
+] as const;
+
+export type TableTexts = Record<(typeof TABLE_FILES)[number], string>;
+
 export class Rules {
   readonly adjacency: ReadonlyMap<string, readonly AdjacencyRule[]>;  // 区域id → 规则
   readonly districts: ReadonlyMap<string, District>;
@@ -71,10 +79,17 @@ export class Rules {
   readonly excluded: ReadonlyMap<string, ReadonlySet<string>>;
   readonly buildableTerrain: ReadonlySet<string>;
   readonly removedByDistrict: ReadonlySet<string>;
+  /** id → 中文名。拆解面板要显示「草原（山脉）」而不是 TERRAIN_GRASS_MOUNTAIN。 */
+  readonly names: ReadonlyMap<string, string>;
 
-  constructor(dir: string) {
-    const load = (f: string): Row[] =>
-      parseCsv(readFileSync(path.join(dir, f), "utf8"));
+  /** 从 CSV 文本构造。读文件是宿主的事 —— Node 用 `src/rules_node.ts`，
+   *  浏览器用构建期内联的 `web/dist/tables.js`。 */
+  constructor(texts: TableTexts) {
+    const load = (f: (typeof TABLE_FILES)[number]): Row[] => {
+      const t = texts[f];
+      if (t === undefined) throw new Error(`缺少配置表：${f}`);
+      return parseCsv(t);
+    };
 
     const adj = new Map<string, AdjacencyRule[]>();
     for (const r of load("adjacency_rules.csv")) {
@@ -162,16 +177,24 @@ export class Rules {
       }
     }
 
+    const names = new Map<string, string>();
     const buildable = new Set<string>();
     for (const r of load("terrains.csv")) {
+      names.set(r["地形id"], r["名称"]);
       if (r["是否可建区域"] === "是") buildable.add(r["地形id"]);
     }
     // 建区域会移除的地貌（features.是否需移除）。移除后它不再作为相邻目标被计入，
     // 这是文明 6 的实际行为 —— 原型上曾漏掉这一条，导致森林被重复计入。
     const removed = new Set<string>();
     for (const r of load("features.csv")) {
+      names.set(r["地貌id"], r["名称"]);
       if (r["是否需移除"] === "是") removed.add(r["地貌id"]);
     }
+    for (const [id, d] of districts) names.set(id, d.名称);
+    for (const [id, b] of buildings) names.set(id, b.名称);
+    for (const [id, r] of resources) names.set(id, r.名称);
+    for (const r of load("civs.csv")) names.set(r["文明id"], r["名称"]);
+    for (const r of load("leaders.csv")) names.set(r["领袖id"], r["名称"]);
 
     this.adjacency = adj;
     this.districts = districts;
@@ -181,12 +204,13 @@ export class Rules {
     this.excluded = excluded;
     this.buildableTerrain = buildable;
     this.removedByDistrict = removed;
+    this.names = names;
   }
 
+  /** id → 可读名。查不到就原样返回 id —— **绝不留空**，留空会让面板上出现
+   *  一个没有出处的数字，那正是本作要消灭的东西。 */
   name(id: string): string {
-    return this.districts.get(id)?.名称 ??
-      this.buildings.get(id)?.名称 ??
-      this.resources.get(id)?.名称 ?? id;
+    return this.names.get(id) ?? id;
   }
 
   /** 求值顺序第 1 步：应用文明的特色区域替换。 */
@@ -207,8 +231,3 @@ export class Rules {
 }
 
 const EMPTY: ReadonlySet<string> = new Set<string>();
-
-/** 默认表目录。用 fileURLToPath 而不是 URL.pathname —— 路径里有中文，
- *  pathname 是百分号编码的，直接喂给 fs 会 ENOENT。 */
-export const DEFAULT_TABLE_DIR = path.join(
-  path.dirname(fileURLToPath(import.meta.url)), "..", "配置表");

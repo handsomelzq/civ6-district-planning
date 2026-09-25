@@ -26,6 +26,7 @@
 | 4 | [设计/关卡设计.md](设计/关卡设计.md) §2.0 + §2.0.1 | 关卡质量有一个**可计算的定义**（贪心必须失败），以及一条量化判据 `母题成立 ⟺ V > w × min(m,k)`。四个旋钮 `w/m/k/V` 可直接用 |
 | 5 | [设计/数值设计.md](设计/数值设计.md) §1.1 | **同一个事实被两条独立路径验证**：关卡侧测出"韩国结构性地不可能让贪心失败"，数据侧算出"书院是全表唯一相邻上界与邻格无关的区域" |
 | 6 | [tests/crosscheck.test.ts](tests/crosscheck.test.ts) | **两份独立实现在 60 个盘面上逐项对账**。它能抓出的是「我理解错了」，而单测只能抓出「代码与我的理解不符」 |
+| 7 | 打开 `web/index.html`，在自由模式里**把文明换成韩国** | 全图的预览数字会从「贴山 +1」整片变成「孤立 +4」。**地图本身就把「书院要分开」画出来了** —— 这是 §1.1 那个结论的第三次独立呈现 |
 
 想看**我改错的记录**（这个项目最想展示的部分）：[记录/进度记录.md](记录/进度记录.md) 是一份只追加的事实日志，每条都写了当时错在哪、怎么发现的、连带改了什么。
 
@@ -52,6 +53,11 @@
 ├── 配置表/                   ← 唯一事实来源，由解析脚本生成
 │   ├── 字段说明.md                17 张表、21 条校验规则
 │   └── *.csv
+├── web/                      ← 网页（零依赖，构建后双击 index.html 即可玩）
+│   ├── index.html                单文件样式，无外部字体无 CDN
+│   ├── app.ts                    状态与两个模式的接线
+│   ├── render.ts                 SVG 六边形地图 + 拆解面板
+│   └── levels.ts                 关卡加载与**加载期校验**（G1/G2/G3）
 ├── src/                      ← 求值器（TypeScript，零依赖）
 │   ├── evaluate.ts               ★ evaluate(rules, board) -> 产出明细树
 │   ├── rational.ts               精确有理数，全程不用浮点
@@ -80,11 +86,15 @@ python3 Tools/design_levels.py             # 重算关卡目标值与星级阈�
 python3 Tools/motif_check.py               # 关卡母题验证（先校准，校准不过就停）
 ```
 
-求值器（TypeScript）。也是零依赖 —— **Node 24 原生跑 TypeScript**，测试用内置 `node:test`：
+求值器与网页（TypeScript）。也是零依赖 —— **Node 24 原生跑 TypeScript**，测试用内置 `node:test`，构建用内置的 `module.stripTypeScriptTypes`：
 
 ```bash
 npm test                                   # 44 条测试：校准 / 不变量 / 交叉校验 / 关卡阈值
+node Tools/build_web.mjs                   # 构建网页（把 .ts 剥成 .js，配置表内联）
+node Tools/serve.mjs                       # http://localhost:8123/web/
 ```
+
+构建完之后 **`web/index.html` 双击就能打开**——配置表是构建期内联的，不依赖任何服务器。
 
 需要装了文明 6 才能跑的：
 
@@ -104,7 +114,7 @@ python3 Tools/parse_civ6_xml.py            # 游戏 XML → 配置表 CSV
 | 配置表 | 13 张生成表 + 2 张关卡表；`units` / `combat_modifiers` 阻塞于军事实测 |
 | 关卡 | **10 关全部落地**：3 教学 + 5 普通 + 1 对照（另 1 关作废但留作回归用例） |
 | **求值器** | ✅ **已实现**（TypeScript，零依赖），44 条测试全过：5 个游戏内实测读数校准 + 四条不变量 + 8 个目标类别定向测 + **与 Python 原型 60 盘面交叉校验** + 9 关阈值双签 |
-| 两模式 UI | 规格完成；**未实现** |
+| **两模式 UI** | ✅ **可玩**（零依赖，双击 `web/index.html` 即可）。自由模式：换文明 / 改地形 / 放区域 / 撤销 / 四层拆解面板；挑战模式：9 关、目标进度条、配额、星级结算 |
 | 技术栈 | ✅ **TypeScript + Web**（2026-09-25 定）。Node 24 原生跑 TS，测试用内置 `node:test`，`package.json` 里零依赖 |
 
 表行数：`adjacency_rules` 103、`buildings` 85、`districts` 36、`civs` 100、`leaders` 126、`techs` 77、`civics` 61、`improvements` 59、`resources` 54、`features` 50、`wonders` 34、`terrains` 17、`excluded_adjacencies` 12。

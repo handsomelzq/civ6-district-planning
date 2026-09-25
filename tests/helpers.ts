@@ -1,9 +1,9 @@
 /** 测试用的小工具。构造局面要简洁，否则测试本身会变成需要调试的东西。 */
-import { Rules, DEFAULT_TABLE_DIR } from "../src/rules.ts";
+import { loadRules } from "../src/rules_node.ts";
 import { type Axial, key, disc } from "../src/hex.ts";
 import { type BoardState, type Tile } from "../src/board.ts";
 
-export const R = new Rules(DEFAULT_TABLE_DIR);
+export const R = loadRules();
 
 export const NO_TECH: ReadonlySet<string> = new Set();
 

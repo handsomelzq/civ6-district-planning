@@ -259,9 +259,12 @@ export function evaluate(rules: Rules, board: BoardState): YieldTree {
 }
 
 function describeTarget(rules: Rules, rule: AdjacencyRule, 计数: number): string {
-  const per = rule.所需数量 === 1
-    ? `+${rule.加成值.n / rule.加成值.d}/个`
-    : `+${rule.加成值.n / rule.加成值.d}/${rule.所需数量}个`;
+  // 加成值可以是负的（书院每相邻一区域 −1），所以符号要按值算，不能写死 "+"。
+  const v = rule.加成值.n / rule.加成值.d;
+  const signed = `${v < 0 ? "−" : "+"}${Math.abs(v)}`;
+  if (rule.目标类别 === "自身") return `自身固定 ${signed}`;
+  if (rule.目标类别 === "河流") return `本格临河（${signed}）`;
+  const per = rule.所需数量 === 1 ? `${signed}/个` : `${signed}/${rule.所需数量}个`;
   const what = isNone(rule.目标id)
     ? rule.目标类别
     : `${rule.目标类别} ${rules.name(rule.目标id)}`;
