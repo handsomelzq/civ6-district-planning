@@ -111,7 +111,7 @@ NEEDED_TABLES = [
     "DistrictReplaces", "Adjacency_YieldChanges", "ExcludedAdjacencies",
     # 只为报告用：说清那些没挂到任何区域的相邻规则去哪了（改良设施也用同一张规则表）
     "Improvement_Adjacencies",
-    "Buildings", "Building_YieldChanges", "BuildingPrereqs",
+    "Buildings", "Building_YieldChanges", "BuildingPrereqs", "BuildingReplaces",
     "Civilizations", "CivilizationTraits", "CivilizationLeaders",
     "Leaders", "LeaderTraits", "Traits",
 ]
@@ -844,10 +844,18 @@ def gen_buildings(db, loc):
 
     世界奇观（IsWonder=true）不进这张表：它没有所属区域，而 buildings.所属区域id 是
     必填外键；相邻规则里的「世界奇观」是布尔型、不需要 id 表。跳过数量见报告。
+
+    两列互斥标记（2026-09-25 补，字段说明 §六·二）：
+      替换建筑id     ← BuildingReplaces（特色建筑与基础建筑互斥）
+      是否宗教建筑   ← Buildings.EnabledByReligion（圣地的宗教建筑多选一）
+    不补这两列，「按区域把建筑产出求和」就会重复计入 —— 圣地的建筑链会被高算 3.7 倍。
     """
     prereq = defaultdict(list)
     for r in db.rows("BuildingPrereqs"):
         prereq[r.get("Building")].append(r.get("PrereqBuilding"))
+    replaces = defaultdict(list)
+    for r in db.rows("BuildingReplaces"):
+        replaces[r.get("CivUniqueBuildingType")].append(r.get("ReplacesBuildingType"))
     rows = []
     for r in db.rows("Buildings"):
         bid = r["BuildingType"]
@@ -865,10 +873,13 @@ def gen_buildings(db, loc):
                      or_none(db.get("Buildings", r, "PrereqTech")),
                      or_none(db.get("Buildings", r, "PrereqCivic")),
                      joiner(sorted(set(p for p in prereq.get(bid, []) if p))),
+                     joiner(sorted(set(x for x in replaces.get(bid, []) if x))),
+                     "是" if db.boolean("Buildings", r, "EnabledByReligion") else "否",
                      NONE] + PROV)
     rows.sort(key=lambda x: x[0])
     return ["建筑id", "名称", "所属区域id", "基础产出", "生产成本", "前置科技",
-            "前置市政", "前置建筑id", "备注", "数据来源", "待核"], rows
+            "前置市政", "前置建筑id", "替换建筑id", "是否宗教建筑",
+            "备注", "数据来源", "待核"], rows
 
 
 def ability_text(db, loc, traits):

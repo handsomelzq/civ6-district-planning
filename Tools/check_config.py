@@ -74,7 +74,8 @@ SCHEMA = {
         "替换区域id", "所属文明id", "备注"]),
     "buildings.csv": dict(id="建筑id", prov=True, cols=[
         "建筑id", "名称", "所属区域id", "基础产出", "生产成本",
-        "前置科技", "前置市政", "前置建筑id", "备注"]),
+        "前置科技", "前置市政", "前置建筑id", "替换建筑id", "是否宗教建筑",
+        "备注"]),
     "units.csv": dict(id="单位id", prov=True, cols=[
         "单位id", "名称", "兵种类别", "时代", "基础战斗力", "基础远程战斗力",
         "基础攻城战斗力", "前置科技", "前置市政", "战略资源需求",
@@ -344,6 +345,14 @@ def main(argv):
                  pool("districts.csv"), "区域", allow_none=False)
         check_fk("buildings", i, "前置建筑id", r.get("前置建筑id", ""),
                  pool("buildings.csv"), "建筑")
+        # 规则 20：互斥标记。两列都是「按区域把建筑产出求和」时必须先剔除的项，
+        #   不剔除会重复计入（圣地的建筑链会被高算 3.7 倍，见 字段说明 §六·二）。
+        check_fk("buildings", i, "替换建筑id", r.get("替换建筑id", ""),
+                 pool("buildings.csv"), "建筑")
+        check_bool("buildings", i, "是否宗教建筑", r.get("是否宗教建筑", ""))
+        if r.get("替换建筑id", "").strip() not in ("", "无") and \
+                i == r.get("替换建筑id", "").strip():
+            err(f"buildings {i} 的「替换建筑id」指向自己")
 
     # 规则 12：units.时代 非空
     for r in rows_of("units.csv"):

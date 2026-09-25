@@ -1,2 +1,5 @@
-建筑id,名称,所属区域id,基础产出,生产成本,前置科技,前置市政,前置建筑id,备注,数据来源,待核
-BUILDING_LIBRARY,图书馆,DISTRICT_CAMPUS,科技:2,90,TECH_WRITING,无,无,,一手,否
+建筑id,名称,所属区域id,基础产出,生产成本,前置科技,前置市政,前置建筑id,替换建筑id,是否宗教建筑,备注,数据来源,待核
+BUILDING_LIBRARY,图书馆,DISTRICT_CAMPUS,科技:2,90,TECH_WRITING,无,无,无,否,,一手,否
+BUILDING_UNIVERSITY,大学,DISTRICT_CAMPUS,科技:4,250,TECH_EDUCATION,无,BUILDING_LIBRARY,无,否,,一手,否
+BUILDING_MADRASA,伊斯兰学校,DISTRICT_CAMPUS,科技:5,250,TECH_EDUCATION,无,BUILDING_LIBRARY,BUILDING_UNIVERSITY,否,特色建筑替换大学,一手,否
+BUILDING_PAGODA,宝塔,DISTRICT_HOLY_SITE,信仰:1,190,无,无,无,无,是,宗教建筑多选一,一手,否
