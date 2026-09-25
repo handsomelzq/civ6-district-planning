@@ -17,7 +17,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  检查:
+  check:
+    name: 检查
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,8 +37,9 @@ jobs:
       - name: 文档坏链检查
         run: python3 Tools/check_links.py
 
-  部署:
-    needs: 检查
+  deploy:
+    name: 部署
+    needs: check
     runs-on: ubuntu-latest
     environment:
       name: github-pages
