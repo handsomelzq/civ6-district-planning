@@ -169,6 +169,9 @@ TARGET_COLS = [
     ("AdjacentResource", "任意资源", True),
 ]
 NONE = "无"
+# 「无限」与「无」必须是两个不同的记号。districts 的上限列里，「无」会被读成
+# "没有这个属性"，而实际语义是"不设上限"——混用会让求值器把不限当成限 0。
+UNLIMITED = "无限"
 
 
 # ── 报告收集 ────────────────────────────────────────────────────────────
@@ -831,6 +834,18 @@ def gen_districts(db, loc):
         else:
             kind = "非专业化"
         quota = "是" if db.boolean("Districts", r, "RequiresPopulation") else "否"
+        # 唯一性约束（2026-09-26 补，字段说明 §六·三）。两列都靠**表结构默认值**表达
+        #   大多数情形，所以必须走 db.boolean / db.get 的默认值回退，不能读原始 XML 属性：
+        #   全 36 行里只有 4 行显式写了 OnePerCity=false、2 行显式写了 MaxPerPlayer=1。
+        #   统一成「上限」语义（数字或「无限」），求值器直接比计数，不必再解释布尔。
+        one_per_city = db.boolean("Districts", r, "OnePerCity")
+        per_city = "1" if one_per_city else UNLIMITED
+        mpp = db.get("Districts", r, "MaxPerPlayer", "-1")
+        try:
+            mpp_n = float(mpp)
+        except ValueError:
+            mpp_n = -1.0
+        per_player = UNLIMITED if mpp_n < 0 else str(int(mpp_n))
         trait = db.get("Districts", r, "TraitType", "")
         civs = sorted(set(t2c.get(trait, []))) if trait else []
         rep = replaces.get(did)
@@ -856,6 +871,8 @@ def gen_districts(db, loc):
             or_none(db.get("Districts", r, "PrereqTech")),
             or_none(db.get("Districts", r, "PrereqCivic")),
             quota,
+            per_city,
+            per_player,
             joiner(terr),
             "是" if uniq else "否",
             rep if uniq else NONE,
@@ -863,7 +880,8 @@ def gen_districts(db, loc):
             joiner(note) if note else NONE] + PROV)
     rows.sort(key=lambda x: x[0])
     return ["区域id", "名称", "区域类别", "基础产出", "生产成本", "前置科技",
-            "前置市政", "是否占区域配额", "可建地形", "是否特色区域",
+            "前置市政", "是否占区域配额", "每城上限", "每玩家上限",
+            "可建地形", "是否特色区域",
             "替换区域id", "所属文明id", "备注", "数据来源", "待核"], rows
 
 

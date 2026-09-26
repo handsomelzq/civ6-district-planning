@@ -1,4 +1,4 @@
-区域id,名称,区域类别,基础产出,生产成本,前置科技,前置市政,是否占区域配额,可建地形,是否特色区域,替换区域id,所属文明id,备注,数据来源,待核
-DISTRICT_CAMPUS,枚举错+外键错+非特色却填了三列,不存在的类别,科技:1,54,无,无,是,TERRAIN_NOPE,否,DISTRICT_X,CIVILIZATION_Y,,一手,否
-DISTRICT_HANSA,是特色却没填替换与归属,专业化,生产力:1,54,无,无,是,无,是,无,无,,二手,是
-DISTRICT_SELF,替换指向自身,专业化,科技:1,1,无,无,是,无,是,DISTRICT_SELF,CIVILIZATION_GERMANY,,一手,否
+区域id,名称,区域类别,基础产出,生产成本,前置科技,前置市政,是否占区域配额,每城上限,每玩家上限,可建地形,是否特色区域,替换区域id,所属文明id,备注,数据来源,待核
+DISTRICT_CAMPUS,枚举错+外键错+非特色却填了三列,不存在的类别,科技:1,54,无,无,是,0,无限,TERRAIN_NOPE,否,DISTRICT_X,CIVILIZATION_Y,,一手,否
+DISTRICT_HANSA,是特色却没填替换与归属,专业化,生产力:1,54,无,无,是,无限,1,无,是,无,无,,二手,是
+DISTRICT_SELF,替换指向自身,专业化,科技:1,1,无,无,是,2,1,无,是,DISTRICT_SELF,CIVILIZATION_GERMANY,,一手,否

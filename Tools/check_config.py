@@ -70,7 +70,8 @@ SCHEMA = {
         "前置市政", "备注"]),
     "districts.csv": dict(id="区域id", prov=True, cols=[
         "区域id", "名称", "区域类别", "基础产出", "生产成本", "前置科技",
-        "前置市政", "是否占区域配额", "可建地形", "是否特色区域",
+        "前置市政", "是否占区域配额", "每城上限", "每玩家上限",
+        "可建地形", "是否特色区域",
         "替换区域id", "所属文明id", "备注"]),
     "buildings.csv": dict(id="建筑id", prov=True, cols=[
         "建筑id", "名称", "所属区域id", "基础产出", "生产成本",
@@ -116,6 +117,9 @@ BOOL_TARGETS = {"任意其他区域", "海洋资源", "河流", "世界奇观",
                 "自身", "自然奇观", "任意资源", "无目标"}
 # 这个类别的目标id 是资源类别枚举，不是某张表的 id
 ENUM_TARGETS = {"资源类别": "资源类别"}
+
+# 与 parse_civ6_xml.py 的同名常量必须一致（districts 的上限列用它表示"不设上限"）。
+UNLIMITED = "无限"
 
 ERR, WARN = [], []
 def err(m):  ERR.append(m)
@@ -315,6 +319,23 @@ def main(argv):
         check_kv("districts", i, "基础产出", r.get("基础产出", ""))
         check_bool("districts", i, "是否占区域配额", r.get("是否占区域配额", ""))
         check_bool("districts", i, "是否特色区域", r.get("是否特色区域", ""))
+        # 规则 22：唯一性上限。取值必须是正整数或「无限」——
+        #   「无」在本项目里表示"没有这个属性"，而这两列永远有值（游戏表结构给了默认值），
+        #   写成「无」会被求值器读成"上限 0"，把不限当成不可建。
+        for c in ("每城上限", "每玩家上限"):
+            v = r.get(c, "").strip()
+            if v == UNLIMITED:
+                continue
+            if not is_int(v) or int(v) < 1:
+                err(f"districts {i} 的「{c}」应为正整数或「{UNLIMITED}」，实为 {v!r}")
+        # 每玩家上限不得松于每城上限：全局只允许 1 座，却说每城能建多座，是自相矛盾。
+        pc, pp = r.get("每城上限", "").strip(), r.get("每玩家上限", "").strip()
+        if pc == UNLIMITED and pp != UNLIMITED:
+            err(f"districts {i} 的「每城上限」为{UNLIMITED}但「每玩家上限」为 {pp}，"
+                f"两列互相矛盾")
+        elif pc != UNLIMITED and pp != UNLIMITED and \
+                is_int(pc) and is_int(pp) and int(pp) < int(pc):
+            err(f"districts {i} 的「每玩家上限」{pp} 小于「每城上限」{pc}")
         check_fk("districts", i, "可建地形", r.get("可建地形", ""),
                  pool("terrains.csv"), "地形")
         uniq = r.get("是否特色区域", "").strip() == "是"

@@ -67,3 +67,19 @@ export function parseList(v: string): string[] {
   if (isNone(v)) return [];
   return v.split("|").map((x) => x.trim()).filter((x) => x.length > 0);
 }
+
+/** 上限列：正整数 → 该数；「无限」→ `Infinity`。
+ *
+ *  注意「无限」与「无」是两个不同的记号（见 parse_civ6_xml.py 的 UNLIMITED）：
+ *  「无」表示"没有这个属性"，在上限列里会被读成 0，把不限当成不可建。所以这里
+ *  **只认「无限」**，遇到「无」或空值一律抛错而不静默回退 —— 配表校验（规则 22）
+ *  已经守住了这条，这里再守一次是因为静默回退的后果是"某个区域永远不能放"，
+ *  那种 bug 在界面上看起来像规则，不像错误。 */
+export function parseLimit(v: string): number {
+  const t = (v ?? "").trim();
+  if (t === "无限") return Infinity;
+  const n = Number(t);
+  if (!Number.isInteger(n) || n < 1)
+    throw new Error(`上限列的取值应为正整数或「无限」，实为 ${JSON.stringify(v)}`);
+  return n;
+}

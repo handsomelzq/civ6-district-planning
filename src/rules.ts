@@ -2,7 +2,7 @@
  *
  * 读的是 配置表/*.csv，唯一事实来源见 配置表/字段说明.md。
  */
-import { parseCsv, parseKv, parseList, isNone, type Row } from "./csv.ts";
+import { parseCsv, parseKv, parseList, parseLimit, isNone, type Row } from "./csv.ts";
 import { parseRat, type Rat } from "./rational.ts";
 
 /** 相邻目标的类别。与 SDD §3.4 的映射表一一对应；`无目标` 当前是空集，
@@ -36,6 +36,11 @@ export type District = {
   readonly 所属文明id: string[];
   readonly 前置科技: string[];
   readonly 前置市政: string[];
+  /** 每城上限 / 每玩家上限。`Infinity` = 配表里的「无限」（游戏侧 OnePerCity=false
+   *  与 MaxPerPlayer=-1）。用 Infinity 而不是 -1 或 0 做哨兵，是为了让"不限"在比较
+   *  里天然正确（`n < Infinity` 永真），少一处容易写反的分支。 */
+  readonly 每城上限: number;
+  readonly 每玩家上限: number;
 };
 
 export type Resource = {
@@ -128,6 +133,8 @@ export class Rules {
         所属文明id: parseList(r["所属文明id"]),
         前置科技: parseList(r["前置科技"]),
         前置市政: parseList(r["前置市政"]),
+        每城上限: parseLimit(r["每城上限"]),
+        每玩家上限: parseLimit(r["每玩家上限"]),
       };
       districts.set(d.区域id, d);
       if (d.是否特色区域 && !isNone(d.替换区域id)) {

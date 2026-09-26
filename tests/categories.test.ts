@@ -222,3 +222,38 @@ describe("前置与废弃（边界 E14，当前是防御性分支）", () => {
       "若这条失败，说明补丁或改良设施相邻进场了，E14 那个分支要开始真正生效");
   });
 });
+
+describe("唯一性上限（E17b · SDD §10 D12）", () => {
+  const diag = (spec: Parameters<typeof board>[0], civ?: string) =>
+    evaluate(R, board(spec, { 文明: civ })).诊断
+      .filter((d) => d.级别 === "错误").map((d) => d.说明);
+
+  test("每城上限 1：一座城里放两座学院 → 报错", () => {
+    assert.deepEqual(
+      diag({ "0,0": { 区域: "DISTRICT_CAMPUS" }, "1,0": { 区域: "DISTRICT_CAMPUS" } }),
+      ["学院 放了 2 座，超过每城上限 1（E17b）"]);
+  });
+
+  test("每城上限 无限：两座运河合法（OnePerCity=false 的 4 个区域之一）", () => {
+    assert.deepEqual(
+      diag({ "0,0": { 区域: "DISTRICT_CANAL" }, "1,0": { 区域: "DISTRICT_CANAL" } }), []);
+  });
+
+  test("每玩家上限 1：两座市政广场 → 按「每玩家上限」报错，不是「每城上限」", () => {
+    // 两列的上限都是 1，措辞必须取更紧的那个（每玩家），否则玩家会以为换座城就行。
+    assert.deepEqual(
+      diag({ "0,0": { 区域: "DISTRICT_GOVERNMENT" }, "1,0": { 区域: "DISTRICT_GOVERNMENT" } }),
+      ["市政广场 放了 2 座，超过每玩家上限 1（E17b）"]);
+  });
+
+  test("上限按**替换后**的有效区域计数：韩国的两座学院都解析成书院，仍然违规", () => {
+    assert.deepEqual(
+      diag({ "0,0": { 区域: "DISTRICT_CAMPUS" }, "1,0": { 区域: "DISTRICT_CAMPUS" } },
+           "CIVILIZATION_KOREA"),
+      ["书院 放了 2 座，超过每城上限 1（E17b）"]);
+  });
+
+  test("一座就不报错（边界：恰好等于上限）", () => {
+    assert.deepEqual(diag({ "0,0": { 区域: "DISTRICT_CAMPUS" } }), []);
+  });
+});

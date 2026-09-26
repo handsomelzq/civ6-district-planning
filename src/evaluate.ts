@@ -195,6 +195,29 @@ export function evaluate(rules: Rules, board: BoardState): YieldTree {
     slot.leaves.push(leaf);
   };
 
+  // 第 3 步（前半）· 唯一性校验。必须在逐格循环**之外**先统计一遍：
+  //   「同一区域放了几座」是整盘的性质，在单格循环里看不到。
+  //   本 demo 是单城局面，所以每城与每玩家两条上限落在同一个计数上；两列仍分别
+  //   校验，因为它们在游戏里是两回事（政府广场与外交区是全局唯一，运河/堤坝/
+  //   姆班扎/住宅区是每城可多座），将来做多城时这里不用改语义。
+  const 计数 = new Map<string, Axial[]>();
+  for (const p of districtPositions(board)) {
+    const did = rules.effective(tileAt(board, p)!.区域!, board.文明);
+    (计数.get(did) ?? 计数.set(did, []).get(did)!).push(p);
+  }
+  for (const [did, ps] of 计数) {
+    const d = rules.districts.get(did);
+    if (d === undefined) continue;
+    const lim = Math.min(d.每城上限, d.每玩家上限);
+    if (ps.length > lim) {
+      const which = d.每玩家上限 <= d.每城上限 ? "每玩家上限" : "每城上限";
+      诊断.push({
+        级别: "错误", 位置: ps[lim],
+        说明: `${rules.name(did)} 放了 ${ps.length} 座，超过${which} ${lim}（E17b）`,
+      });
+    }
+  }
+
   for (const p of districtPositions(board)) {
     const tile = tileAt(board, p)!;
     // 第 1 步 · 替换解析：把基础区域 id 解析成这个文明下的有效区域 id。
