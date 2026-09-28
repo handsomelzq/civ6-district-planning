@@ -62,6 +62,15 @@ export type Building = {
   readonly 前置建筑id: string[];
 };
 
+export type TraitAdjacencyModifier = {
+  readonly 修正id: string;
+  readonly 文明id: string;
+  readonly 领袖id: string;
+  readonly 区域id: string;
+  readonly 产出类型: string;
+  readonly 每邻格加成: Rat;
+};
+
 /** 求值器需要的表。浏览器与 Node 各自负责把它们读成文本，`Rules` 只认文本 ——
  *  **核心层零 I/O**，这样同一份代码能跑在 Node、浏览器和将来任何宿主里。 */
 export const TABLE_FILES = [
@@ -69,6 +78,7 @@ export const TABLE_FILES = [
   "resources.csv", "terrains.csv", "features.csv", "excluded_adjacencies.csv",
   // 只为把 id 显示成可读名（文明 / 领袖），求值本身用不到
   "civs.csv", "leaders.csv",
+  "trait_adjacency_modifiers.csv",
 ] as const;
 
 export type TableTexts = Record<(typeof TABLE_FILES)[number], string>;
@@ -86,6 +96,9 @@ export class Rules {
   readonly removedByDistrict: ReadonlySet<string>;
   /** id → 中文名。拆解面板要显示「草原（山脉）」而不是 TERRAIN_GRASS_MOUNTAIN。 */
   readonly names: ReadonlyMap<string, string>;
+  readonly traitAdjacency: ReadonlyMap<string, readonly TraitAdjacencyModifier[]>;
+  readonly leadersByCiv: ReadonlyMap<string, readonly { id: string; 名称: string; 能力: string }[]>;
+  readonly civAbility: ReadonlyMap<string, string>;
 
   /** 从 CSV 文本构造。读文件是宿主的事 —— Node 用 `src/rules_node.ts`，
    *  浏览器用构建期内联的 `web/dist/tables.js`。 */
@@ -200,8 +213,30 @@ export class Rules {
     for (const [id, d] of districts) names.set(id, d.名称);
     for (const [id, b] of buildings) names.set(id, b.名称);
     for (const [id, r] of resources) names.set(id, r.名称);
-    for (const r of load("civs.csv")) names.set(r["文明id"], r["名称"]);
-    for (const r of load("leaders.csv")) names.set(r["领袖id"], r["名称"]);
+    const civAbility = new Map<string, string>();
+    for (const r of load("civs.csv")) {
+      names.set(r["文明id"], r["名称"]);
+      civAbility.set(r["文明id"], r["文明能力"]);
+    }
+    const leadersByCiv = new Map<string, { id: string; 名称: string; 能力: string }[]>();
+    for (const r of load("leaders.csv")) {
+      names.set(r["领袖id"], r["名称"]);
+      for (const cid of parseList(r["所属文明id"])) {
+        const list = leadersByCiv.get(cid) ?? [];
+        list.push({ id: r["领袖id"], 名称: r["名称"], 能力: r["领袖能力"] });
+        leadersByCiv.set(cid, list);
+      }
+    }
+    const traitAdjacency = new Map<string, TraitAdjacencyModifier[]>();
+    for (const r of load("trait_adjacency_modifiers.csv")) {
+      if (r["目标类别"] !== "任意其他区域") continue;
+      const owner = isNone(r["文明id"]) ? r["领袖id"] : r["文明id"];
+      const list = traitAdjacency.get(owner) ?? [];
+      list.push({ 修正id: r["原始修正id"], 文明id: r["文明id"], 领袖id: r["领袖id"],
+        区域id: r["区域id"], 产出类型: r["产出类型"],
+        每邻格加成: parseRat(r["每邻格加成"]) });
+      traitAdjacency.set(owner, list);
+    }
 
     this.adjacency = adj;
     this.districts = districts;
@@ -212,6 +247,9 @@ export class Rules {
     this.buildableTerrain = buildable;
     this.removedByDistrict = removed;
     this.names = names;
+    this.traitAdjacency = traitAdjacency;
+    this.leadersByCiv = leadersByCiv;
+    this.civAbility = civAbility;
   }
 
   /** id → 可读名。查不到就原样返回 id —— **绝不留空**，留空会让面板上出现

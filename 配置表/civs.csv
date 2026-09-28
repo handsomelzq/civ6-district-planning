@@ -30,13 +30,13 @@ CIVILIZATION_ETHIOPIA,埃塞俄比亚,无,阿克苏姆的遗产：埃塞俄比�
 CIVILIZATION_FEZ,非斯,无,无,否,无,一手,否
 CIVILIZATION_FRANCE,法国,无,游学：为中世纪、文艺复兴时期和工业时代的奇观+20% 生产力。 所有奇观的 旅游业绩+100%。,否,无,一手,否
 CIVILIZATION_FREE_CITIES,自由城市,无,无,否,无,一手,否
-CIVILIZATION_GAUL,高卢,DISTRICT_OPPIDUM,哈尔施塔特文化：矿山为所有区域提供少量相邻加成、对无主领土施放文化炸弹，并+1 文化值。特色区域与其他区域相邻时不会获得少量相邻加成；特色区域也无法建在市中心旁。,是,无,一手,否
+CIVILIZATION_GAUL,高卢,DISTRICT_OPPIDUM,哈尔施塔特文化：矿山为所有区域提供少量相邻加成、对无主领土施放文化炸弹，并+1 文化值。特色区域与其他区域相邻时不会获得少量相邻加成；特色区域也无法建在市中心旁。,否,无,一手,否
 CIVILIZATION_GENEVA,日内瓦,无,无,否,无,一手,否
 CIVILIZATION_GEORGIA,格鲁吉亚,无,团结就是力量：在黄金或英雄时代初期设置着力点时，除原有加成外还将获得提高时代得分的普通时代加成。建造防御性建筑时+50% 生产力。,否,无,一手,否
 CIVILIZATION_GERMANY,德国,DISTRICT_HANSA,自由帝国城市：每座城市都能建造比平常多一个区域（无视 人口数量限制）。,是,无,一手,否
 CIVILIZATION_GRANADA,格拉纳达,无,无,否,无,一手,否
 CIVILIZATION_GRAN_COLOMBIA,大哥伦比亚,无,爱国军：所有单位+1 移动力。升级单位不会结束其回合。,否,无,一手,否
-CIVILIZATION_GREECE,希腊,DISTRICT_ACROPOLIS,柏拉图的理想国：每种政体可获得一个额外的通配符槽位。,是,无,一手,否
+CIVILIZATION_GREECE,希腊,DISTRICT_ACROPOLIS,柏拉图的理想国：每种政体可获得一个额外的通配符槽位。,否,无,一手,否
 CIVILIZATION_HATTUSA,哈图沙,无,无,否,无,一手,否
 CIVILIZATION_HONG_KONG,香港,无,无,否,无,一手,否
 CIVILIZATION_HUNGARY,匈牙利,无,多瑙河之珠：在市中心河对岸修建区域与建筑时+50% 生产力。,否,无,一手,否
@@ -45,7 +45,7 @@ CIVILIZATION_INCA,印加,无,米塔制度：公民可改良山脉单元格。山
 CIVILIZATION_INDIA,印度,无,达摩：从城市中的每个宗教（其须拥有至少1个信徒）获得信徒信仰加成。城市从每个宗教（须有至少1个信徒）获得1点 宜居度。传教士的传播次数+2。来自 贸易路线的宗教压力+100%。,否,无,一手,否
 CIVILIZATION_INDONESIA,印度尼西亚,无,伟大千岛之国：海岸和湖泊单元格可为圣地、学院、工业区和剧院广场提供少量相邻加成。如与海岸或湖泊单元格相邻，娱乐设施+1 宜居度。,否,无,一手,否
 CIVILIZATION_JAKARTA,斯里巴加湾,无,无,否,无,一手,否
-CIVILIZATION_JAPAN,日本,无,明治维新：当区域与区域相邻时，所有区域获得一个额外的标准相邻加成。,否,无,一手,否
+CIVILIZATION_JAPAN,日本,无,明治维新：当区域与区域相邻时，所有区域获得一个额外的标准相邻加成。,是,无,一手,否
 CIVILIZATION_JERUSALEM,耶路撒冷,无,无,否,无,一手,否
 CIVILIZATION_JOHANNESBURG,约翰内斯堡,无,无,否,无,一手,否
 CIVILIZATION_KABUL,喀布尔,无,无,否,无,一手,否
@@ -82,7 +82,7 @@ CIVILIZATION_PORTUGAL,葡萄牙,无,印度之家：国际 贸易路线必须起�
 CIVILIZATION_PRESLAV,普雷斯拉夫,无,无,否,无,一手,否
 CIVILIZATION_RAPA_NUI,拉帕努伊,无,无,否,无,一手,否
 CIVILIZATION_ROME,罗马,DISTRICT_BATH,条条大路通罗马：所有您创建或攻占的城市一开始便拥有贸易站。如果位于您 首都的 贸易路线范围内，城市自动建立一条通至罗马的路。您的 贸易路线经过您的城市贸易站+1 金币。,否,无,一手,否
-CIVILIZATION_RUSSIA,俄罗斯,DISTRICT_LAVRA,俄罗斯母亲：建立城市可获得额外领土。冻土提供+1 信仰值与+1 生产力。与俄罗斯交战的文明单位如处于俄罗斯领土中，遭遇暴风雪时受到的伤害+100%。,否,无,一手,否
+CIVILIZATION_RUSSIA,俄罗斯,DISTRICT_LAVRA,俄罗斯母亲：建立城市可获得额外领土。冻土提供+1 信仰值与+1 生产力。与俄罗斯交战的文明单位如处于俄罗斯领土中，遭遇暴风雪时受到的伤害+100%。,是,无,一手,否
 CIVILIZATION_SAMARKAND,撒马尔罕,无,无,否,无,一手,否
 CIVILIZATION_SCOTLAND,苏格兰,无,苏格兰启蒙运动：幸福度为快乐的城市额外+5% 科技值、+5% 生产力。快乐的城市中每个学院+1 大科学家点数、每个工业区+1 大工程师点数。欣喜若狂的城市获得的加成将加倍。,否,无,一手,否
 CIVILIZATION_SCYTHIA,斯基泰,无,大草原上的人：每次您训练一个轻骑兵或萨卡弓骑手，都可以再获得一个轻骑兵或萨卡弓骑手。,否,无,一手,否
@@ -93,7 +93,7 @@ CIVILIZATION_SWEDEN,瑞典,无,诺贝尔奖：瑞典招募伟人时可获得50�
 CIVILIZATION_TARUGA,塔鲁加,无,无,否,无,一手,否
 CIVILIZATION_VALLETTA,瓦莱塔,无,无,否,无,一手,否
 CIVILIZATION_VATICAN_CITY,梵蒂冈城,无,无,否,无,一手,否
-CIVILIZATION_VIETNAM,越南,DISTRICT_THANH,九龙江三角洲：所有陆地特色区域只能建造在雨林、沼泽或树林上。建在这些地貌上的建筑将获得以下收益：建在树林上提供+1 文化值、建在雨林上提供+1 科技值、建在沼泽上提供+1 生产力。拥有“中世纪集市”市政后即可栽种树林。,是,无,一手,否
+CIVILIZATION_VIETNAM,越南,DISTRICT_THANH,九龙江三角洲：所有陆地特色区域只能建造在雨林、沼泽或树林上。建在这些地貌上的建筑将获得以下收益：建在树林上提供+1 文化值、建在雨林上提供+1 科技值、建在沼泽上提供+1 生产力。拥有“中世纪集市”市政后即可栽种树林。,否,无,一手,否
 CIVILIZATION_VILNIUS,维尔纽斯,无,无,否,无,一手,否
 CIVILIZATION_WOLIN,沃林,无,无,否,无,一手,否
 CIVILIZATION_YEREVAN,埃里温,无,无,否,无,一手,否

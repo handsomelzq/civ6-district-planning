@@ -15,7 +15,7 @@ import { type Axial, key } from "./hex.ts";
 import { isNone } from "./csv.ts";
 import { type AdjacencyRule, type Rules } from "./rules.ts";
 import {
-  type BoardState, type Tile, districtPositions, neighborTiles, tileAt, inWorkRange,
+  type BoardState, type Tile, districtPositions, neighborTiles, tileAt, inWorkRange, cityFor,
 } from "./board.ts";
 
 // ── 输出：产出明细树（SDD §3.7）────────────────────────────────────────
@@ -55,6 +55,7 @@ export type YieldTree = {
   readonly 合计: ReadonlyMap<string, Rat>;
   readonly 产出: readonly YieldNode[];
   readonly 诊断: readonly Diagnostic[];
+  readonly 城市合计: ReadonlyMap<string, ReadonlyMap<string, Rat>>;
 };
 
 // ── g：单条规则的增量（SDD §3.3，2026-09-24 实测）────────────────────
@@ -197,25 +198,41 @@ export function evaluate(rules: Rules, board: BoardState): YieldTree {
 
   // 第 3 步（前半）· 唯一性校验。必须在逐格循环**之外**先统计一遍：
   //   「同一区域放了几座」是整盘的性质，在单格循环里看不到。
-  //   本 demo 是单城局面，所以每城与每玩家两条上限落在同一个计数上；两列仍分别
-  //   校验，因为它们在游戏里是两回事（政府广场与外交区是全局唯一，运河/堤坝/
-  //   姆班扎/住宅区是每城可多座），将来做多城时这里不用改语义。
+  //   每城与每玩家分别计数；跨城只共享每玩家上限。
   const 计数 = new Map<string, Axial[]>();
+  const 每城计数 = new Map<string, Axial[]>();
   for (const p of districtPositions(board)) {
     const did = rules.effective(tileAt(board, p)!.区域!, board.文明);
     (计数.get(did) ?? 计数.set(did, []).get(did)!).push(p);
+    const cid = cityFor(board, p)?.id ?? "未归属";
+    const ck = `${cid}@${did}`;
+    (每城计数.get(ck) ?? 每城计数.set(ck, []).get(ck)!).push(p);
   }
   for (const [did, ps] of 计数) {
     const d = rules.districts.get(did);
     if (d === undefined) continue;
-    const lim = Math.min(d.每城上限, d.每玩家上限);
-    if (ps.length > lim) {
-      const which = d.每玩家上限 <= d.每城上限 ? "每玩家上限" : "每城上限";
-      诊断.push({
+    if (!board.城市?.length) {
+      const lim = Math.min(d.每城上限, d.每玩家上限);
+      if (ps.length > lim) 诊断.push({
         级别: "错误", 位置: ps[lim],
-        说明: `${rules.name(did)} 放了 ${ps.length} 座，超过${which} ${lim}（E17b）`,
+        说明: `${rules.name(did)} 放了 ${ps.length} 座，超过${d.每玩家上限 <= d.每城上限 ? "每玩家上限" : "每城上限"} ${lim}（E17b）`,
+      });
+      continue;
+    }
+    if (ps.length > d.每玩家上限) {
+      诊断.push({
+        级别: "错误", 位置: ps[d.每玩家上限],
+        说明: `${rules.name(did)} 放了 ${ps.length} 座，超过每玩家上限 ${d.每玩家上限}（E17b）`,
       });
     }
+  }
+  for (const [ck, ps] of board.城市?.length ? 每城计数 : []) {
+    const did = ck.slice(ck.indexOf("@") + 1);
+    const d = rules.districts.get(did);
+    if (d && ps.length > d.每城上限 && d.每城上限 < d.每玩家上限) 诊断.push({
+      级别: "错误", 位置: ps[d.每城上限],
+      说明: `${rules.name(did)} 在${cityFor(board, ps[0])?.名称 ?? "本城"}放了 ${ps.length} 座，超过每城上限 ${d.每城上限}（E17b）`,
+    });
   }
 
   for (const p of districtPositions(board)) {
@@ -262,6 +279,17 @@ export function evaluate(rules: Rules, board: BoardState): YieldTree {
       });
     }
 
+    // 日本「明治维新」：游戏 TraitModifiers 的六条区域相邻修正。
+    // ExcludedAdjacencies 已摘掉对应的五条通用标准档；此处补上 +1/邻格。
+    for (const mod of rules.traitAdjacency.get(board.文明 ?? "") ?? []) {
+      if (mod.区域id !== did) continue;
+      const n = neighborTiles(board, p).filter((t) => t.区域 !== undefined).length;
+      push(mod.产出类型, srcKey, dname, p, {
+        增量: mul(rat(n), mod.每邻格加成), 规则id: mod.修正id,
+        计数: n, 档位: "主要档", 说明: `文明能力：相邻任意区域 ×${n}（+1/个）`,
+      });
+    }
+
     // 第 7 步 · 建筑增量
     for (const bid of tile.建筑 ?? []) {
       const b = rules.buildings.get(bid);
@@ -289,10 +317,27 @@ export function evaluate(rules: Rules, board: BoardState): YieldTree {
     }
   }
 
-  // 第 8 步 · 文明修正：**本期不实现**，理由见文件末尾。
+  // 路德维希二世「童话国王」：世界奇观的相邻修正从 TraitModifiers 导出。
+  // 世界奇观的建造/完工流程不在本期局面模型里；已放置奇观可以静态求值。
+  for (const mod of rules.traitAdjacency.get(board.领袖 ?? "") ?? []) {
+    if (mod.区域id !== "DISTRICT_WONDER") continue;
+    for (const [k, tile] of board.tiles) {
+      if (!tile.世界奇观) continue;
+      const p = { q: Number(k.split(",")[0]), r: Number(k.split(",")[1]) };
+      const n = neighborTiles(board, p).filter((t) => t.区域 !== undefined).length;
+      push(mod.产出类型, `${mod.修正id}@${k}`, "童话国王·世界奇观", p, {
+        增量: mul(rat(n), mod.每邻格加成), 规则id: mod.修正id,
+        计数: n, 档位: "主要档", 说明: `奇观相邻区域 ×${n}（+${mod.每邻格加成.n / mod.每邻格加成.d}/个）`,
+      });
+    }
+  }
+
+  // 第 8 步 · 文明/领袖布局修正：日本相邻修正已在第 6 步配合排除表记账；
+  //   路德维希二世的奇观文化已在上方记账。贸易/总督/时代等修正暂无对应局面状态。
   // 第 9 步 · 汇总，**不取整**（D4 实测：产出全程按小数累加）。
   const 产出: YieldNode[] = [];
   const 合计 = new Map<string, Rat>();
+  const 城市合计 = new Map<string, Map<string, Rat>>();
   for (const y of [...acc.keys()].sort()) {
     const sources: SourceNode[] = [];
     let ytotal = ZERO;
@@ -301,12 +346,20 @@ export function evaluate(rules: Rules, board: BoardState): YieldTree {
       let stotal = ZERO;
       for (const l of slot.leaves) stotal = add(stotal, l.增量);
       sources.push({ ...slot.node, 合计: stotal, 叶子: slot.leaves });
+      if (slot.node.位置) {
+        const cid = cityFor(board, slot.node.位置)?.id;
+        if (cid) {
+          const ys = 城市合计.get(cid) ?? new Map<string, Rat>();
+          ys.set(y, add(ys.get(y) ?? ZERO, stotal));
+          城市合计.set(cid, ys);
+        }
+      }
       ytotal = add(ytotal, stotal);
     }
     产出.push({ 产出类型: y, 合计: ytotal, 来源: sources });
     合计.set(y, ytotal);
   }
-  return { 合计, 产出, 诊断 };
+  return { 合计, 产出, 诊断, 城市合计 };
 }
 
 function describeTarget(rules: Rules, rule: AdjacencyRule, 计数: number): string {
@@ -347,7 +400,7 @@ export function checkAdditive(tree: YieldTree): string[] {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
- * 九步求值顺序里有**三步是空的**，而且三步各有不同的理由。都保留编号，
+ * 九步求值顺序里有两步是空的；文明修正已按可静态求值的部分接入。保留编号，
  * 为的是让「为什么没有这一步」显式可见，而不是让读代码的人以为漏了。
  *
  *   第 4 步 地块基础产出   —— 本期不实现。文明 6 的地块产出要经由「市民分配到
@@ -356,10 +409,11 @@ export function checkAdditive(tree: YieldTree): string[] {
  *                            拆解面板示例也只有区域与建筑两类来源，没有地块。
  *   第 5 步 区域基础产出   —— **不存在**。districts.csv 全部 36 行的 基础产出
  *                            都是「无」，文明 6 的区域自身零产出。
- *   第 8 步 文明修正       —— 本期不实现。civs.文明能力 是本地化自然语言文本，
- *                            未做结构化建模；而首期五文明的特色**全部**已经由
- *                            替换（第 1 步）与排除（第 2 步）表达完毕。
+ *   第 8 步 文明修正       —— 日本的 +1/邻格已由游戏 ModifierArguments 生成表
+ *                            结构化，在第 6 步与相邻规则一起记账；领袖路德维希
+ *                            的奇观修正在第 7 步后记账。其余贸易/总督/时代效果
+ *                            仍缺对应局面状态。
  *
- * 三步都空，说明了一件值得写进作品集的事：**文明 6 的区域产出体系几乎完全是
+ * 地块与区域基础产出两步为空，说明：**文明 6 的区域产出体系几乎完全是
  * 相邻加成 + 建筑两件事**，其余的层要么不存在，要么属于别的子系统。
  * ════════════════════════════════════════════════════════════════════ */

@@ -87,6 +87,9 @@ SCHEMA = {
         "原始标识", "备注"]),
     "excluded_adjacencies.csv": dict(id=None, prov=True, cols=[
         "traitid", "所属文明id", "所属领袖id", "被排除规则标识", "备注"]),
+    "trait_adjacency_modifiers.csv": dict(id="规则id", prov=True, cols=[
+        "规则id", "原始修正id", "文明id", "领袖id", "区域id", "产出类型", "每邻格加成",
+        "目标类别", "备注"]),
     "combat_modifiers.csv": dict(id="修正id", prov=True, cols=[
         "修正id", "名称", "条件类别", "条件参数", "修正通道", "修正值",
         "作用时机", "是否可叠加", "叠加上限", "备注"]),
@@ -449,7 +452,7 @@ def main(argv):
 
     # 规则 10/11：combat_modifiers —— 允许负值
     for r in rows_of("combat_modifiers.csv"):
-        i = r.get("修正id", "?")
+        i = r.get("规则id", "?")
         check_enum("combat", i, "条件类别", r.get("条件类别", ""), "条件类别")
         check_enum("combat", i, "修正通道", r.get("修正通道", ""), "修正通道")
         check_enum("combat", i, "作用时机", r.get("作用时机", ""), "作用时机")
@@ -512,6 +515,24 @@ def main(argv):
         check_fk("excluded", i, "所属领袖id", lead, pool("leaders.csv"), "领袖")
         check_fk("excluded", i, "被排除规则标识", r.get("被排除规则标识", ""),
                  raw_ids, "相邻规则原始标识", allow_none=False)
+
+    for r in rows_of("trait_adjacency_modifiers.csv"):
+        i = r.get("修正id", "?")
+        if (r.get("文明id") == "无") == (r.get("领袖id") == "无"):
+            err(f"trait_modifier {i} 的「文明id」与「领袖id」必须恰有一个非无")
+        check_fk("civ_modifier", i, "文明id", r.get("文明id", ""),
+                 pool("civs.csv"), "文明")
+        check_fk("civ_modifier", i, "领袖id", r.get("领袖id", ""),
+                 pool("leaders.csv"), "领袖")
+        check_fk("civ_modifier", i, "区域id", r.get("区域id", ""),
+                 pool("districts.csv"), "区域", allow_none=False)
+        check_enum("civ_modifier", i, "产出类型", r.get("产出类型", ""),
+                   "产出类型")
+        if r.get("目标类别") != "任意其他区域":
+            err(f"civ_modifier {i} 的「目标类别」必须为 任意其他区域")
+        v = r.get("每邻格加成", "")
+        if not is_num(v) or float(v) <= 0:
+            err(f"civ_modifier {i} 的「每邻格加成」必须为正数，实为 {v}")
 
     for r in rows_of("civs.csv"):
         i = r.get("文明id", "?")

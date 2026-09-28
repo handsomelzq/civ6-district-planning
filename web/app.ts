@@ -8,9 +8,9 @@ import { TABLE_TEXTS } from "./tables.gen.js";      // 构建期生成，见 Too
 import { LEVEL_TEXTS } from "./levels.gen.js";      // 同上
 import { evaluate, total, type YieldTree } from "../src/evaluate.ts";
 import {
-  type BoardState, type Tile, withDistrict, districtPositions, inWorkRange,
+  type BoardState, withDistrict, districtPositions, inWorkRange,
 } from "../src/board.ts";
-import { type Axial, key, parseKey, disc } from "../src/hex.ts";
+import { type Axial, key, parseKey } from "../src/hex.ts";
 import { fmt, cmp, sub, ZERO, isZero, type Rat } from "../src/rational.ts";
 import {
   renderMap, renderTotals, renderBreakdown, yieldColor,
@@ -18,6 +18,7 @@ import {
 import {
   loadLevels, meetsGoal, starsOf, scoreOf, goalText, type Level,
 } from "./levels.ts";
+import { PRESETS, sandboxBoard, type PresetId } from "./presets.ts";
 
 const rules = new Rules(TABLE_TEXTS as never);
 const { levels, problems } = loadLevels(rules, LEVEL_TEXTS as never);
@@ -31,13 +32,20 @@ const PALETTE = [
 ].filter((d) => rules.districts.has(d));
 
 const CIVS: [string, string][] = [
-  ["", "常规文明（无特色区域）"],
-  ["CIVILIZATION_KOREA", "韩国 · 书院"],
   ["CIVILIZATION_GERMANY", "德国 · 汉萨"],
-  ["CIVILIZATION_GREECE", "希腊 · 卫城"],
-  ["CIVILIZATION_GAUL", "高卢 · 奥皮杜姆"],
-  ["CIVILIZATION_VIETNAM", "越南 · 城池"],
+  ["CIVILIZATION_JAPAN", "日本 · 明治维新"],
+  ["CIVILIZATION_RUSSIA", "俄罗斯 · 拉夫拉"],
+  ["CIVILIZATION_KOREA", "韩国 · 书院"],
 ];
+const LEADER_SCOPE: Record<string, string> = {
+  LEADER_LUDWIG: "当前可算：世界奇观每相邻一个区域 +2 文化。",
+  LEADER_BARBAROSSA: "军事政策槽与对城邦战斗力，当前产出局面不触发。",
+  LEADER_HOJO: "军营、圣地、剧院广场建造加速与战斗加成，当前不模拟建造回合。",
+  LEADER_TOKUGAWA: "国内贸易路线加成，当前没有贸易路线系统。",
+  LEADER_PETER_GREAT: "跨文明贸易路线加成，当前没有贸易路线系统。",
+  LEADER_SEONDEOK: "总督升级百分比加成，当前没有总督系统。",
+  LEADER_SEJONG: "新时代首项科技解锁时的文化奖励，当前没有回合/时代推进。",
+};
 
 const TERRAIN_EDIT: [string, string][] = [
   ["TERRAIN_GRASS", "草原"], ["TERRAIN_PLAINS", "平原"],
@@ -54,7 +62,8 @@ type Brush =
   | { kind: "区域"; id: string }
   | { kind: "移除" }
   | { kind: "地形"; id: string }
-  | { kind: "地貌"; id: string };
+  | { kind: "地貌"; id: string }
+  | { kind: "世界奇观"; id: string };
 
 type App = {
   mode: "自由" | "挑战";
@@ -68,27 +77,9 @@ type App = {
   /** 挑战模式：关卡初始局面（重试用）。 */
   levelStart?: BoardState;
   settled?: "达成" | "失败";
+  preset: PresetId;
+  selectedCity: string;
 };
-
-function sandboxBoard(): BoardState {
-  const tiles = new Map<string, Tile>();
-  for (const p of disc(3)) tiles.set(key(p), { 地形: "TERRAIN_GRASS" });
-  // 预置一点地形，让玩家一进来就能看到相邻加成在动
-  const set = (k: string, t: Partial<Tile>) =>
-    tiles.set(k, { ...tiles.get(k)!, ...t });
-  set("0,0", { 区域: "DISTRICT_CITY_CENTER", 建筑: ["BUILDING_PALACE"] });
-  for (const k of ["2,-1", "2,0", "1,-2"]) set(k, { 地形: "TERRAIN_GRASS_MOUNTAIN" });
-  for (const k of ["-1,1", "-2,1", "-1,2"]) set(k, { 地貌: "FEATURE_FOREST" });
-  for (const k of ["0,-2", "1,-3"]) set(k, { 地貌: "FEATURE_JUNGLE" });
-  set("-2,0", { 河流边: true });
-  set("-1,0", { 河流边: true });
-  set("1,1", { 资源: "RESOURCE_IRON" });
-  for (const k of ["3,-3", "3,-2", "2,1", "3,0"]) set(k, { 地形: "TERRAIN_COAST" });
-  return {
-    tiles, 中心: { q: 0, r: 0 }, 人口: 10, 文明: undefined, 领袖: undefined,
-    已解锁科技: new Set(["TECH_WRITING"]), 已解锁市政: new Set(),
-  };
-}
 
 const app: App = {
   mode: "自由",
@@ -96,6 +87,7 @@ const app: App = {
   undo: [],
   brush: { kind: "区域", id: PALETTE[0] },
   focusYield: "科技",
+  preset: "mountain", selectedCity: "A",
 };
 
 // ── 交互：放置 / 编辑 / 撤销 ──────────────────────────────────────────
@@ -105,7 +97,18 @@ function blockReason(b: BoardState, p: Axial, districtId: string): string {
   if (!t) return "不在盘面上";
   if (t.区域) return `已有 ${rules.name(rules.effective(t.区域, b.文明))}`;
   if (!rules.buildableTerrain.has(t.地形)) return "该地形不可建区域";
-  if (!inWorkRange(b, p)) return "超出城市 3 格工作范围（E16）";
+  if (!inWorkRange(b, p, app.mode === "自由" ? app.selectedCity : undefined))
+    return "超出所选城市 3 格工作范围（E16）";
+  const effective = rules.effective(districtId, b.文明);
+  const d = rules.districts.get(effective);
+  if (d) {
+    const placed = districtPositions(b).filter((xy) =>
+      rules.effective(b.tiles.get(key(xy))!.区域!, b.文明) === effective);
+    if (placed.length >= d.每玩家上限) return "已达到每玩家上限";
+    const own = placed.filter((xy) =>
+      (b.tiles.get(key(xy))!.所属城市 ?? "A") === app.selectedCity);
+    if (app.mode === "自由" && own.length >= d.每城上限) return "该城已建过此区域";
+  }
   if (app.mode === "挑战" && remainingBudget() <= 0) return "放置配额已用完";
   return "";
 }
@@ -113,8 +116,8 @@ function blockReason(b: BoardState, p: Axial, districtId: string): string {
 function blockedMap(): Map<string, string> {
   const m = new Map<string, string>();
   if (app.brush.kind !== "区域") return m;
-  for (const p of disc(3, app.board.中心)) {
-    if (!app.board.tiles.has(key(p))) continue;
+  for (const k of app.board.tiles.keys()) {
+    const p = parseKey(k);
     const why = blockReason(app.board, p, app.brush.id);
     if (why) m.set(key(p), why);
   }
@@ -140,7 +143,8 @@ function onClick(p: Axial) {
   if (b.kind === "区域") {
     if (blockReason(app.board, p, b.id)) { render(); return; }
     push();
-    app.board = withDistrict(app.board, p, b.id, rules.removedByDistrict);
+    app.board = withDistrict(app.board, p, b.id, rules.removedByDistrict,
+      app.mode === "自由" ? app.selectedCity : undefined);
   } else if (b.kind === "移除") {
     // 挑战模式里不许拆关卡自带的区域 —— 那是残局的一部分
     const start = app.levelStart?.tiles.get(k);
@@ -152,10 +156,15 @@ function onClick(p: Axial) {
     tiles.set(k, rest as Tile);
     app.board = { ...app.board, tiles };
   } else if (app.mode === "自由") {
+    if (b.kind === "世界奇观" && b.id && (t.区域 || t.世界奇观 ||
+        !rules.buildableTerrain.has(t.地形) || !inWorkRange(app.board, p, app.selectedCity))) {
+      render(); return;
+    }
     push();
     const tiles = new Map(app.board.tiles);
     if (b.kind === "地形") tiles.set(k, { ...t, 地形: b.id });
-    else tiles.set(k, { ...t, 地貌: b.id || undefined });
+    else if (b.kind === "地貌") tiles.set(k, { ...t, 地貌: b.id || undefined });
+    else if (b.kind === "世界奇观") tiles.set(k, { ...t, 世界奇观: b.id || undefined });
     app.board = { ...app.board, tiles };
   }
   checkSettlement();
@@ -179,12 +188,12 @@ function previewMap(tree: YieldTree): Map<string, Rat> {
   const out = new Map<string, Rat>();
   if (app.brush.kind !== "区域" || app.settled) return out;
   const before = total(tree, app.focusYield);
-  for (const p of disc(3, app.board.中心)) {
-    const k = key(p);
-    if (!app.board.tiles.has(k)) continue;
+  for (const k of app.board.tiles.keys()) {
+    const p = parseKey(k);
     if (blockReason(app.board, p, app.brush.id)) continue;
     const after = total(
-      evaluate(rules, withDistrict(app.board, p, app.brush.id, rules.removedByDistrict)),
+      evaluate(rules, withDistrict(app.board, p, app.brush.id, rules.removedByDistrict,
+        app.mode === "自由" ? app.selectedCity : undefined)),
       app.focusYield);
     out.set(k, sub(after, before));
   }
@@ -198,12 +207,14 @@ const esc = (s: string): string =>
 
 function render() {
   const tree = evaluate(rules, app.board);
+  $("map").classList.toggle("multi", app.mode === "自由" && (app.board.城市?.length ?? 0) > 1);
   $("map").innerHTML = renderMap(rules, app.board, {
     selected: app.selected, hovered: app.hovered,
     preview: previewMap(tree), 预览产出: app.focusYield,
-    blocked: blockedMap(),
+    blocked: blockedMap(), selectedCity: app.mode === "自由" ? app.selectedCity : undefined,
   });
   $("totals").innerHTML = renderTotals(tree, app.focusYield);
+  $("citytotals").innerHTML = app.mode === "自由" ? cityTotals(tree) : "";
   $("breakdown").innerHTML = renderBreakdown(tree, app.focusYield);
   $("tileinfo").innerHTML = tileInfo();
   $("modebar").innerHTML = modeBar(tree);
@@ -220,6 +231,8 @@ function tileInfo(): string {
   const bits = [`地形 ${esc(rules.name(t.地形))}`];
   if (t.地貌) bits.push(`地貌 ${esc(t.地貌.replace("FEATURE_", ""))}`);
   if (t.资源) bits.push(`资源 ${esc(rules.name(t.资源))}`);
+  if (t.所属城市) bits.push(`归属 ${esc(app.board.城市?.find((c) => c.id === t.所属城市)?.名称 ?? t.所属城市)}`);
+  if (t.世界奇观) bits.push(`世界奇观 ${esc(t.世界奇观)}`);
   if (t.河流边) bits.push("临河");
   if (t.区域) {
     const did = rules.effective(t.区域, app.board.文明);
@@ -232,11 +245,29 @@ function tileInfo(): string {
 function modeBar(tree: YieldTree): string {
   if (app.mode === "自由") {
     const opts = CIVS.map(([id, nm]) =>
-      `<option value="${id}" ${app.board.文明 === (id || undefined) ? "selected" : ""}>${esc(nm)}</option>`).join("");
-    return `<label>文明 <select id="civ">${opts}</select></label>
+      `<option value="${id}" ${app.board.文明 === id ? "selected" : ""}>${esc(nm)}</option>`).join("");
+    const leaders = rules.leadersByCiv.get(app.board.文明 ?? "") ?? [];
+    const leaderOpts = leaders.map((l) =>
+      `<option value="${esc(l.id)}" ${app.board.领袖 === l.id ? "selected" : ""}>${esc(l.名称)}</option>`).join("");
+    const cityOpts = (app.board.城市 ?? []).map((c) =>
+      `<option value="${c.id}" ${app.selectedCity === c.id ? "selected" : ""}>${esc(c.名称)}</option>`).join("");
+    const presetOpts = PRESETS.map((p) =>
+      `<option value="${p.id}" ${app.preset === p.id ? "selected" : ""}>${esc(p.name)}</option>`).join("");
+    const activeLeader = leaders.find((l) => l.id === app.board.领袖);
+    const civAbility = rules.civAbility.get(app.board.文明 ?? "") ?? "";
+    return `<label>环境 <select id="preset">${presetOpts}</select></label>
+      <label>当前建设城市 <select id="city">${cityOpts}</select></label>
+      <label>文明 <select id="civ">${opts}</select></label>
+      <label>领袖 <select id="leader">${leaderOpts}</select></label>
       <button id="undo" ${app.undo.length ? "" : "disabled"}>撤销（${app.undo.length}）</button>
       <button id="reset">重置沙盒</button>
-      <span class="hint">自由模式没有胜负。它要回答的是「这一点产出凭什么是这样」。</span>`;
+      <span class="hint">选城后放置区域；相邻加成可跨城。</span>
+      <details class="ability"><summary>文明与领袖能力：原文和当前模拟范围</summary>
+      <p><b>${esc(rules.name(app.board.文明 ?? ""))}</b>：${esc(civAbility)}</p>
+      <p><b>${esc(activeLeader?.名称 ?? "")}</b>：${esc(activeLeader?.能力 ?? "")}</p>
+      <p class="hint">${esc(LEADER_SCOPE[activeLeader?.id ?? ""] ?? "本期只处理可由静态区域布局直接求值的能力。")}
+      ${app.board.文明 === "CIVILIZATION_RUSSIA" ? "俄罗斯冻土地块自身的产出需市民工作，当前只计算拉夫拉相邻加成。" : ""}</p>
+      </details>`;
   }
   const lv = app.level!;
   const got = tree.合计;
@@ -257,6 +288,16 @@ function modeBar(tree: YieldTree): string {
       <span class="chip">${esc(rules.name(lv.文明))}</span>
       <span class="chip">剩余配额 <b>${left}</b> / ${lv.约束值}</span>
     </div>${bars}${settleHtml(tree)}`;
+}
+
+function cityTotals(tree: YieldTree): string {
+  return (app.board.城市 ?? []).map((c) => {
+    const ys = tree.城市合计.get(c.id) ?? new Map();
+    const values = [...ys].filter(([, n]) => !isZero(n))
+      .map(([y, n]) => `${esc(y)} ${fmt(n)}`).join(" · ") || "暂无区域产出";
+    return `<div class="citysum ${app.selectedCity === c.id ? "active" : ""}" data-city="${c.id}">
+      <b>${esc(c.名称)}</b><span>${values}</span></div>`;
+  }).join("");
 }
 
 function settleHtml(tree: YieldTree): string {
@@ -301,6 +342,7 @@ function paletteHtml(): string {
       TERRAIN_EDIT.map(([id, nm]) => btn({ kind: "地形", id }, nm)).join("")}</div></div>`;
     html += `<div class="pgroup"><h4>改地貌</h4><div class="prow">${
       FEATURE_EDIT.map(([id, nm]) => btn({ kind: "地貌", id }, nm)).join("")}</div></div>`;
+    html += `<div class="pgroup"><h4>世界奇观（布局占位）</h4><div class="prow">${btn({ kind: "世界奇观", id: "BUILDING_PYRAMIDS" }, "金字塔")}${btn({ kind: "世界奇观", id: "" }, "移除奇观")}</div><span class="hint">仅用于静态相邻试算，暂不校验奇观建造条件。</span></div>`;
   }
   return html;
 }
@@ -349,7 +391,15 @@ function wire() {
     g.onmouseenter = () => { app.hovered = p; $("tileinfoHover").innerHTML = ""; };
   });
   document.querySelectorAll<HTMLElement>(".pb").forEach((b) => {
-    b.onclick = () => { app.brush = JSON.parse(b.dataset.brush!); render(); };
+    b.onclick = () => {
+      app.brush = JSON.parse(b.dataset.brush!);
+      if (app.brush.kind === "区域") {
+        const did = rules.effective(app.brush.id, app.board.文明);
+        const main = rules.adjacency.get(did)?.find((r) => r.目标类别 !== "自身");
+        if (main) app.focusYield = main.产出类型;
+      }
+      render();
+    };
   });
   document.querySelectorAll<HTMLElement>(".tot").forEach((t) => {
     t.onclick = () => { app.focusYield = t.dataset.yield!; render(); };
@@ -357,9 +407,25 @@ function wire() {
   const civ = document.getElementById("civ") as HTMLSelectElement | null;
   if (civ) civ.onchange = () => {
     push();
-    app.board = { ...app.board, 文明: civ.value || undefined };
+    const leaders = rules.leadersByCiv.get(civ.value) ?? [];
+    app.board = { ...app.board, 文明: civ.value, 领袖: leaders[0]?.id };
     render();
   };
+  const leader = document.getElementById("leader") as HTMLSelectElement | null;
+  if (leader) leader.onchange = () => {
+    push(); app.board = { ...app.board, 领袖: leader.value }; render();
+  };
+  const city = document.getElementById("city") as HTMLSelectElement | null;
+  if (city) city.onchange = () => { app.selectedCity = city.value; render(); };
+  const preset = document.getElementById("preset") as HTMLSelectElement | null;
+  if (preset) preset.onchange = () => {
+    app.preset = preset.value as PresetId;
+    app.board = { ...sandboxBoard(app.preset), 文明: app.board.文明, 领袖: app.board.领袖 };
+    app.selectedCity = "A"; app.undo = []; app.selected = undefined; render();
+  };
+  document.querySelectorAll<HTMLElement>(".citysum").forEach((el) => {
+    el.onclick = () => { app.selectedCity = el.dataset.city!; render(); };
+  });
   const undo = document.getElementById("undo");
   if (undo) undo.onclick = () => {
     const prev = app.undo.pop();
@@ -367,7 +433,8 @@ function wire() {
   };
   const reset = document.getElementById("reset");
   if (reset) reset.onclick = () => {
-    push(); app.board = sandboxBoard(); render();
+    push(); app.board = { ...sandboxBoard(app.preset), 文明: app.board.文明,
+      领袖: app.board.领袖 }; render();
   };
   const retry = document.getElementById("retry");
   if (retry) retry.onclick = () => startLevel(app.level!.关卡id);
@@ -392,7 +459,10 @@ function setMode(m: "自由" | "挑战") {
     t.classList.toggle("on", t.dataset.mode === m));
   if (m === "自由") {
     app.level = undefined; app.levelStart = undefined;
-    app.board = sandboxBoard(); app.undo = []; app.focusYield = "科技";
+    const first = CIVS[0][0];
+    app.board = { ...sandboxBoard(app.preset), 文明: first,
+      领袖: rules.leadersByCiv.get(first)?.[0]?.id };
+    app.selectedCity = "A"; app.undo = []; app.focusYield = "科技";
     $("levellist").style.display = "none";
     $("play").style.display = "";
     render();

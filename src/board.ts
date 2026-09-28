@@ -17,12 +17,18 @@ export type Tile = {
   readonly 河流边?: boolean;
   readonly 区域?: string;          // 基础区域 id；替换在求值时解析
   readonly 建筑?: readonly string[];
+  /** 自由模式中这格区域归属的城市；相邻加成仍允许跨城。 */
+  readonly 所属城市?: string;
 };
+
+export type City = { readonly id: string; readonly 名称: string; readonly 中心: Axial; readonly 人口: number };
 
 export type BoardState = {
   readonly tiles: ReadonlyMap<string, Tile>;
   readonly 中心: Axial;
   readonly 人口: number;
+  /** 多城自由模式；旧关卡没有此字段，仍按单城局面处理。 */
+  readonly 城市?: readonly City[];
   readonly 文明?: string;
   readonly 领袖?: string;
   readonly 已解锁科技: ReadonlySet<string>;
@@ -51,7 +57,7 @@ export function neighborTiles(b: BoardState, p: Axial): Tile[] {
  */
 export function withDistrict(
   b: BoardState, p: Axial, districtId: string,
-  removedFeatures: ReadonlySet<string>,
+  removedFeatures: ReadonlySet<string>, cityId?: string,
 ): BoardState {
   const k = key(p);
   const old = b.tiles.get(k);
@@ -59,6 +65,7 @@ export function withDistrict(
   const next: Tile = {
     ...old,
     区域: districtId,
+    所属城市: cityId ?? old.所属城市,
     地貌: old.地貌 && removedFeatures.has(old.地貌) ? undefined : old.地貌,
   };
   const tiles = new Map(b.tiles);
@@ -84,5 +91,17 @@ export function districtPositions(b: BoardState): Axial[] {
 }
 
 /** 是否在城市 3 格工作范围内（边界 E16）。 */
-export const inWorkRange = (b: BoardState, p: Axial): boolean =>
-  distance(b.中心, p) <= 3;
+export function cityFor(b: BoardState, p: Axial): City | undefined {
+  if (!b.城市?.length) return { id: "单城", 名称: "本城", 中心: b.中心, 人口: b.人口 };
+  const assigned = b.tiles.get(key(p))?.所属城市;
+  if (assigned) return b.城市.find((c) => c.id === assigned);
+  return [...b.城市].sort((a, z) =>
+    distance(a.中心, p) - distance(z.中心, p) || a.id.localeCompare(z.id))[0];
+}
+
+export const inWorkRange = (b: BoardState, p: Axial, cityId?: string): boolean => {
+  const city = cityId && b.城市?.length
+    ? b.城市.find((c) => c.id === cityId)
+    : cityFor(b, p);
+  return city !== undefined && distance(city.中心, p) <= 3;
+};

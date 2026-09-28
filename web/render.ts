@@ -45,6 +45,7 @@ const YIELD_COLOR: Record<string, string> = {
   科技: "#5bb8e8", 文化: "#b57ae0", 金币: "#e0c04a",
   生产力: "#e08a4a", 信仰: "#e8e8f0", 粮食: "#7ad07a",
 };
+const ALL_YIELDS = ["科技", "文化", "金币", "生产力", "信仰", "粮食"];
 export const yieldColor = (y: string): string => YIELD_COLOR[y] ?? "#aaa";
 
 const esc = (s: string): string =>
@@ -60,6 +61,7 @@ export type MapOpts = {
   readonly 预览产出?: string;
   /** 坐标键 → 不可放置的原因。置灰并显示原因，不做「可点但报错」。 */
   readonly blocked?: ReadonlyMap<string, string>;
+  readonly selectedCity?: string;
 };
 
 export function renderMap(rules: Rules, b: BoardState, o: MapOpts = {}): string {
@@ -105,7 +107,8 @@ export function renderMap(rules: Rules, b: BoardState, o: MapOpts = {}): string 
       const did = rules.effective(t.区域, b.文明);
       const nm = rules.name(did);
       const isCenter = did === "DISTRICT_CITY_CENTER";
-      parts.push(`<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${SIZE * 0.62}" class="dist ${isCenter ? "center" : ""}"/>`);
+      const chosen = isCenter && t.所属城市 === o.selectedCity;
+      parts.push(`<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${SIZE * 0.62}" class="dist ${isCenter ? "center" : ""} ${chosen ? "chosen" : ""}"/>`);
       parts.push(`<text x="${c.x.toFixed(1)}" y="${(c.y + 1).toFixed(1)}" class="dname">${esc(nm.slice(0, 2))}</text>`);
       if (nm.length > 2) {
         parts.push(`<text x="${c.x.toFixed(1)}" y="${(c.y + 13).toFixed(1)}" class="dname2">${esc(nm.slice(2, 5))}</text>`);
@@ -130,10 +133,8 @@ export function renderMap(rules: Rules, b: BoardState, o: MapOpts = {}): string 
 
 // ── 产出汇总 ──────────────────────────────────────────────────────────
 export function renderTotals(tree: YieldTree, 高亮?: string): string {
-  const rows = [...tree.合计.entries()]
-    .filter(([, v]) => !isZero(v))
+  const rows = ALL_YIELDS.map((y): [string, Rat] => [y, tree.合计.get(y) ?? ZERO])
     .sort((a, z) => cmp(z[1], a[1]));
-  if (rows.length === 0) return `<div class="muted">还没有任何产出</div>`;
   return rows.map(([y, v]) =>
     `<div class="tot ${y === 高亮 ? "hi" : ""}" data-yield="${esc(y)}">
        <span class="dot" style="background:${yieldColor(y)}"></span>

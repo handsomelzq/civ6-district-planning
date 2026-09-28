@@ -19,7 +19,7 @@ const DIST = path.join(ROOT, "web", "dist");
 const TABLES = [
   "adjacency_rules.csv", "districts.csv", "buildings.csv",
   "resources.csv", "terrains.csv", "features.csv", "excluded_adjacencies.csv",
-  "civs.csv", "leaders.csv",
+  "civs.csv", "leaders.csv", "trait_adjacency_modifiers.csv",
 ];
 
 /** 剥类型 + 把 `./x.ts` 改写成 `./x.js`（浏览器只认 .js）。 */

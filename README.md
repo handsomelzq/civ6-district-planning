@@ -5,7 +5,7 @@
 > 数据版本：文明 VI 1.4.6（buildid 15296837）完整版，提取日 2026-09-24。
 >
 > **▶ 在线试玩：https://handsomelzq.github.io/civ6-district-planning/**
-> 零依赖、零构建工具链；每次 push 先跑 44 条测试，**测试不过就不发**。
+> 零依赖、零构建工具链；每次 push 先跑自动测试，**测试不过就不发**。
 
 ---
 
@@ -54,23 +54,25 @@
 │   ├── 数值设计.md                产出量级、相邻 vs 建筑、难度曲线
 │   └── 测试清单.md                数值对账、通关路径、回归影响矩阵
 ├── 配置表/                   ← 唯一事实来源，由解析脚本生成
-│   ├── 字段说明.md                17 张表、21 条校验规则
+│   ├── 字段说明.md                18 张表的字段、来源与校验规则
 │   └── *.csv
 ├── web/                      ← 网页（零依赖，构建后双击 index.html 即可玩）
 │   ├── index.html                单文件样式，无外部字体无 CDN
 │   ├── app.ts                    状态与两个模式的接线
 │   ├── render.ts                 SVG 六边形地图 + 拆解面板
+│   ├── presets.ts                三种多城初始环境
 │   └── levels.ts                 关卡加载与**加载期校验**（G1/G2/G3）
 ├── src/                      ← 求值器（TypeScript，零依赖）
 │   ├── evaluate.ts               ★ evaluate(rules, board) -> 产出明细树
 │   ├── rational.ts               精确有理数，全程不用浮点
 │   ├── rules.ts / board.ts / hex.ts / csv.ts
-├── tests/                    ← node:test，44 条
+├── tests/                    ← node:test，55 条
 │   ├── calibration.test.ts       对照游戏内实测读数（不过就别看后面了）
 │   ├── crosscheck.test.ts        与 Python 原型 60 盘面逐项对账
 │   ├── invariants.test.ts        I1–I4
 │   ├── categories.test.ts        8 个目标类别定向测
-│   └── levels.test.ts            9 关的三星阈值由产品求值器重算
+│   ├── levels.test.ts            9 关的三星阈值由产品求值器重算
+│   └── multicity-japan.test.ts  多城归属、日本修正与圣地展示
 ├── Tools/                    ← 全部只用 Python 标准库
 └── 记录/进度记录.md           ← 只追加的事实日志
 ```
@@ -82,7 +84,7 @@
 全部工具**只用 Python 标准库**（系统 `python3` 3.9 即可，不需要建 venv、不需要 pip install）。
 
 ```bash
-python3 Tools/check_config.py              # 配置表一致性校验（21 条规则）
+python3 Tools/check_config.py              # 配置表一致性校验
 python3 Tools/test_check_config.py         # 校验器自己的回归测试（66 条断言）
 python3 Tools/analyze_yields.py            # 产出量级分析（数值设计.md 的数字来源）
 python3 Tools/design_levels.py             # 重算关卡目标值与星级阈值，重新生成关卡表
@@ -92,7 +94,7 @@ python3 Tools/motif_check.py               # 关卡母题验证（先校准，�
 求值器与网页（TypeScript）。也是零依赖 —— **Node 24 原生跑 TypeScript**，测试用内置 `node:test`，构建用内置的 `module.stripTypeScriptTypes`：
 
 ```bash
-npm test                                   # 44 条测试：校准 / 不变量 / 交叉校验 / 关卡阈值
+npm test                                   # 55 条测试：校准 / 不变量 / 多城 / 日本 / 关卡阈值
 node Tools/build_web.mjs                   # 构建网页（把 .ts 剥成 .js，配置表内联）
 node Tools/serve.mjs                       # http://localhost:8123/web/
 ```
@@ -105,7 +107,7 @@ node Tools/serve.mjs                       # http://localhost:8123/web/
 python3 Tools/parse_civ6_xml.py            # 游戏 XML → 配置表 CSV
 ```
 
-**可复现性是这套工具的硬指标**：删掉 `配置表/*.csv` 再跑一次 `parse_civ6_xml.py`，13 张生成表逐字节一致。
+**可复现性是这套工具的硬指标**：重跑 `parse_civ6_xml.py` 可重建 14 张游戏数据表，包括日本区域相邻修正表。
 
 ---
 
@@ -114,13 +116,15 @@ python3 Tools/parse_civ6_xml.py            # 游戏 XML → 配置表 CSV
 | 部分 | 状态 |
 |---|---|
 | 拆解案 | 3/4 篇由一手数据填实；军事篇仍为二手，标 `待核=是` |
-| 配置表 | 13 张生成表 + 2 张关卡表；`units` / `combat_modifiers` 阻塞于军事实测 |
-| 关卡 | **10 关全部落地**：3 教学 + 5 普通 + 1 对照（另 1 关作废但留作回归用例） |
-| **求值器** | ✅ **已实现**（TypeScript，零依赖），44 条测试全过：5 个游戏内实测读数校准 + 四条不变量 + 8 个目标类别定向测 + **与 Python 原型 60 盘面交叉校验** + 9 关阈值双签 |
-| **两模式 UI** | ✅ **可玩**（零依赖，双击 `web/index.html` 即可）。自由模式：换文明 / 改地形 / 放区域 / 撤销 / 四层拆解面板；挑战模式：9 关、目标进度条、配额、星级结算 |
+| 配置表 | 14 张生成表 + 2 张关卡表；`units` / `combat_modifiers` 阻塞于军事实测 |
+| 关卡 | 9 关可进入，L-04 已作废。现有九关的原最优解均违反每城唯一性，须重新设计；当前阈值对账测试记录了这一已知缺口 |
+| **求值器** | ✅ **已实现**（TypeScript，零依赖），55 条测试全过：游戏内读数、四条不变量、60 盘面 Python 对账、多城上限、日本能力与 9 关旧阈值对账 |
+| **两模式 UI** | ✅ **可玩**。自由模式：三种多城环境、四文明及全部对应领袖、圣地信仰、每城产出、日本明治维新、路德维希奇观文化；挑战模式：9 关、目标进度条、配额、星级结算（关卡布局待修） |
 | 技术栈 | ✅ **TypeScript + Web**（2026-09-25 定）。Node 24 原生跑 TS，测试用内置 `node:test`，`package.json` 里零依赖 |
 
-表行数：`adjacency_rules` 103、`buildings` 85、`districts` 36、`civs` 100、`leaders` 126、`techs` 77、`civics` 61、`improvements` 59、`resources` 54、`features` 50、`wonders` 34、`terrains` 17、`excluded_adjacencies` 12。
+表行数：`adjacency_rules` 103、`trait_adjacency_modifiers` 8（含日本六条、波兰雅德维加一条、德国路德维希一条）、`buildings` 85、`districts` 36、`civs` 100、`leaders` 126、`techs` 77、`civics` 61、`improvements` 59、`resources` 54、`features` 50、`wonders` 34、`terrains` 17、`excluded_adjacencies` 12。
+
+当前自由模式七位领袖：德国弗雷德里克·巴巴罗萨、路德维希二世；日本北条时宗、德川家康；俄罗斯彼得；韩国善德、世宗大王。领袖都可选择并显示游戏原始能力；目前只有路德维希二世的世界奇观相邻文化属于已实现的静态布局效果。俄罗斯冻土地块额外产出依赖市民工作地块，当前只模拟拉夫拉区域的相邻产出。
 
 ---
 
@@ -195,4 +199,4 @@ python3 Tools/parse_civ6_xml.py                      # 自动找
 CIV6_ASSETS=/path/to/Assets python3 Tools/parse_civ6_xml.py   # 手动指定
 ```
 
-**可复现性是硬指标**：删掉 `配置表/*.csv` 再跑一次，13 张生成表逐字节一致。
+**可复现性是硬指标**：重跑解析脚本，14 张游戏数据表逐字节一致。

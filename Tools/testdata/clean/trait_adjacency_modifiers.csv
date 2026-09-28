@@ -1,0 +1,2 @@
+规则id,原始修正id,文明id,领袖id,区域id,产出类型,每邻格加成,目标类别,备注,数据来源,待核
+CIVILIZATION_GERMANY@TEST_GERMANY_CAMPUS,TEST_GERMANY_CAMPUS,CIVILIZATION_GERMANY,无,DISTRICT_CAMPUS,科技,1,任意其他区域,测试用,一手,否

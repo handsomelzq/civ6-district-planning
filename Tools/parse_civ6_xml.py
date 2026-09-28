@@ -142,6 +142,7 @@ NEEDED_TABLES = [
     "Buildings", "Building_YieldChanges", "BuildingPrereqs", "BuildingReplaces",
     "Civilizations", "CivilizationTraits", "CivilizationLeaders",
     "Leaders", "LeaderTraits", "Traits",
+    "Modifiers", "ModifierArguments", "TraitModifiers",
 ]
 
 YIELD_ZH = {
@@ -467,7 +468,8 @@ class DB(object):
             for op in tbl:
                 self.op_counts[(name, op.tag)] += 1
                 if op.tag in ("Row", "Replace", "InsertOrIgnore"):
-                    row = dict(op.attrib)
+                    # Row 也有列写在子元素里的形式（大量 Modifier* 记录如此）。
+                    row = cols_of(op)
                     key = self.pk_of(name, row)
                     if key is None:
                         die("%s 的 %s 没有主键，无法安全插入" % (label, name))
@@ -647,16 +649,10 @@ def write_csv(path, header, rows):
 
 PROV = ["一手", "否"]          # 数据来源 / 待核：本轮全部来自游戏本体
 
-# 首期纳入的文明：设计决定，不在游戏数据里（2026-09-24 定）。
-# 选择标准是「特色区域的机制类型要有差异」而非数值更高，五种类型各一个：
-#   韩国 书院   方向反转（+4 固定 + 每相邻一区域 −1，与学院的成团逻辑相反）
-#   希腊 卫城   档位升级（通用区域相邻从标准档升主要档，代价是丢三条娱乐区规则）
-#   德国 汉萨   规则集替换（吃商业中心与资源，而工业区吃矿场采石场）
-#   高卢 奥皮杜姆 规则裁剪（ExcludedAdjacencies 排除 5 条通用档，换采石场与战略资源翻倍）
-#   越南 城池   配额穿透 + 全表最高通用档（任意其他区域每 1 个 +2 文化）
+# 当前自由模式文明范围（用户 2026-09-28 指定）；原始表仍完整导出。
 FIRST_ROUND_CIVS = frozenset([
-    "CIVILIZATION_KOREA", "CIVILIZATION_GREECE", "CIVILIZATION_GERMANY",
-    "CIVILIZATION_GAUL", "CIVILIZATION_VIETNAM",
+    "CIVILIZATION_GERMANY", "CIVILIZATION_JAPAN",
+    "CIVILIZATION_RUSSIA", "CIVILIZATION_KOREA",
 ])
 
 
@@ -1028,6 +1024,45 @@ def gen_excluded(db, loc):
             "数据来源", "待核"], rows
 
 
+def gen_trait_adjacency_modifiers(db, loc):
+    """从 TraitModifiers → Modifiers → ModifierArguments 导出文明/领袖相邻修正。
+
+    日本「明治维新」的加法来自 MODIFIER_PLAYER_CITIES_DISTRICT_ADJACENCY，
+    与 ExcludedAdjacencies 的减法是独立两步；只导出能解释为区域邻格加成的行。
+    """
+    kinds = {r["ModifierId"]: r.get("ModifierType") for r in db.rows("Modifiers")
+             if r.get("ModifierId")}
+    args = defaultdict(dict)
+    for r in db.rows("ModifierArguments"):
+        if r.get("ModifierId") and r.get("Name"):
+            args[r["ModifierId"]][r["Name"]] = r.get("Value")
+    civ_owners = defaultdict(set)
+    leader_owners = defaultdict(set)
+    for r in db.rows("CivilizationTraits"):
+        civ_owners[r["TraitType"]].add(r["CivilizationType"])
+    for r in db.rows("LeaderTraits"):
+        leader_owners[r["TraitType"]].add(r["LeaderType"])
+    rows = []
+    for r in db.rows("TraitModifiers"):
+        mid = r.get("ModifierId")
+        if kinds.get(mid) != "MODIFIER_PLAYER_CITIES_DISTRICT_ADJACENCY":
+            continue
+        a = args[mid]
+        did, yield_id, amount = a.get("DistrictType"), a.get("YieldType"), a.get("Amount")
+        if not did or yield_id not in YIELD_ZH or not amount:
+            REPORT.skip("区域相邻修正参数不完整", mid)
+            continue
+        for civ in sorted(civ_owners.get(r["TraitType"], [])):
+            rows.append([civ + "@" + mid, mid, civ, NONE, did, YIELD_ZH[yield_id], amount,
+                         "任意其他区域", a.get("Description", NONE)] + PROV)
+        for leader in sorted(leader_owners.get(r["TraitType"], [])):
+            rows.append([leader + "@" + mid, mid, NONE, leader, did, YIELD_ZH[yield_id], amount,
+                         "任意其他区域", a.get("Description", NONE)] + PROV)
+    rows.sort(key=lambda x: (x[2], x[3], x[4], x[1]))
+    return ["规则id", "原始修正id", "文明id", "领袖id", "区域id", "产出类型", "每邻格加成",
+            "目标类别", "备注", "数据来源", "待核"], rows
+
+
 def classify_target(db, adj):
     """按 SDD §3.4 把一行 Adjacency_YieldChanges 归到 (目标类别, 目标id)。"""
     hits = []
@@ -1187,6 +1222,7 @@ def main(argv):
     tables["leaders.csv"] = gen_leaders(db, loc, civ_ids)
     tables["adjacency_rules.csv"] = gen_adjacency(db, loc)
     tables["excluded_adjacencies.csv"] = gen_excluded(db, loc)
+    tables["trait_adjacency_modifiers.csv"] = gen_trait_adjacency_modifiers(db, loc)
 
     for name, (header, rows) in tables.items():
         write_csv(out / name, header, rows)
@@ -1263,7 +1299,7 @@ def main(argv):
         "resources.是否海洋资源    ＝「可出现在水域」（SeaFrequency>0 或 AdjacentToLand）。"
         "琥珀、石油这类水陆都能出的资源也算是，与相邻规则的 AdjacentSeaResource 语义一致",
         "civs.是否首期纳入         来自脚本里的 FIRST_ROUND_CIVS 常量（设计决定，"
-        "不在游戏数据里）：韩国/希腊/德国/高卢/越南",
+        "不在游戏数据里）：德国/日本/俄罗斯/韩国",
         "leaders.是否首期纳入      ＝其所属文明是否在 FIRST_ROUND_CIVS 内",
         "civs.文明能力/leaders.领袖能力  由 Traits 的 Name/Description 本地化文本拼成，"
         "未做结构化建模",
