@@ -29,6 +29,97 @@ function transpile(src) {
   return js.replace(/(\bfrom\s*["'])([^"']+)\.ts(["'])/g, "$1$2.js$3");
 }
 
+/** 为 file:// 双击打开生成一个单文件浏览器包。
+ *
+ * Chrome/Safari 会把 file:// 页面里的 ES Module 跨文件 import 视为跨源请求，
+ * 结果是 HTML 能显示、入口脚本却不能执行。这里不引入打包器，直接把本项目
+ * 的有限模块图转换成一个最小 CommonJS 风格加载器；GitHub Pages 也使用同一
+ * 文件，因此本地与线上不会出现两套行为。
+ */
+function moduleId(file) {
+  return file.replace(/\\/g, "/").replace(/\.(ts|js)$/, "");
+}
+
+function resolveModule(fromId, spec) {
+  const parts = fromId.split("/");
+  parts.pop();
+  for (const part of spec.replace(/\.(ts|js)$/, "").split("/")) {
+    if (!part || part === ".") continue;
+    if (part === "..") parts.pop();
+    else parts.push(part);
+  }
+  return parts.join("/");
+}
+
+function bundleModule(file, source) {
+  const id = moduleId(file);
+  let js = stripTypeScriptTypes(source, { mode: "strip" });
+  const exported = new Set();
+  for (const match of js.matchAll(/\bexport\s+(?:const|let|var|function|class)\s+([A-Za-z_$][\w$]*)/g)) {
+    exported.add(match[1]);
+  }
+  js = js.replace(/\bexport\s+(?=(?:const|let|var|function|class)\b)/g, "");
+  js = js.replace(/export\s*\{([\s\S]*?)\}\s*;?/g, (_, inner) => {
+    for (const raw of inner.split(",")) {
+      const item = raw.trim();
+      if (!item || item.startsWith("type ")) continue;
+      const [local, alias] = item.split(/\s+as\s+/).map((s) => s.trim());
+      exported.add(alias ?? local);
+    }
+    return "";
+  });
+  js = js.replace(/import\s*\{([\s\S]*?)\}\s*from\s*["']([^"']+)["']\s*;?/g,
+    (_, inner, spec) => {
+      const names = inner.split(",").map((part) => part.trim())
+        .filter((part) => part && !part.startsWith("type "));
+      if (!names.length) return "";
+      const bindings = names.map((part) => {
+        const [imported, local] = part.split(/\s+as\s+/).map((s) => s.trim());
+        return local ? `${imported}: ${local}` : imported;
+      }).join(", ");
+      return `const { ${bindings} } = __require("${resolveModule(id, spec)}");`;
+    });
+  js = js.replace(/import\s+\*\s+as\s+([A-Za-z_$][\w$]*)\s+from\s*["']([^"']+)["']\s*;?/g,
+    (_, local, spec) => `const ${local} = __require("${resolveModule(id, spec)}");`);
+  js = js.replace(/import\s+["']([^"']+)["']\s*;?/g,
+    (_, spec) => `__require("${resolveModule(id, spec)}");`);
+  const assignments = [...exported].map((name) =>
+    `__exports.${name} = ${name};`).join("\n");
+  return `__modules["${id}"] = function(__require, __exports) {\n${js}\n${assignments}\n};`;
+}
+
+function emitBrowserBundle() {
+  const files = [
+    ...readdirSync(path.join(ROOT, "src"))
+      .filter((f) => f.endsWith(".ts") && f !== "rules_node.ts")
+      .map((f) => path.join("src", f)),
+    ...readdirSync(path.join(ROOT, "web"))
+      .filter((f) => f.endsWith(".ts"))
+      .map((f) => path.join("web", f)),
+    path.join("web", "tables.gen.js"),
+    path.join("web", "levels.gen.js"),
+  ];
+  const modules = files.map((file) =>
+    bundleModule(file, readFileSync(
+      path.join(DIST, file.replace(/\.ts$/, ".js")), "utf8")));
+  const bundle = `(function() {
+const __modules = Object.create(null);
+const __cache = Object.create(null);
+function __require(id) {
+  if (__cache[id]) return __cache[id].exports;
+  const factory = __modules[id];
+  if (!factory) throw new Error("缺少浏览器模块：" + id);
+  const record = { exports: {} };
+  __cache[id] = record;
+  factory(__require, record.exports);
+  return record.exports;
+}
+${modules.join("\n")}
+__require("web/app");
+})();`;
+  writeFileSync(path.join(DIST, "app.bundle.js"), bundle);
+}
+
 function emit(fromDir, names, outSub = "") {
   const outDir = path.join(DIST, outSub);
   mkdirSync(outDir, { recursive: true });
@@ -68,8 +159,11 @@ writeFileSync(path.join(genDir, "levels.gen.js"),
   `/* 由 Tools/build_web.mjs 生成，勿手改。 */\n` +
   `export const LEVEL_TEXTS = {\n${inline(["levels.csv", "level_tiles.csv"])}\n};\n`);
 
+emitBrowserBundle();
+
 const kb = (p) => (readFileSync(p).length / 1024).toFixed(1);
 console.log(`写出 web/dist/：求值器 ${nCore} 个模块、UI ${nUi} 个模块`);
 console.log(`  tables.gen.js ${kb(path.join(genDir, "tables.gen.js"))} KB` +
-            `｜levels.gen.js ${kb(path.join(genDir, "levels.gen.js"))} KB`);
+            `｜levels.gen.js ${kb(path.join(genDir, "levels.gen.js"))} KB` +
+            `｜app.bundle.js ${kb(path.join(DIST, "app.bundle.js"))} KB`);
 console.log("打开方式：直接双击 web/index.html，或 node Tools/serve.mjs");

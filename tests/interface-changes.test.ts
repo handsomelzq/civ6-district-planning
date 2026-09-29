@@ -16,6 +16,8 @@ const texts = Object.fromEntries(["terrains.csv", "features.csv"].map((f) =>
   [f, readFileSync(join(root, f), "utf8")]));
 const page = readFileSync(join(root, "..", "web", "index.html"), "utf8");
 const appSource = readFileSync(join(root, "..", "web", "app.ts"), "utf8");
+const buildSource = readFileSync(join(root, "..", "Tools", "build_web.mjs"), "utf8");
+const bundle = readFileSync(join(root, "..", "web", "dist", "app.bundle.js"), "utf8");
 const progression = loadProgression(Object.fromEntries(
   ["tech_tree.csv", "civic_tree.csv", "policy_cards.csv"].map((f) =>
     [f.replace(".csv", ""), readFileSync(join(root, f), "utf8")]),
@@ -74,11 +76,16 @@ test("入口页提供模式选择、设置入口和拆解文档入口", () => {
   assert.match(appSource, /TABLE_TEXTS\["tech_tree\.csv"\]/);
   assert.match(appSource, /TABLE_TEXTS\["civic_tree\.csv"\]/);
   assert.match(appSource, /TABLE_TEXTS\["policy_cards\.csv"\]/);
-  assert.match(page, /dist\/web\/app\.js\?v=20260929-3/);
+  assert.match(page, /dist\/app\.bundle\.js\?v=20260929-4/);
   assert.match(page, /id="home-settings"/);
   assert.match(page, /id="settings-modal"/);
   assert.match(page, /\/tree\/main\/设计/);
   assert.match(page, /DISTRICT_CITY_CENTER\.png/);
+  assert.match(page, /<script src="dist\/app\.bundle\.js\?v=20260929-4"><\/script>/);
+  assert.match(buildSource, /emitBrowserBundle\(\)/);
+  assert.match(bundle, /data-enter-mode/);
+  assert.match(bundle, /enterMode/);
+  assert.doesNotMatch(bundle, /(^|\n)\s*import\s/);
 });
 
 test("研究系统包含完整科技/文化树和区域规划精选政策卡", () => {

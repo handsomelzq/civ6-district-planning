@@ -315,5 +315,5 @@ text{text-anchor:middle;pointer-events:none;font-family:var(--sans)}.dname{font-
   </div>
 </div>
 
-<!-- 入口脚本带版本号，避免 GitHub Pages/CDN 继续复用旧版模式入口。 -->
-<script type="module" src="dist/web/app.js?v=20260929-3"></script>
+<!-- 使用单文件入口，保证本地 file:// 与 GitHub Pages 都能正常执行模式按钮。 -->
+<script src="dist/app.bundle.js?v=20260929-4"></script>
