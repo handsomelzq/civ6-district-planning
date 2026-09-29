@@ -545,8 +545,16 @@ function wire() {
   $("map").querySelectorAll<SVGGElement>("g.hex").forEach((g) => {
     const p = parseKey(g.dataset.xy!);
     g.onclick = () => onClick(p);
-    g.onmouseenter = () => { app.hovered = p; $("tileinfo").innerHTML = tileInfo(); };
-    g.onmouseleave = () => { app.hovered = undefined; $("tileinfo").innerHTML = tileInfo(); };
+    g.onmouseenter = () => {
+      app.hovered = p;
+      const tileinfo = document.getElementById("tileinfo");
+      if (tileinfo) tileinfo.innerHTML = tileInfo();
+    };
+    g.onmouseleave = () => {
+      app.hovered = undefined;
+      const tileinfo = document.getElementById("tileinfo");
+      if (tileinfo) tileinfo.innerHTML = tileInfo();
+    };
   });
   document.querySelectorAll<HTMLElement>(".pb, .tool-button").forEach((b) => {
     b.onmouseenter = b.onfocus = () => { app.hoverBrush = JSON.parse(b.dataset.brush!); showBrushInfo(app.hoverBrush!); };
@@ -669,8 +677,11 @@ function setMode(m: "自由" | "挑战") {
 document.querySelectorAll<HTMLElement>(".tab").forEach((t) => {
   t.onclick = () => setMode(t.dataset.mode as "自由" | "挑战");
 });
-document.querySelectorAll<HTMLElement>("[data-enter-mode]").forEach((b) => {
-  b.onclick = () => enterMode(b.dataset.enterMode as "自由" | "挑战");
+// 首页按钮使用事件委托，避免入口内容被重绘或旧缓存部分加载时丢失绑定。
+document.addEventListener("click", (event) => {
+  const target = (event.target as Element | null)?.closest<HTMLElement>("[data-enter-mode]");
+  const mode = target?.dataset.enterMode;
+  if (mode === "自由" || mode === "挑战") enterMode(mode);
 });
 const home = document.getElementById("home");
 if (home) home.onclick = leaveApp;

@@ -15,6 +15,7 @@ const root = fileURLToPath(new URL("../配置表/", import.meta.url));
 const texts = Object.fromEntries(["terrains.csv", "features.csv"].map((f) =>
   [f, readFileSync(join(root, f), "utf8")]));
 const page = readFileSync(join(root, "..", "web", "index.html"), "utf8");
+const appSource = readFileSync(join(root, "..", "web", "app.ts"), "utf8");
 const progression = loadProgression(Object.fromEntries(
   ["tech_tree.csv", "civic_tree.csv", "policy_cards.csv"].map((f) =>
     [f.replace(".csv", ""), readFileSync(join(root, f), "utf8")]),
@@ -69,6 +70,8 @@ test("入口页提供模式选择、设置入口和拆解文档入口", () => {
   assert.match(page, /id="home-screen"/);
   assert.match(page, /data-enter-mode="自由"/);
   assert.match(page, /data-enter-mode="挑战"/);
+  assert.match(appSource, /addEventListener\("click",/);
+  assert.match(page, /dist\/web\/app\.js\?v=20260929-2/);
   assert.match(page, /id="home-settings"/);
   assert.match(page, /id="settings-modal"/);
   assert.match(page, /\/tree\/main\/设计/);
