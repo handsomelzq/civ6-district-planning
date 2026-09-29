@@ -159,7 +159,7 @@ export function renderTotals(tree: YieldTree, 高亮?: string): string {
 }
 
 // ── 拆解面板：按地图区块汇集区域、建筑与各产出，仅展示非零贡献 ──────
-export function renderBreakdown(tree: YieldTree, 只看?: string): string {
+export function renderBreakdown(tree: YieldTree, 只看?: string, 显示规则id = false): string {
   type Entry = { yieldType: string; source: string; leaf: Leaf };
   const groups = new Map<string, { pos?: Axial; total: Map<string, Rat>; entries: Entry[] }>();
   for (const y of tree.产出) {
@@ -182,7 +182,7 @@ export function renderBreakdown(tree: YieldTree, 只看?: string): string {
       const entries = group.entries.map(({ yieldType, source, leaf }) =>
         `<div class="bd-entry"><div class="bd-entry-top"><span>${esc(source)} · ${esc(yieldType)}</span><b style="color:${yieldColor(yieldType)}">${leaf.增量.n > 0 ? "+" : ""}${fmt(leaf.增量)}</b></div>
         <div class="bd-explain">${esc(leaf.说明)}</div>
-        <div class="bd-rule" title="${esc(leaf.规则id)}">${esc(leaf.规则id)}</div></div>`).join("");
+        ${显示规则id ? `<div class="bd-rule" title="${esc(leaf.规则id)}">${esc(leaf.规则id)}</div>` : ""}</div>`).join("");
       return `<article class="bd-tile" data-xy="${esc(id)}"><div class="bd-tile-head"><b>${title}</b><div class="bd-sums">${sums}</div></div>${entries}</article>`;
     }).join("");
 }

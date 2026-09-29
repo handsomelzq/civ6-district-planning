@@ -13,6 +13,7 @@ import { R, board } from "./helpers.ts";
 const root = fileURLToPath(new URL("../配置表/", import.meta.url));
 const texts = Object.fromEntries(["terrains.csv", "features.csv"].map((f) =>
   [f, readFileSync(join(root, f), "utf8")]));
+const page = readFileSync(join(root, "..", "web", "index.html"), "utf8");
 
 test("多城预设每一行没有内部空洞，中立填补格不归属城市", () => {
   for (const preset of PRESETS) {
@@ -57,4 +58,14 @@ test("右侧按区块展示非零正负贡献，隐藏未触发的零规则", ()
   assert.match(html, /-1/);
   assert.doesNotMatch(html, /Mountains_Science/);
   assert.equal((html.match(/data-xy="0,0"/g) ?? []).length, 1);
+});
+
+test("入口页提供模式选择、设置入口和拆解文档入口", () => {
+  assert.match(page, /id="home-screen"/);
+  assert.match(page, /data-enter-mode="自由"/);
+  assert.match(page, /data-enter-mode="挑战"/);
+  assert.match(page, /id="home-settings"/);
+  assert.match(page, /id="settings-modal"/);
+  assert.match(page, /\/tree\/main\/设计/);
+  assert.match(page, /DISTRICT_CITY_CENTER\.png/);
 });

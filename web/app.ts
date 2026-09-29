@@ -39,16 +39,6 @@ const CIVS: [string, string][] = [
   ["CIVILIZATION_RUSSIA", "俄罗斯 · 拉夫拉"],
   ["CIVILIZATION_KOREA", "韩国 · 书院"],
 ];
-const LEADER_SCOPE: Record<string, string> = {
-  LEADER_LUDWIG: "当前可算：世界奇观每相邻一个区域 +2 文化。",
-  LEADER_BARBAROSSA: "军事政策槽与对城邦战斗力，当前产出局面不触发。",
-  LEADER_HOJO: "军营、圣地、剧院广场建造加速与战斗加成，当前不模拟建造回合。",
-  LEADER_TOKUGAWA: "国内贸易路线加成，当前没有贸易路线系统。",
-  LEADER_PETER_GREAT: "跨文明贸易路线加成，当前没有贸易路线系统。",
-  LEADER_SEONDEOK: "总督升级百分比加成，当前没有总督系统。",
-  LEADER_SEJONG: "新时代首项科技解锁时的文化奖励，当前没有回合/时代推进。",
-};
-
 const TERRAIN_EDIT: [string, string][] = [
   ["TERRAIN_GRASS", "草原"], ["TERRAIN_PLAINS", "平原"],
   ["TERRAIN_GRASS_MOUNTAIN", "山脉"], ["TERRAIN_COAST", "海岸"],
@@ -82,6 +72,7 @@ type App = {
   settled?: "达成" | "失败";
   preset: PresetId;
   selectedCity: string;
+  showDebug: boolean;
 };
 
 const app: App = {
@@ -91,6 +82,7 @@ const app: App = {
   brush: { kind: "区域", id: PALETTE[0] },
   focusYield: "科技",
   preset: "mountain", selectedCity: "A",
+  showDebug: false,
 };
 
 // ── 交互：放置 / 编辑 / 撤销 ──────────────────────────────────────────
@@ -219,7 +211,7 @@ function render() {
   });
   $("totals").innerHTML = renderTotals(tree, app.focusYield);
   $("citytotals").innerHTML = app.mode === "自由" ? cityTotals(tree) : "";
-  $("breakdown").innerHTML = renderBreakdown(tree);
+  $("breakdown").innerHTML = renderBreakdown(tree, undefined, app.showDebug);
   $("tileinfo").innerHTML = tileInfo();
   $("modebar").innerHTML = modeBar(tree);
   $("palette").innerHTML = paletteHtml();
@@ -272,22 +264,14 @@ function modeBar(tree: YieldTree): string {
       `<option value="${c.id}" ${app.selectedCity === c.id ? "selected" : ""}>${esc(c.名称)}</option>`).join("");
     const presetOpts = PRESETS.map((p) =>
       `<option value="${p.id}" ${app.preset === p.id ? "selected" : ""}>${esc(p.name)}</option>`).join("");
-    const activeLeader = leaders.find((l) => l.id === app.board.领袖);
     const civAbility = rules.civAbility.get(app.board.文明 ?? "") ?? "";
     return `<label>环境 <select id="preset">${presetOpts}</select></label>
       <label>当前建设城市 <select id="city">${cityOpts}</select></label>
       <label>文明 <select id="civ">${opts}</select></label>
       <label>领袖 <select id="leader">${leaderOpts}</select></label>
       <button id="undo" ${app.undo.length ? "" : "disabled"}>撤销（${app.undo.length}）</button>
-      <button id="reset">重置沙盒</button>
-      <span class="tool-group">设置 ${removalButton({ kind: "移除" }, "移除区域")}${removalButton({ kind: "世界奇观", id: "" }, "移除奇观")}</span>
-      <span class="hint">选城后放置区域；相邻加成可跨城。</span>
-      <details class="ability"><summary>文明与领袖能力：原文和当前模拟范围</summary>
-      <p><b>${esc(rules.name(app.board.文明 ?? ""))}</b>：${esc(civAbility)}</p>
-      <p><b>${esc(activeLeader?.名称 ?? "")}</b>：${esc(activeLeader?.能力 ?? "")}</p>
-      <p class="hint">${esc(LEADER_SCOPE[activeLeader?.id ?? ""] ?? "本期只处理可由静态区域布局直接求值的能力。")}
-      ${app.board.文明 === "CIVILIZATION_RUSSIA" ? "俄罗斯冻土地块自身的产出需市民工作，当前只计算拉夫拉相邻加成。" : ""}</p>
-      </details>`;
+      <button id="reset">重置</button>
+      <span class="civ-ability"><b>${esc(rules.name(app.board.文明 ?? ""))}</b> · ${esc(civAbility)}</span>`;
   }
   const lv = app.level!;
   const got = tree.合计;
@@ -322,10 +306,9 @@ function cityTotals(tree: YieldTree): string {
 
 function settleHtml(tree: YieldTree): string {
   if (!app.settled) return `<div class="lvfoot">
-      <button id="undo" ${app.undo.length ? "" : "disabled"}>撤销（返还配额）</button>
+      <button id="undo" ${app.undo.length ? "" : "disabled"}>撤销</button>
       <button id="retry">重试</button>
       <button id="tolist">返回关卡表</button>
-      <span class="hint">撤销会<b>返还</b>配额：约束是「最终布局用了几个区域」的预算，不是操作次数（G4）。</span>
     </div>`;
   const lv = app.level!;
   const stars = starsOf(lv, tree.合计);
@@ -336,8 +319,7 @@ function settleHtml(tree: YieldTree): string {
     <table class="sgrid">
       <tr><td>目标</td><td>${esc(goalText(lv))}</td></tr>
       <tr><td>你的产出合计</td><td><b>${fmt(s)}</b></td></tr>
-      <tr><td>二星 / 三星阈值</td><td>${fmt(lv.二星阈值)} / ${fmt(lv.三星阈值)}（三星＝设计期穷举出的最优值）</td></tr>
-      <tr><td>贪心基线</td><td>${esc(lv.贪心基线)}　<span class="muted">每步选当前收益最高，能达到的上限</span></td></tr>
+      <tr><td>二星 / 三星</td><td>${fmt(lv.二星阈值)} / ${fmt(lv.三星阈值)}</td></tr>
     </table>
     <div class="lvfoot"><button id="retry">重试</button>
       <button id="tolist">返回关卡表</button></div></div>`;
@@ -365,7 +347,7 @@ function paletteHtml(): string {
       TERRAIN_EDIT.map(([id, nm]) => btn({ kind: "地形", id }, nm)).join("")}</div></div>`;
     html += `<div class="pgroup"><h4>改地貌</h4><div class="prow">${
       FEATURE_EDIT.map(([id, nm]) => btn({ kind: "地貌", id }, nm)).join("")}</div></div>`;
-    html += `<div class="pgroup"><h4>世界奇观（布局占位）</h4><div class="prow">${btn({ kind: "世界奇观", id: "BUILDING_PYRAMIDS" }, "金字塔")}</div><span class="hint">仅用于静态相邻试算，暂不校验奇观建造条件。</span></div>`;
+    html += `<div class="pgroup"><h4>世界奇观</h4><div class="prow">${btn({ kind: "世界奇观", id: "BUILDING_PYRAMIDS" }, "金字塔")}</div></div>`;
   }
   return `<div class="palette-items">${html}</div><div id="brushinfo" class="brush-info" aria-live="polite"></div>`;
 }
@@ -404,6 +386,50 @@ function startLevel(id: string) {
   $("levellist").style.display = "none";
   $("play").style.display = "";
   render();
+}
+
+function settingsHtml(): string {
+  return `<div class="settings-grid">
+    <section class="settings-card">
+      <span class="settings-kicker">工具</span>
+      <h3>编辑工具</h3>
+      <p>移除模式只影响当前沙盒布局。</p>
+      <div class="settings-actions">
+        ${removalButton({ kind: "移除" }, "移除区域")}
+        ${removalButton({ kind: "世界奇观", id: "" }, "移除奇观")}
+      </div>
+    </section>
+    <section class="settings-card">
+      <span class="settings-kicker">显示</span>
+      <h3>信息密度</h3>
+      <label class="switch-row"><input id="show-rules" type="checkbox" ${app.showDebug ? "checked" : ""}>
+        <span>显示规则编号</span><small>用于核对配置表</small></label>
+    </section>
+    <section class="settings-card">
+      <span class="settings-kicker">资料</span>
+      <h3>规则来源</h3>
+      <a href="https://github.com/handsomelzq/civ6-district-planning/tree/main/设计" target="_blank" rel="noreferrer">打开拆解文档 ↗</a>
+      <a href="https://github.com/handsomelzq/civ6-district-planning/blob/main/README.md" target="_blank" rel="noreferrer">项目说明 ↗</a>
+    </section>
+  </div>`;
+}
+
+function enterMode(mode: "自由" | "挑战") {
+  $("home-screen").hidden = true;
+  $("app-shell").hidden = false;
+  setMode(mode);
+}
+
+function openSettings() {
+  $("settings-content").innerHTML = settingsHtml();
+  $("settings-modal").hidden = false;
+  wire();
+}
+
+function leaveApp() {
+  $("settings-modal").hidden = true;
+  $("app-shell").hidden = true;
+  $("home-screen").hidden = false;
 }
 
 // ── 事件接线 ──────────────────────────────────────────────────────────
@@ -477,11 +503,25 @@ function wire() {
   document.querySelectorAll<HTMLElement>("tr[data-lv]").forEach((t) => {
     t.onclick = () => startLevel(t.dataset.lv!);
   });
+  const settings = document.getElementById("settings");
+  if (settings) settings.onclick = openSettings;
+  const closeSettings = document.getElementById("settings-close");
+  if (closeSettings) closeSettings.onclick = () => { $("settings-modal").hidden = true; };
+  const modal = document.getElementById("settings-modal");
+  if (modal) modal.onclick = (event) => {
+    if (event.target === modal) modal.hidden = true;
+  };
+  const showRules = document.getElementById("show-rules") as HTMLInputElement | null;
+  if (showRules) showRules.onchange = () => {
+    app.showDebug = showRules.checked;
+    render();
+  };
 }
 
 function setMode(m: "自由" | "挑战") {
   app.mode = m;
   app.settled = undefined;
+  document.body.dataset.mode = m;
   document.querySelectorAll<HTMLElement>(".tab").forEach((t) =>
     t.classList.toggle("on", t.dataset.mode === m));
   if (m === "自由") {
@@ -504,4 +544,11 @@ function setMode(m: "自由" | "挑战") {
 document.querySelectorAll<HTMLElement>(".tab").forEach((t) => {
   t.onclick = () => setMode(t.dataset.mode as "自由" | "挑战");
 });
-setMode("自由");
+document.querySelectorAll<HTMLElement>("[data-enter-mode]").forEach((b) => {
+  b.onclick = () => enterMode(b.dataset.enterMode as "自由" | "挑战");
+});
+const home = document.getElementById("home");
+if (home) home.onclick = leaveApp;
+const homeSettings = document.getElementById("home-settings");
+if (homeSettings) homeSettings.onclick = openSettings;
+document.getElementById("settings")?.setAttribute("aria-label", "设置");
