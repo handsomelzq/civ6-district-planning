@@ -8,9 +8,9 @@ import { TABLE_TEXTS } from "./tables.gen.js";      // 构建期生成，见 Too
 import { LEVEL_TEXTS } from "./levels.gen.js";      // 同上
 import { evaluate, total, type YieldTree } from "../src/evaluate.ts";
 import {
-  type BoardState, withDistrict, districtPositions, inWorkRange,
+  type BoardState, type Tile, withDistrict, districtPositions, inWorkRange,
 } from "../src/board.ts";
-import { type Axial, key, parseKey } from "../src/hex.ts";
+import { type Axial, key, parseKey, distance } from "../src/hex.ts";
 import { fmt, cmp, sub, ZERO, isZero, type Rat } from "../src/rational.ts";
 import {
   renderMap, renderTotals, renderBreakdown, yieldColor,
@@ -19,6 +19,8 @@ import {
   loadLevels, meetsGoal, starsOf, scoreOf, goalText, type Level,
 } from "./levels.ts";
 import { PRESETS, sandboxBoard, type PresetId } from "./presets.ts";
+import { brushInfo, type InfoBrush } from "./brush_info.ts";
+import { localIconSrc } from "./local_icons.ts";
 
 const rules = new Rules(TABLE_TEXTS as never);
 const { levels, problems } = loadLevels(rules, LEVEL_TEXTS as never);
@@ -72,6 +74,7 @@ type App = {
   brush: Brush;
   selected?: Axial;
   hovered?: Axial;
+  hoverBrush?: Brush;
   focusYield: string;
   level?: Level;
   /** 挑战模式：关卡初始局面（重试用）。 */
@@ -160,6 +163,7 @@ function onClick(p: Axial) {
         !rules.buildableTerrain.has(t.地形) || !inWorkRange(app.board, p, app.selectedCity))) {
       render(); return;
     }
+    if (b.kind === "世界奇观" && !b.id && !t.世界奇观) { render(); return; }
     push();
     const tiles = new Map(app.board.tiles);
     if (b.kind === "地形") tiles.set(k, { ...t, 地形: b.id });
@@ -215,23 +219,38 @@ function render() {
   });
   $("totals").innerHTML = renderTotals(tree, app.focusYield);
   $("citytotals").innerHTML = app.mode === "自由" ? cityTotals(tree) : "";
-  $("breakdown").innerHTML = renderBreakdown(tree, app.focusYield);
+  $("breakdown").innerHTML = renderBreakdown(tree);
   $("tileinfo").innerHTML = tileInfo();
   $("modebar").innerHTML = modeBar(tree);
   $("palette").innerHTML = paletteHtml();
+  showBrushInfo(app.hoverBrush ?? app.brush);
   $("diag").innerHTML = tree.诊断.length === 0 ? "" :
     tree.诊断.map((d) => `<div class="warn">⚠ ${esc(d.说明)}</div>`).join("");
   wire();
 }
 
+function showBrushInfo(brush: InfoBrush) {
+  const info = brushInfo(brush, rules, app.board.文明, TABLE_TEXTS);
+  $("brushinfo").innerHTML = `<b>${esc(info.title)}</b>${info.lines.map((line) =>
+    `<div>${esc(line)}</div>`).join("")}`;
+}
+
+function removalButton(brush: Brush, label: string): string {
+  const on = JSON.stringify(app.brush) === JSON.stringify(brush);
+  return `<button class="tool-button ${on ? "on" : ""}" data-brush='${JSON.stringify(brush)}'
+    aria-pressed="${on}">${label}</button>`;
+}
+
 function tileInfo(): string {
-  if (!app.selected) return `<span class="muted">点一个格子看它的属性</span>`;
-  const t = app.board.tiles.get(key(app.selected));
+  const p = app.hovered ?? app.selected;
+  if (!p) return `<span class="muted">悬停或点击格子看它的属性</span>`;
+  const t = app.board.tiles.get(key(p));
   if (!t) return "";
   const bits = [`地形 ${esc(rules.name(t.地形))}`];
-  if (t.地貌) bits.push(`地貌 ${esc(t.地貌.replace("FEATURE_", ""))}`);
+  if (t.地貌) bits.push(`地貌 ${esc(rules.name(t.地貌))}`);
   if (t.资源) bits.push(`资源 ${esc(rules.name(t.资源))}`);
   if (t.所属城市) bits.push(`归属 ${esc(app.board.城市?.find((c) => c.id === t.所属城市)?.名称 ?? t.所属城市)}`);
+  else if (app.board.城市?.every((city) => distance(city.中心, p) > 3)) bits.push("中立地块 · 城市工作范围外");
   if (t.世界奇观) bits.push(`世界奇观 ${esc(t.世界奇观)}`);
   if (t.河流边) bits.push("临河");
   if (t.区域) {
@@ -239,7 +258,7 @@ function tileInfo(): string {
     bits.push(`区域 ${esc(rules.name(did))}`);
     if (did !== t.区域) bits.push(`（替换了 ${esc(rules.name(t.区域))}）`);
   }
-  return `(${app.selected.q},${app.selected.r})　` + bits.join("　·　");
+  return `(${p.q},${p.r})　` + bits.join("　·　");
 }
 
 function modeBar(tree: YieldTree): string {
@@ -261,6 +280,7 @@ function modeBar(tree: YieldTree): string {
       <label>领袖 <select id="leader">${leaderOpts}</select></label>
       <button id="undo" ${app.undo.length ? "" : "disabled"}>撤销（${app.undo.length}）</button>
       <button id="reset">重置沙盒</button>
+      <span class="tool-group">设置 ${removalButton({ kind: "移除" }, "移除区域")}${removalButton({ kind: "世界奇观", id: "" }, "移除奇观")}</span>
       <span class="hint">选城后放置区域；相邻加成可跨城。</span>
       <details class="ability"><summary>文明与领袖能力：原文和当前模拟范围</summary>
       <p><b>${esc(rules.name(app.board.文明 ?? ""))}</b>：${esc(civAbility)}</p>
@@ -287,7 +307,7 @@ function modeBar(tree: YieldTree): string {
       ${lv.母题 !== "无" ? `<span class="chip">母题 ${esc(lv.母题)}</span>` : ""}
       <span class="chip">${esc(rules.name(lv.文明))}</span>
       <span class="chip">剩余配额 <b>${left}</b> / ${lv.约束值}</span>
-    </div>${bars}${settleHtml(tree)}`;
+    </div>${bars}<div class="tool-group">设置 ${removalButton({ kind: "移除" }, "移除区域")}</div>${settleHtml(tree)}`;
 }
 
 function cityTotals(tree: YieldTree): string {
@@ -326,8 +346,12 @@ function settleHtml(tree: YieldTree): string {
 function paletteHtml(): string {
   const btn = (b: Brush, label: string, sub = "") => {
     const on = JSON.stringify(app.brush) === JSON.stringify(b);
+    const id = b.kind === "区域" ? rules.effective(b.id, app.board.文明) :
+      b.kind === "移除" ? "" : b.id;
+    const icon = localIconSrc(id);
     return `<button class="pb ${on ? "on" : ""}" data-brush='${JSON.stringify(b)}'>
-      ${esc(label)}${sub ? `<i>${esc(sub)}</i>` : ""}</button>`;
+      ${icon ? `<img class="pb-icon" src="${icon}" alt="" onerror="this.hidden=true">` : ""}
+      <span>${esc(label)}${sub ? `<i>${esc(sub)}</i>` : ""}</span></button>`;
   };
   const districts = PALETTE.map((d) => {
     const eff = rules.effective(d, app.board.文明);
@@ -336,15 +360,14 @@ function paletteHtml(): string {
       eff !== d ? `替换 ${rules.name(d)}` : "");
   }).join("");
   let html = `<div class="pgroup"><h4>放置区域</h4><div class="prow">${districts}</div></div>`;
-  html += `<div class="pgroup"><h4>其他</h4><div class="prow">${btn({ kind: "移除" }, "移除区域")}</div></div>`;
   if (app.mode === "自由") {
     html += `<div class="pgroup"><h4>改地形</h4><div class="prow">${
       TERRAIN_EDIT.map(([id, nm]) => btn({ kind: "地形", id }, nm)).join("")}</div></div>`;
     html += `<div class="pgroup"><h4>改地貌</h4><div class="prow">${
       FEATURE_EDIT.map(([id, nm]) => btn({ kind: "地貌", id }, nm)).join("")}</div></div>`;
-    html += `<div class="pgroup"><h4>世界奇观（布局占位）</h4><div class="prow">${btn({ kind: "世界奇观", id: "BUILDING_PYRAMIDS" }, "金字塔")}${btn({ kind: "世界奇观", id: "" }, "移除奇观")}</div><span class="hint">仅用于静态相邻试算，暂不校验奇观建造条件。</span></div>`;
+    html += `<div class="pgroup"><h4>世界奇观（布局占位）</h4><div class="prow">${btn({ kind: "世界奇观", id: "BUILDING_PYRAMIDS" }, "金字塔")}</div><span class="hint">仅用于静态相邻试算，暂不校验奇观建造条件。</span></div>`;
   }
-  return html;
+  return `<div class="palette-items">${html}</div><div id="brushinfo" class="brush-info" aria-live="polite"></div>`;
 }
 
 function levelListHtml(): string {
@@ -388,11 +411,15 @@ function wire() {
   $("map").querySelectorAll<SVGGElement>("g.hex").forEach((g) => {
     const p = parseKey(g.dataset.xy!);
     g.onclick = () => onClick(p);
-    g.onmouseenter = () => { app.hovered = p; $("tileinfoHover").innerHTML = ""; };
+    g.onmouseenter = () => { app.hovered = p; $("tileinfo").innerHTML = tileInfo(); };
+    g.onmouseleave = () => { app.hovered = undefined; $("tileinfo").innerHTML = tileInfo(); };
   });
-  document.querySelectorAll<HTMLElement>(".pb").forEach((b) => {
+  document.querySelectorAll<HTMLElement>(".pb, .tool-button").forEach((b) => {
+    b.onmouseenter = b.onfocus = () => { app.hoverBrush = JSON.parse(b.dataset.brush!); showBrushInfo(app.hoverBrush!); };
+    b.onmouseleave = b.onblur = () => { app.hoverBrush = undefined; showBrushInfo(app.brush); };
     b.onclick = () => {
       app.brush = JSON.parse(b.dataset.brush!);
+      app.hoverBrush = undefined;
       if (app.brush.kind === "区域") {
         const did = rules.effective(app.brush.id, app.board.文明);
         const main = rules.adjacency.get(did)?.find((r) => r.目标类别 !== "自身");

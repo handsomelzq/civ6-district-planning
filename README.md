@@ -181,10 +181,11 @@ python3 Tools/parse_civ6_xml.py            # 游戏 XML → 配置表 CSV
 
 配置表里的全部数值与名称，由 **《席德·梅尔的文明 VI》（Sid Meier's Civilization VI）本体数据解析得到**（`Base/Assets/Gameplay/Data/*.xml` 与各 DLC 的对应文件），解析脚本是 [Tools/parse_civ6_xml.py](Tools/parse_civ6_xml.py)，过程完全可复现。
 
-- 本仓库**不含任何游戏美术、音频或可执行资源**，只有从明文 XML 解析出的规则与数值表
+- 本仓库包含少量用于界面展示的文明 VI 官方 UI 图标，不含音频或可执行资源；规则与数值表由明文 XML 解析得到
 - 用途限于**个人学习与求职作品集**，不用于商业目的，也不作为游戏数据的再分发渠道
 - 文明 VI 的玩法数据以明文 XML 随游戏发布，Firaxis 官方提供 mod 工具与 SDK；本项目的解析方式与社区 mod 实践一致
 - **Sid Meier's Civilization VI © Firaxis Games / 2K Games.** 本项目与 Firaxis、2K 无任何关联
+- 图标提取来源、图集索引与 2K 素材政策见 [web/civ6-ui/SOURCE.md](web/civ6-ui/SOURCE.md)
 
 代码（`src/` `web/` `Tools/`）与文档（`设计/` `拆解/`）为本人原创。
 

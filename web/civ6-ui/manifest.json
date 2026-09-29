@@ -1,0 +1,877 @@
+{
+  "DISTRICT_CITY_CENTER": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 0
+  },
+  "DISTRICT_HOLY_SITE": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 1
+  },
+  "DISTRICT_CAMPUS": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 2
+  },
+  "DISTRICT_ENCAMPMENT": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 3
+  },
+  "DISTRICT_HARBOR": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 4
+  },
+  "DISTRICT_AERODROME": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 5
+  },
+  "DISTRICT_COMMERCIAL_HUB": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 6
+  },
+  "DISTRICT_ENTERTAINMENT_COMPLEX": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 7
+  },
+  "DISTRICT_THEATER": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 8
+  },
+  "DISTRICT_INDUSTRIAL_ZONE": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 9
+  },
+  "DISTRICT_NEIGHBORHOOD": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 10
+  },
+  "DISTRICT_AQUEDUCT": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 11
+  },
+  "DISTRICT_SPACEPORT": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 12
+  },
+  "DISTRICT_WONDER": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 13
+  },
+  "DISTRICT_ACROPOLIS": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 8
+  },
+  "DISTRICT_BATH": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 11
+  },
+  "DISTRICT_HANSA": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 9
+  },
+  "DISTRICT_LAVRA": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 1
+  },
+  "DISTRICT_MBANZA": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 10
+  },
+  "DISTRICT_STREET_CARNIVAL": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 7
+  },
+  "DISTRICT_ROYAL_NAVY_DOCKYARD": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 4
+  },
+  "DISTRICT_UNDER_CONSTRUCTION": {
+    "pack": "Base",
+    "atlas": "Districts50",
+    "index": 14
+  },
+  "TERRAIN_GRASS": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 0
+  },
+  "TERRAIN_GRASS_HILLS": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 1
+  },
+  "TERRAIN_GRASS_MOUNTAIN": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 2
+  },
+  "TERRAIN_PLAINS": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 3
+  },
+  "TERRAIN_PLAINS_HILLS": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 4
+  },
+  "TERRAIN_PLAINS_MOUNTAIN": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 5
+  },
+  "TERRAIN_DESERT": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 6
+  },
+  "TERRAIN_DESERT_HILLS": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 7
+  },
+  "TERRAIN_DESERT_MOUNTAIN": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 8
+  },
+  "TERRAIN_TUNDRA": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 9
+  },
+  "TERRAIN_TUNDRA_HILLS": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 10
+  },
+  "TERRAIN_TUNDRA_MOUNTAIN": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 11
+  },
+  "TERRAIN_SNOW": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 12
+  },
+  "TERRAIN_SNOW_HILLS": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 13
+  },
+  "TERRAIN_SNOW_MOUNTAIN": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 14
+  },
+  "TERRAIN_COAST": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 15
+  },
+  "TERRAIN_OCEAN": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 16
+  },
+  "TERRAIN_OUTOFPLAY": {
+    "pack": "Base",
+    "atlas": "Terrain50",
+    "index": 17
+  },
+  "FEATURE_FLOODPLAINS": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 0
+  },
+  "FEATURE_ICE": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 1
+  },
+  "FEATURE_JUNGLE": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 2
+  },
+  "FEATURE_FOREST": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 3
+  },
+  "FEATURE_OASIS": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 4
+  },
+  "FEATURE_MARSH": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 5
+  },
+  "FEATURE_BARRIER_REEF": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 6
+  },
+  "FEATURE_CRATER_LAKE": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 7
+  },
+  "FEATURE_CLIFFS_DOVER": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 8
+  },
+  "FEATURE_DEAD_SEA": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 9
+  },
+  "FEATURE_EVEREST": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 10
+  },
+  "FEATURE_GALAPAGOS": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 11
+  },
+  "FEATURE_KILIMANJARO": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 12
+  },
+  "FEATURE_PANTANAL": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 13
+  },
+  "FEATURE_PIOPIOTAHI": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 14
+  },
+  "FEATURE_TORRES_DEL_PAINE": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 15
+  },
+  "FEATURE_TSINGY": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 16
+  },
+  "FEATURE_YOSEMITE": {
+    "pack": "Base",
+    "atlas": "Features50",
+    "index": 17
+  },
+  "BUILDING_STONEHENGE": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 0
+  },
+  "BUILDING_HANGING_GARDENS": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 1
+  },
+  "BUILDING_PYRAMIDS": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 2
+  },
+  "BUILDING_ORACLE": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 3
+  },
+  "BUILDING_GREAT_LIGHTHOUSE": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 4
+  },
+  "BUILDING_COLOSSUS": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 5
+  },
+  "BUILDING_PETRA": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 6
+  },
+  "BUILDING_COLOSSEUM": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 7
+  },
+  "BUILDING_GREAT_LIBRARY": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 8
+  },
+  "BUILDING_MAHABODHI_TEMPLE": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 9
+  },
+  "BUILDING_TERRACOTTA_ARMY": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 10
+  },
+  "BUILDING_HUEY_TEOCALLI": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 11
+  },
+  "BUILDING_HAGIA_SOPHIA": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 12
+  },
+  "BUILDING_ALHAMBRA": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 13
+  },
+  "BUILDING_CHICHEN_ITZA": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 14
+  },
+  "BUILDING_MONT_ST_MICHEL": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 15
+  },
+  "BUILDING_VENETIAN_ARSENAL": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 16
+  },
+  "BUILDING_GREAT_ZIMBABWE": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 17
+  },
+  "BUILDING_FORBIDDEN_CITY": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 18
+  },
+  "BUILDING_POTALA_PALACE": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 19
+  },
+  "BUILDING_RUHR_VALLEY": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 20
+  },
+  "BUILDING_BOLSHOI_THEATRE": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 21
+  },
+  "BUILDING_OXFORD_UNIVERSITY": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 22
+  },
+  "BUILDING_BIG_BEN": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 23
+  },
+  "BUILDING_HERMITAGE": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 24
+  },
+  "BUILDING_EIFFEL_TOWER": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 25
+  },
+  "BUILDING_BROADWAY": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 26
+  },
+  "BUILDING_CRISTO_REDENTOR": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 27
+  },
+  "BUILDING_ESTADIO_DO_MARACANA": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 28
+  },
+  "BUILDING_SYDNEY_OPERA_HOUSE": {
+    "pack": "Base",
+    "atlas": "Wonders50",
+    "index": 29
+  },
+  "RESOURCE_BANANAS": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 0
+  },
+  "RESOURCE_CATTLE": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 1
+  },
+  "RESOURCE_COPPER": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 2
+  },
+  "RESOURCE_CRABS": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 3
+  },
+  "RESOURCE_DEER": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 4
+  },
+  "RESOURCE_FISH": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 5
+  },
+  "RESOURCE_RICE": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 6
+  },
+  "RESOURCE_SHEEP": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 7
+  },
+  "RESOURCE_STONE": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 8
+  },
+  "RESOURCE_WHEAT": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 9
+  },
+  "RESOURCE_CITRUS": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 10
+  },
+  "RESOURCE_COCOA": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 11
+  },
+  "RESOURCE_COFFEE": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 12
+  },
+  "RESOURCE_COTTON": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 13
+  },
+  "RESOURCE_DIAMONDS": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 14
+  },
+  "RESOURCE_DYES": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 15
+  },
+  "RESOURCE_FURS": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 16
+  },
+  "RESOURCE_GYPSUM": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 17
+  },
+  "RESOURCE_INCENSE": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 18
+  },
+  "RESOURCE_IVORY": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 19
+  },
+  "RESOURCE_JADE": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 20
+  },
+  "RESOURCE_MARBLE": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 21
+  },
+  "RESOURCE_MERCURY": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 22
+  },
+  "RESOURCE_PEARLS": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 23
+  },
+  "RESOURCE_SALT": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 24
+  },
+  "RESOURCE_SILK": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 25
+  },
+  "RESOURCE_SILVER": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 26
+  },
+  "RESOURCE_SPICES": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 27
+  },
+  "RESOURCE_SUGAR": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 28
+  },
+  "RESOURCE_TEA": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 29
+  },
+  "RESOURCE_TOBACCO": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 30
+  },
+  "RESOURCE_TRUFFLES": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 31
+  },
+  "RESOURCE_WHALES": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 32
+  },
+  "RESOURCE_WINE": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 33
+  },
+  "RESOURCE_JEANS": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 34
+  },
+  "RESOURCE_PERFUME": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 35
+  },
+  "RESOURCE_COSMETICS": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 36
+  },
+  "RESOURCE_TOYS": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 37
+  },
+  "RESOURCE_CINNAMON": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 38
+  },
+  "RESOURCE_CLOVES": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 39
+  },
+  "RESOURCE_ALUMINUM": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 40
+  },
+  "RESOURCE_COAL": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 41
+  },
+  "RESOURCE_HORSES": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 42
+  },
+  "RESOURCE_IRON": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 43
+  },
+  "RESOURCE_NITER": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 44
+  },
+  "RESOURCE_OIL": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 45
+  },
+  "RESOURCE_URANIUM": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 46
+  },
+  "RESOURCE_ANTIQUITY_SITE": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 47
+  },
+  "RESOURCE_SHIPWRECK": {
+    "pack": "Base",
+    "atlas": "Resources50",
+    "index": 48
+  },
+  "DISTRICT_GOVERNMENT": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Districts50",
+    "index": 0
+  },
+  "DISTRICT_WATER_ENTERTAINMENT_COMPLEX": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Districts50",
+    "index": 1
+  },
+  "DISTRICT_SEOWON": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Districts50",
+    "index": 2
+  },
+  "DISTRICT_IKANDA": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Districts50",
+    "index": 3
+  },
+  "FEATURE_DELICATE_ARCH": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Features50",
+    "index": 0
+  },
+  "FEATURE_RORAIMA": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Features50",
+    "index": 1
+  },
+  "FEATURE_LAKE_RETBA": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Features50",
+    "index": 2
+  },
+  "FEATURE_MATTERHORN": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Features50",
+    "index": 3
+  },
+  "FEATURE_EYE_OF_THE_SAHARA": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Features50",
+    "index": 4
+  },
+  "FEATURE_ZHANGYE_DANXIA": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Features50",
+    "index": 5
+  },
+  "FEATURE_UBSUNUR_HOLLOW": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Features50",
+    "index": 6
+  },
+  "FEATURE_REEF": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP1_Features50",
+    "index": 7
+  },
+  "DISTRICT_CANAL": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Districts50",
+    "index": 0
+  },
+  "DISTRICT_DAM": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Districts50",
+    "index": 1
+  },
+  "DISTRICT_COTHON": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Districts50",
+    "index": 2
+  },
+  "DISTRICT_SUGUBA": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Districts50",
+    "index": 3
+  },
+  "DISTRICT_WALLED_QUARTER": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Districts50",
+    "index": 4
+  },
+  "FEATURE_CHOCOLATEHILLS": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 0
+  },
+  "FEATURE_DEVILSTOWER": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 1
+  },
+  "FEATURE_GOBUSTAN": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 2
+  },
+  "FEATURE_IKKIL": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 3
+  },
+  "FEATURE_PAMUKKALE": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 4
+  },
+  "FEATURE_VESUVIUS": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 5
+  },
+  "FEATURE_WHITEDESERT": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 6
+  },
+  "FEATURE_FLOODPLAINS_DESERT": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 7
+  },
+  "FEATURE_FLOODPLAINS_GRASSLAND": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 8
+  },
+  "FEATURE_FLOODPLAINS_PLAINS": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 9
+  },
+  "FEATURE_FLOOD_RIVER": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 10
+  },
+  "FEATURE_GEOTHERMAL_FISSURE": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 11
+  },
+  "FEATURE_VOLCANIC_SOIL": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 12
+  },
+  "FEATURE_VOLCANO": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Features50",
+    "index": 13
+  },
+  "BUILDING_GOLDEN_GATE_BRIDGE": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Wonders50",
+    "index": 0
+  },
+  "BUILDING_GREAT_BATH": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Wonders50",
+    "index": 1
+  },
+  "BUILDING_MACHU_PICCHU": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Wonders50",
+    "index": 2
+  },
+  "BUILDING_MEENAKSHI_TEMPLE": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Wonders50",
+    "index": 3
+  },
+  "BUILDING_UNIVERSITY_SANKORE": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Wonders50",
+    "index": 4
+  },
+  "BUILDING_PANAMA_CANAL": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Wonders50",
+    "index": 5
+  },
+  "BUILDING_ORSZAGHAZ": {
+    "pack": "DLC/Expansion2",
+    "atlas": "XP2_Wonders50",
+    "index": 6
+  }
+}

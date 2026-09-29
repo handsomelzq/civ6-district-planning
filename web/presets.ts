@@ -22,6 +22,18 @@ export function sandboxBoard(preset: PresetId = "mountain"): BoardState {
     const k = key(p);
     if (!tiles.has(k)) tiles.set(k, { 地形: preset === "tundra" ? "TERRAIN_TUNDRA" : "TERRAIN_GRASS" });
   }
+  // 将城市工作范围之间的行内空洞补成真实地块；新增格不属于任何城市。
+  // 不扩大城市三格工作范围，也不改变原有地形和城市中心。
+  const rows = new Map<number, { min: number; max: number }>();
+  for (const k of tiles.keys()) {
+    const [q, r] = k.split(",").map(Number);
+    const row = rows.get(r);
+    rows.set(r, { min: Math.min(row?.min ?? q, q), max: Math.max(row?.max ?? q, q) });
+  }
+  for (const [r, { min, max }] of rows) for (let q = min; q <= max; q++) {
+    const k = key({ q, r });
+    if (!tiles.has(k)) tiles.set(k, { 地形: preset === "tundra" ? "TERRAIN_TUNDRA" : "TERRAIN_GRASS" });
+  }
   const set = (k: string, t: Partial<Tile>) => {
     if (tiles.has(k)) tiles.set(k, { ...tiles.get(k)!, ...t });
   };

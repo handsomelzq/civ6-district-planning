@@ -3,11 +3,12 @@
  * 这条分工是架构的地基（GDD §1）。渲染层唯一被允许的"计算"是两次求值结果相减
  * （悬停预览），而那两次都是求值器算的。
  */
-import { type Axial, key, disc } from "../src/hex.ts";
+import { type Axial, key, distance } from "../src/hex.ts";
 import { type BoardState, type Tile } from "../src/board.ts";
 import { type Rules } from "../src/rules.ts";
 import { type YieldTree, type Leaf } from "../src/evaluate.ts";
-import { fmt, isZero, type Rat, cmp, sub, ZERO } from "../src/rational.ts";
+import { fmt, isZero, type Rat, cmp, sub, add, ZERO } from "../src/rational.ts";
+import { localIconSrc } from "./local_icons.ts";
 
 // ── 六边形几何（尖顶，与文档里的 ASCII 地图行列一致）──────────────────
 const SIZE = 30;
@@ -87,21 +88,33 @@ export function renderMap(rules: Rules, b: BoardState, o: MapOpts = {}): string 
     const isSel = o.selected && key(o.selected) === k;
     const isHov = o.hovered && key(o.hovered) === k;
     const blockedWhy = o.blocked?.get(k);
-    const cls = ["hex", blockedWhy ? "blocked" : "", isSel ? "sel" : "",
+    const neutral = b.城市?.length && b.城市.every((city) => distance(city.中心, p) > 3);
+    const cls = ["hex", neutral ? "neutral" : "", blockedWhy ? "blocked" : "", isSel ? "sel" : "",
                  isHov ? "hov" : ""].filter(Boolean).join(" ");
     parts.push(`<g class="${cls}" data-xy="${k}">`);
     parts.push(`<polygon points="${hexPoints(c.x, c.y)}" fill="${fill}"/>`);
+    const terrainIcon = !t.区域 && localIconSrc(t.地形);
+    if (terrainIcon) parts.push(`<image class="terrain-icon" href="${terrainIcon}" x="${(c.x - 10).toFixed(1)}" y="${(c.y - 10).toFixed(1)}" width="20" height="20"/>`);
     if (t.河流边) {
       parts.push(`<circle cx="${(c.x).toFixed(1)}" cy="${(c.y + SIZE * 0.7).toFixed(1)}" r="3.5" class="river"/>`);
     }
     if (t.地貌 && FEATURE_MARK[t.地貌]) {
-      parts.push(`<text x="${c.x.toFixed(1)}" y="${(c.y - 8).toFixed(1)}" class="feat">${FEATURE_MARK[t.地貌]}</text>`);
+      const featureIcon = localIconSrc(t.地貌);
+      if (featureIcon) parts.push(`<image href="${featureIcon}" x="${(c.x - 12).toFixed(1)}" y="${(c.y - 24).toFixed(1)}" width="24" height="24"/>`);
+      else parts.push(`<text x="${c.x.toFixed(1)}" y="${(c.y - 8).toFixed(1)}" class="feat">${FEATURE_MARK[t.地貌]}</text>`);
     }
     if (t.资源) {
-      parts.push(`<circle cx="${(c.x + 14).toFixed(1)}" cy="${(c.y - 12).toFixed(1)}" r="4" class="res"/>`);
+      const resourceIcon = localIconSrc(t.资源);
+      if (resourceIcon) {
+        parts.push(`<image class="resource-icon" href="${resourceIcon}" x="${(c.x + 6).toFixed(1)}" y="${(c.y - 22).toFixed(1)}" width="22" height="22"/>`);
+      } else {
+        parts.push(`<circle cx="${(c.x + 14).toFixed(1)}" cy="${(c.y - 12).toFixed(1)}" r="4" class="res"/>`);
+      }
     }
     if (t.自然奇观 || t.世界奇观) {
-      parts.push(`<text x="${(c.x - 16).toFixed(1)}" y="${(c.y - 10).toFixed(1)}" class="wonder">★</text>`);
+      const wonderIcon = localIconSrc(t.世界奇观 ?? t.自然奇观 ?? "");
+      if (wonderIcon) parts.push(`<image href="${wonderIcon}" x="${(c.x - 24).toFixed(1)}" y="${(c.y - 25).toFixed(1)}" width="22" height="22"/>`);
+      else parts.push(`<text x="${(c.x - 16).toFixed(1)}" y="${(c.y - 10).toFixed(1)}" class="wonder">★</text>`);
     }
     if (t.区域) {
       const did = rules.effective(t.区域, b.文明);
@@ -109,9 +122,13 @@ export function renderMap(rules: Rules, b: BoardState, o: MapOpts = {}): string 
       const isCenter = did === "DISTRICT_CITY_CENTER";
       const chosen = isCenter && t.所属城市 === o.selectedCity;
       parts.push(`<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${SIZE * 0.62}" class="dist ${isCenter ? "center" : ""} ${chosen ? "chosen" : ""}"/>`);
-      parts.push(`<text x="${c.x.toFixed(1)}" y="${(c.y + 1).toFixed(1)}" class="dname">${esc(nm.slice(0, 2))}</text>`);
-      if (nm.length > 2) {
-        parts.push(`<text x="${c.x.toFixed(1)}" y="${(c.y + 13).toFixed(1)}" class="dname2">${esc(nm.slice(2, 5))}</text>`);
+      const districtIcon = localIconSrc(did);
+      if (districtIcon) {
+        parts.push(`<image href="${districtIcon}" x="${(c.x - 17).toFixed(1)}" y="${(c.y - 19).toFixed(1)}" width="34" height="34"/>`);
+        parts.push(`<text x="${c.x.toFixed(1)}" y="${(c.y + 20).toFixed(1)}" class="dname2">${esc(nm.slice(0, 5))}</text>`);
+      } else {
+        parts.push(`<text x="${c.x.toFixed(1)}" y="${(c.y + 1).toFixed(1)}" class="dname">${esc(nm.slice(0, 2))}</text>`);
+        if (nm.length > 2) parts.push(`<text x="${c.x.toFixed(1)}" y="${(c.y + 13).toFixed(1)}" class="dname2">${esc(nm.slice(2, 5))}</text>`);
       }
       if ((t.建筑?.length ?? 0) > 0) {
         parts.push(`<text x="${c.x.toFixed(1)}" y="${(c.y + 24).toFixed(1)}" class="bcount">▪${t.建筑!.length}</text>`);
@@ -141,39 +158,33 @@ export function renderTotals(tree: YieldTree, 高亮?: string): string {
        <span class="yname">${esc(y)}</span><b>${fmt(v)}</b></div>`).join("");
 }
 
-// ── 拆解面板：固定四层，不可折叠为三层（SDD-自由模式 §3.3）────────────
+// ── 拆解面板：按地图区块汇集区域、建筑与各产出，仅展示非零贡献 ──────
 export function renderBreakdown(tree: YieldTree, 只看?: string): string {
-  const out: string[] = [];
+  type Entry = { yieldType: string; source: string; leaf: Leaf };
+  const groups = new Map<string, { pos?: Axial; total: Map<string, Rat>; entries: Entry[] }>();
   for (const y of tree.产出) {
     if (只看 && y.产出类型 !== 只看) continue;
-    if (isZero(y.合计) && !只看) continue;
-    out.push(`<div class="bd-yield"><div class="bd-h">
-      <span class="dot" style="background:${yieldColor(y.产出类型)}"></span>
-      ${esc(y.产出类型)} <b>${fmt(y.合计)}</b></div>`);
-    for (const s of y.来源) {
-      const pos = s.位置 ? ` @ (${s.位置.q},${s.位置.r})` : "";
-      out.push(`<div class="bd-src"><div class="bd-sh">${esc(s.来源)}${pos}
-        <b>${fmt(s.合计)}</b></div>`);
-      for (const l of [...s.叶子].sort((a, z) => cmp(z.增量, a.增量))) {
-        out.push(renderLeaf(l));
-      }
-      out.push(`</div>`);
+    for (const s of y.来源) for (const leaf of s.叶子) {
+      if (isZero(leaf.增量)) continue;
+      const k = s.位置 ? key(s.位置) : `global:${s.来源id}`;
+      const group = groups.get(k) ?? { pos: s.位置, total: new Map<string, Rat>(), entries: [] };
+      group.total.set(y.产出类型, add(group.total.get(y.产出类型) ?? ZERO, leaf.增量));
+      group.entries.push({ yieldType: y.产出类型, source: s.来源, leaf });
+      groups.set(k, group);
     }
-    out.push(`</div>`);
   }
-  if (out.length === 0) return `<div class="muted">选一种产出，或先放一个区域</div>`;
-  return out.join("");
-}
-
-function renderLeaf(l: Leaf): string {
-  // 增量为 0 的规则**灰显但保留**（求值器边界 E1）：
-  // 「为什么没有加成」与「有多少加成」是同等重要的信息。
-  const dim = isZero(l.增量) ? " dim" : "";
-  const flag = l.未生效 ? `<span class="tag">${esc(l.未生效)}</span>` : "";
-  return `<div class="bd-leaf${dim}">
-    <span class="lt">${esc(l.说明)}${flag}</span>
-    <span class="lv">${isZero(l.增量) ? "—" : "+" + fmt(l.增量)}</span>
-    <span class="lid" title="${esc(l.规则id)}">${esc(l.规则id)}</span></div>`;
+  if (!groups.size) return `<div class="muted">当前没有生效的加成</div>`;
+  return [...groups].sort(([a], [b]) => a.localeCompare(b, "zh-CN", { numeric: true }))
+    .map(([id, group]) => {
+      const title = group.pos ? `区块 (${group.pos.q}, ${group.pos.r})` : "全局加成";
+      const sums = [...group.total].filter(([, v]) => !isZero(v)).map(([y, v]) =>
+        `<span class="bd-sum" style="--yield:${yieldColor(y)}">${esc(y)} ${v.n > 0 ? "+" : ""}${fmt(v)}</span>`).join("");
+      const entries = group.entries.map(({ yieldType, source, leaf }) =>
+        `<div class="bd-entry"><div class="bd-entry-top"><span>${esc(source)} · ${esc(yieldType)}</span><b style="color:${yieldColor(yieldType)}">${leaf.增量.n > 0 ? "+" : ""}${fmt(leaf.增量)}</b></div>
+        <div class="bd-explain">${esc(leaf.说明)}</div>
+        <div class="bd-rule" title="${esc(leaf.规则id)}">${esc(leaf.规则id)}</div></div>`).join("");
+      return `<article class="bd-tile" data-xy="${esc(id)}"><div class="bd-tile-head"><b>${title}</b><div class="bd-sums">${sums}</div></div>${entries}</article>`;
+    }).join("");
 }
 
 /** 悬停预览：两次求值结果的差。**渲染层唯一被允许的"计算"**。 */
