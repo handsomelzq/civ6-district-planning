@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { PRESETS, sandboxBoard } from "../web/presets.ts";
 import { brushInfo } from "../web/brush_info.ts";
 import { renderBreakdown } from "../web/render.ts";
+import { eraIndex, loadProgression, prerequisiteClosure } from "../web/progression.ts";
 import { evaluate } from "../src/evaluate.ts";
 import { distance } from "../src/hex.ts";
 import { R, board } from "./helpers.ts";
@@ -14,6 +15,10 @@ const root = fileURLToPath(new URL("../配置表/", import.meta.url));
 const texts = Object.fromEntries(["terrains.csv", "features.csv"].map((f) =>
   [f, readFileSync(join(root, f), "utf8")]));
 const page = readFileSync(join(root, "..", "web", "index.html"), "utf8");
+const progression = loadProgression(Object.fromEntries(
+  ["tech_tree.csv", "civic_tree.csv", "policy_cards.csv"].map((f) =>
+    [f.replace(".csv", ""), readFileSync(join(root, f), "utf8")]),
+) as never);
 
 test("多城预设每一行没有内部空洞，中立填补格不归属城市", () => {
   for (const preset of PRESETS) {
@@ -68,4 +73,25 @@ test("入口页提供模式选择、设置入口和拆解文档入口", () => {
   assert.match(page, /id="settings-modal"/);
   assert.match(page, /\/tree\/main\/设计/);
   assert.match(page, /DISTRICT_CITY_CENTER\.png/);
+});
+
+test("研究系统包含完整科技/文化树和区域规划精选政策卡", () => {
+  assert.equal(progression.techs.size, 77);
+  assert.equal(progression.civics.size, 61);
+  assert.ok(progression.policies.some((p) => p.id === "POLICY_NATURAL_PHILOSOPHY"));
+  assert.ok(progression.policies.some((p) => p.id === "POLICY_CRAFTSMEN"));
+  const chain = prerequisiteClosure(progression.techs, "TECH_ENGINEERING");
+  assert.ok(chain.includes("TECH_MINING"));
+  assert.ok(chain.includes("TECH_ENGINEERING"));
+  for (const node of [...progression.techs.values(), ...progression.civics.values()]) {
+    assert.ok(node.name.length > 0);
+    assert.ok(node.functionText.length > 0);
+    for (const parent of node.prereqs) {
+      const pool = progression.techs.has(node.id) ? progression.techs : progression.civics;
+      assert.ok(pool.has(parent), `${node.id} 的前置节点不存在：${parent}`);
+    }
+  }
+  assert.ok(eraIndex("ERA_ANCIENT") < eraIndex("ERA_CLASSICAL"));
+  assert.ok(eraIndex("ERA_CLASSICAL") < eraIndex("ERA_ATOMIC"));
+  assert.ok(eraIndex("ERA_ATOMIC") < eraIndex("ERA_FUTURE"));
 });

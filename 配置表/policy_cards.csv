@@ -1,0 +1,10 @@
+政策卡id,名称,政策槽位,前置市政,功能说明,规划标签,数据来源,待核
+POLICY_CRAFTSMEN,工匠,军事,CIVIC_GUILDS,100%工业区相邻加成。,工业区相邻,一手,否
+POLICY_AESTHETICS,美学,经济,CIVIC_MEDIEVAL_FAIRES,+100%剧院广场区相邻加成。,剧院广场相邻,一手,否
+POLICY_MEDINA_QUARTER,古老城区,经济,CIVIC_MEDIEVAL_FAIRES,所有拥有至少3个独立区域的城市+2 住房。,城市容量,一手,否
+POLICY_NATURAL_PHILOSOPHY,自然哲学,经济,CIVIC_RECORDED_HISTORY,+100% 学院区相邻加成。,学院相邻,一手,否
+POLICY_PUBLIC_WORKS,公共工程,经济,CIVIC_CIVIL_ENGINEERING,为生产建造者+30% 生产力，新训练的建造者获得两点额外劳动力。,建造者,一手,否
+POLICY_RATIONALISM,理性主义,经济,CIVIC_THE_ENLIGHTENMENT,学院中的建筑将产出额外的 科技值：如城市 人口大于等于15点，+50%科技值；如区域拥有至少+4相邻加成，+50%科技值。,学院建筑,一手,否
+POLICY_SCRIPTURE,经文,经济,CIVIC_THEOLOGY,+100%圣地相邻加成。,圣地相邻,一手,否
+POLICY_SIMULTANEUM,共享教堂,经济,CIVIC_REFORMED_CHURCH,圣地中的建筑将产出额外的 信仰值：如城市 人口大于等于15点，+50%信仰值；如区域拥有至少+4相邻加成，+50%信仰值。,圣地建筑,一手,否
+POLICY_URBAN_PLANNING,城市规划,经济,CIVIC_CODE_OF_LAWS,所有城市+1 生产力。,城市生产,一手,否

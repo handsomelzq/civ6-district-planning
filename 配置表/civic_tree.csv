@@ -1,0 +1,62 @@
+市政id,名称,时代,成本,前置市政,功能说明,解锁内容,区域规划相关,数据来源,待核
+CIVIC_CAPITALISM,资本主义,ERA_MODERN,1580,CIVIC_MASS_MEDIA,建筑：购物商场；政策卡：不干涉主义；政策卡：市场经济,建筑：购物商场|政策卡：不干涉主义|政策卡：市场经济,是,一手,否
+CIVIC_CIVIL_ENGINEERING,土木工程,ERA_INDUSTRIAL,1010,CIVIC_MERCANTILISM,可以在草原丘陵和平原丘陵上建造农场。,建筑：自由女神像|政策卡：公共工程|政策卡：摩天大楼,是,一手,否
+CIVIC_CIVIL_SERVICE,行政部门,ERA_MEDIEVAL,300,CIVIC_DEFENSIVE_TACTICS|CIVIC_RECORDED_HISTORY,建筑：米纳克希神庙；政策卡：侍从；政策卡：民间威望,建筑：米纳克希神庙|政策卡：侍从|政策卡：民间威望,是,一手,否
+CIVIC_CLASS_STRUGGLE,阶级斗争,ERA_MODERN,1640,CIVIC_IDEOLOGY,政策卡：保卫祖国；政策卡：集体化,政策卡：保卫祖国|政策卡：集体化,是,一手,否
+CIVIC_CODE_OF_LAWS,法典,ERA_ANCIENT,20,无,政策卡：君主崇拜；政策卡：城市规划；政策卡：纪律；政策卡：调查,政策卡：君主崇拜|政策卡：城市规划|政策卡：纪律|政策卡：调查,是,一手,否
+CIVIC_COLD_WAR,冷战,ERA_ATOMIC,2185,CIVIC_IDEOLOGY,可额外招募一名间谍。,政策卡：二次攻击能力|政策卡：公海|政策卡：密码学|政策卡：遏制,是,一手,否
+CIVIC_COLONIALISM,殖民主义,ERA_INDUSTRIAL,800,CIVIC_MERCANTILISM,渔船改良设施提供的 生产力+1。,政策卡：本土征服|政策卡：殖民地税收|政策卡：统治,是,一手,否
+CIVIC_CONSERVATION,保护地球,ERA_MODERN,1540,CIVIC_NATURAL_HISTORY,奖励3位 使者。允许使用 信仰值建造国家公园和购买自然学家。允许建造者植树造林（人造林）。您领土上从未被移除的树林（非人造林）获得+1魅力。从城墙获得 旅游业绩。,建筑：避难所|政策卡：资源管理,是,一手,否
+CIVIC_CORPORATE_LIBERTARIANISM,政治冒险,ERA_INFORMATION,3000,CIVIC_GLOBALIZATION|CIVIC_SOCIAL_MEDIA,无额外功能说明,无,否,一手,否
+CIVIC_CRAFTSMANSHIP,技艺,ERA_ANCIENT,40,CIVIC_CODE_OF_LAWS,政策卡：斯巴达教育；政策卡：服役,政策卡：斯巴达教育|政策卡：服役,是,一手,否
+CIVIC_CULTURAL_HEGEMONY,文化霸权,ERA_FUTURE,3200,无,政策卡：非国家行为者；政策卡：韩流,政策卡：非国家行为者|政策卡：韩流,是,一手,否
+CIVIC_CULTURAL_HERITAGE,文化遗产,ERA_ATOMIC,1955,CIVIC_CONSERVATION,建筑：悉尼歌剧院；政策卡：遗产旅游,建筑：悉尼歌剧院|政策卡：遗产旅游,是,一手,否
+CIVIC_DEFENSIVE_TACTICS,防御战术,ERA_CLASSICAL,175,CIVIC_GAMES_RECREATION|CIVIC_POLITICAL_PHILOSOPHY,建筑：摩索拉斯王陵墓；政策卡：棱堡；政策卡：边界,建筑：摩索拉斯王陵墓|政策卡：棱堡|政策卡：边界,是,一手,否
+CIVIC_DIGITAL_DEMOCRACY,分散式主权,ERA_INFORMATION,3000,CIVIC_GLOBALIZATION|CIVIC_SOCIAL_MEDIA,无额外功能说明,无,否,一手,否
+CIVIC_DIPLOMATIC_SERVICE,外交部门,ERA_RENAISSANCE,600,CIVIC_GUILDS,获得招募间谍的能力。,建筑：外交办|政策卡：权术主义|政策卡：贸易银行,是,一手,否
+CIVIC_DIVINE_RIGHT,王权神授,ERA_MEDIEVAL,340,CIVIC_CIVIL_SERVICE|CIVIC_THEOLOGY,建筑：圣米歇尔山；建筑：高德院；政策卡：哥特式建筑；政策卡：骑士精神,建筑：圣米歇尔山|建筑：高德院|政策卡：哥特式建筑|政策卡：骑士精神,是,一手,否
+CIVIC_DRAMA_POETRY,戏剧和诗歌,ERA_CLASSICAL,110,CIVIC_EARLY_EMPIRE,区域：剧院广场；区域：卫城；建筑：古罗马剧场；建筑：毛利会堂；政策卡：文学传统,区域：剧院广场|区域：卫城|建筑：古罗马剧场|建筑：毛利会堂|政策卡：文学传统,是,一手,否
+CIVIC_EARLY_EMPIRE,帝国初期,ERA_ANCIENT,70,CIVIC_FOREIGN_TRADE,解锁加固边境和为其他文明开放边界的能力。,政策卡：土地测量员|政策卡：殖民|政策卡：边防军,是,一手,否
+CIVIC_ENVIRONMENTALISM,环境保护主义,ERA_INFORMATION,2880,CIVIC_CULTURAL_HERITAGE|CIVIC_RAPID_DEPLOYMENT,在帝国全境内+25% 旅游业绩。,无,否,一手,否
+CIVIC_EXODUS_IMPERATIVE,必要性远征,ERA_FUTURE,3200,无,政策卡：太空旅游；政策卡：航天承包商,政策卡：太空旅游|政策卡：航天承包商,是,一手,否
+CIVIC_EXPLORATION,探索,ERA_RENAISSANCE,440,CIVIC_MEDIEVAL_FAIRES|CIVIC_MERCENARIES,政策卡：强征入伍；政策卡：殖民地办事处,政策卡：强征入伍|政策卡：殖民地办事处,是,一手,否
+CIVIC_FEUDALISM,封建主义,ERA_MEDIEVAL,300,CIVIC_DEFENSIVE_TACTICS,与每2个农场改良设施相邻时，农场提供的 食物+1。种植园改良设施提供的 食物+1。,政策卡：农奴制|政策卡：封建契约,是,一手,否
+CIVIC_FOREIGN_TRADE,对外贸易,ERA_ANCIENT,40,CIVIC_CODE_OF_LAWS,允许创建 贸易路线。,政策卡：商队旅馆|政策卡：海运业,是,一手,否
+CIVIC_FUTURE_CIVIC,未来市政,ERA_FUTURE,3500,CIVIC_GLOBALIZATION|CIVIC_SOCIAL_MEDIA,可多次完成，增加分数胜利点数。每完成一次便奖励1个 总督头衔与50点 外交支持。,无,否,一手,否
+CIVIC_GAMES_RECREATION,游戏和娱乐,ERA_CLASSICAL,110,CIVIC_STATE_WORKFORCE,区域：娱乐中心；区域：街头狂欢节；区域：跑马场；建筑：竞技场；建筑：罗马斗兽场；建筑：蹴球场；政策卡：楼房,区域：娱乐中心|区域：街头狂欢节|区域：跑马场|建筑：竞技场|建筑：罗马斗兽场|建筑：蹴球场|政策卡：楼房,是,一手,否
+CIVIC_GLOBALIZATION,全球化,ERA_INFORMATION,2880,CIVIC_RAPID_DEPLOYMENT|CIVIC_SPACE_RACE,种植园 金币+2。,政策卡：国际宇航局|政策卡：战略空军|政策卡：电子商务,是,一手,否
+CIVIC_GLOBAL_WARMING_MITIGATION,全球变暖减缓学,ERA_FUTURE,3200,无,奖励1点外交胜利点数。,无,否,一手,否
+CIVIC_GUILDS,公会,ERA_MEDIEVAL,420,CIVIC_CIVIL_SERVICE|CIVIC_FEUDALISM,区域：姆班赞；建筑：奇琴伊察；政策卡：城镇特许状；政策卡：工匠；政策卡：旅行商人,区域：姆班赞|建筑：奇琴伊察|政策卡：城镇特许状|政策卡：工匠|政策卡：旅行商人,是,一手,否
+CIVIC_HUMANISM,人文主义,ERA_RENAISSANCE,600,CIVIC_GUILDS|CIVIC_MEDIEVAL_FAIRES,建筑：泰姬陵；建筑：考古博物馆；建筑：艺术博物馆；政策卡：发明；政策卡：壁画,建筑：泰姬陵|建筑：考古博物馆|建筑：艺术博物馆|政策卡：发明|政策卡：壁画,是,一手,否
+CIVIC_IDEOLOGY,意识形态,ERA_MODERN,1640,CIVIC_MASS_MEDIA|CIVIC_MOBILIZATION,可额外招募一名间谍。,政策卡：五年计划|政策卡：炮舰外交|政策卡：经济同盟|政策卡：闪电战,是,一手,否
+CIVIC_INFORMATION_WARFARE,信息战,ERA_FUTURE,3200,无,政策卡：煽动人心；政策卡：综合攻击后勤保障,政策卡：煽动人心|政策卡：综合攻击后勤保障,是,一手,否
+CIVIC_MASS_MEDIA,大众媒体,ERA_MODERN,1540,CIVIC_NATURAL_HISTORY|CIVIC_URBANIZATION,建筑：救世基督像；建筑：百老汇；政策卡：宣传机构,建筑：救世基督像|建筑：百老汇|政策卡：宣传机构,是,一手,否
+CIVIC_MEDIEVAL_FAIRES,中世纪集市,ERA_MEDIEVAL,420,CIVIC_FEUDALISM,建筑：吴哥窟；政策卡：古老城区；政策卡：商人联盟；政策卡：美学,建筑：吴哥窟|政策卡：古老城区|政策卡：商人联盟|政策卡：美学,是,一手,否
+CIVIC_MERCANTILISM,重商主义,ERA_RENAISSANCE,720,CIVIC_HUMANISM,营地改良设施提供的 生产力和 食物+1。 伐木场可建在雨林上。,建筑：贝伦塔|政策卡：三角贸易|政策卡：后勤|政策卡：训练手册,是,一手,否
+CIVIC_MERCENARIES,雇佣兵,ERA_MEDIEVAL,340,CIVIC_FEUDALISM|CIVIC_MILITARY_TRAINING,政策卡：职业军队；政策卡：贴身随从；政策卡：贸易联盟,政策卡：职业军队|政策卡：贴身随从|政策卡：贸易联盟,是,一手,否
+CIVIC_MILITARY_TRADITION,军事传统,ERA_ANCIENT,50,CIVIC_CRAFTSMANSHIP,所有战斗单位获得夹击和支援战斗加成。,政策卡：将军|政策卡：演习,是,一手,否
+CIVIC_MILITARY_TRAINING,军事训练,ERA_CLASSICAL,120,CIVIC_GAMES_RECREATION|CIVIC_MILITARY_TRADITION,建筑：宙斯像；政策卡：扫荡；政策卡：经验；政策卡：骑士阶级,建筑：宙斯像|政策卡：扫荡|政策卡：经验|政策卡：骑士阶级,是,一手,否
+CIVIC_MOBILIZATION,动员,ERA_MODERN,1540,CIVIC_SCORCHED_EARTH|CIVIC_URBANIZATION,允许3个相同单位组成一支军队或无敌舰队。有一个新战争借口可用：领土扩张战争。,政策卡：全民动员,是,一手,否
+CIVIC_MYSTICISM,神秘主义,ERA_ANCIENT,50,CIVIC_FOREIGN_TRADE,区域：保护区；建筑：古树林；建筑：神谕；政策卡：启示；政策卡：鼓舞,区域：保护区|建筑：古树林|建筑：神谕|政策卡：启示|政策卡：鼓舞,是,一手,否
+CIVIC_NATIONALISM,民族主义,ERA_INDUSTRIAL,1010,CIVIC_THE_ENLIGHTENMENT,可额外招募一名间谍。允许两个完全相同的单位组成一个兵团或舰队。现在可用一个新的战争借口替战争辩护：殖民战争。,政策卡：国家认同|政策卡：大军团,是,一手,否
+CIVIC_NATURAL_HISTORY,自然历史,ERA_INDUSTRIAL,1050,CIVIC_COLONIALISM,区域：水上乐园；区域：科帕卡瓦纳；建筑：动物园；建筑：摩天轮；建筑：水族馆；建筑：温泉浴场；建筑：艾尔米塔什博物馆,区域：水上乐园|区域：科帕卡瓦纳|建筑：动物园|建筑：摩天轮|建筑：水族馆|建筑：温泉浴场|建筑：艾尔米塔什博物馆,是,一手,否
+CIVIC_NAVAL_TRADITION,海军传统,ERA_MEDIEVAL,220,CIVIC_DEFENSIVE_TACTICS,政策卡：海军基础设施；政策卡：航海,政策卡：海军基础设施|政策卡：航海,是,一手,否
+CIVIC_NEAR_FUTURE_GOVERNANCE,近未来治理,ERA_INFORMATION,3100,CIVIC_ENVIRONMENTALISM|CIVIC_GLOBALIZATION,无额外功能说明,无,否,一手,否
+CIVIC_NUCLEAR_PROGRAM,核计划,ERA_MODERN,1715,CIVIC_IDEOLOGY,政策卡：核间谍；政策卡：科学基金会,政策卡：核间谍|政策卡：科学基金会,是,一手,否
+CIVIC_OPERA_BALLET,歌剧和芭蕾,ERA_INDUSTRIAL,800,CIVIC_THE_ENLIGHTENMENT,建筑：莫斯科大剧院；政策卡：交响曲；政策卡：大歌剧,建筑：莫斯科大剧院|政策卡：交响曲|政策卡：大歌剧,是,一手,否
+CIVIC_POLITICAL_PHILOSOPHY,政治哲学,ERA_CLASSICAL,110,CIVIC_EARLY_EMPIRE|CIVIC_STATE_WORKFORCE,建筑：阿帕达纳宫；政策卡：外交联盟；政策卡：魅力型领袖,建筑：阿帕达纳宫|政策卡：外交联盟|政策卡：魅力型领袖,是,一手,否
+CIVIC_PROFESSIONAL_SPORTS,职业体育,ERA_ATOMIC,2185,CIVIC_IDEOLOGY,建筑：体育场；建筑：水上运动中心；建筑：马拉卡纳体育场；政策卡：体育传媒,建筑：体育场|建筑：水上运动中心|建筑：马拉卡纳体育场|政策卡：体育传媒,是,一手,否
+CIVIC_RAPID_DEPLOYMENT,紧急部署,ERA_ATOMIC,2415,CIVIC_COLD_WAR,允许在包含机场的航空港之间运输陆地单位。,建筑：阿蒙森-斯科特南极站|政策卡：先军政策|政策卡：行动总结报告,是,一手,否
+CIVIC_RECORDED_HISTORY,历史记录,ERA_CLASSICAL,175,CIVIC_DRAMA_POETRY|CIVIC_POLITICAL_PHILOSOPHY,建筑：大图书馆；政策卡：司令部；政策卡：自然哲学,建筑：大图书馆|政策卡：司令部|政策卡：自然哲学,是,一手,否
+CIVIC_REFORMED_CHURCH,归正会,ERA_RENAISSANCE,440,CIVIC_DIVINE_RIGHT|CIVIC_GUILDS,建筑：圣瓦西里主教座堂；政策卡：共享教堂；政策卡：宗教战争；政策卡：宗教教派,建筑：圣瓦西里主教座堂|政策卡：共享教堂|政策卡：宗教战争|政策卡：宗教教派,是,一手,否
+CIVIC_SCORCHED_EARTH,焦土策略,ERA_INDUSTRIAL,1210,CIVIC_NATIONALISM,政策卡：全面战争；政策卡：军事组织；政策卡：征收,政策卡：全面战争|政策卡：军事组织|政策卡：征收,是,一手,否
+CIVIC_SMART_POWER_DOCTRINE,巧实力主义,ERA_FUTURE,3200,无,政策卡：全球联合；政策卡：外交资本,政策卡：全球联合|政策卡：外交资本,是,一手,否
+CIVIC_SOCIAL_MEDIA,社交媒体,ERA_INFORMATION,2880,CIVIC_PROFESSIONAL_SPORTS|CIVIC_SPACE_RACE,政策卡：在线社区；政策卡：联络处；政策卡：集体行动主义,政策卡：在线社区|政策卡：联络处|政策卡：集体行动主义,是,一手,否
+CIVIC_SPACE_RACE,太空竞赛,ERA_ATOMIC,2415,CIVIC_COLD_WAR,政策卡：一体化空间机构；政策卡：卫星广播；政策卡：音乐审查制度,政策卡：一体化空间机构|政策卡：卫星广播|政策卡：音乐审查制度,是,一手,否
+CIVIC_STATE_WORKFORCE,国家劳动力,ERA_ANCIENT,70,CIVIC_CRAFTSMANSHIP,区域：市政广场；政策卡：强迫劳役；政策卡：征兵,区域：市政广场|政策卡：强迫劳役|政策卡：征兵,是,一手,否
+CIVIC_SUFFRAGE,选举权,ERA_MODERN,1640,CIVIC_IDEOLOGY,政策卡：光荣时刻；政策卡：新政,政策卡：光荣时刻|政策卡：新政,是,一手,否
+CIVIC_SYNTHETIC_TECHNOCRACY,最优化命令,ERA_INFORMATION,3000,CIVIC_GLOBALIZATION|CIVIC_SOCIAL_MEDIA,无额外功能说明,无,否,一手,否
+CIVIC_THEOLOGY,神学,ERA_CLASSICAL,120,CIVIC_DRAMA_POETRY|CIVIC_MYSTICISM,建筑：伊斯兰学校；建筑：寺庙；建筑：摩诃菩提寺；建筑：木板教堂；建筑：高棉庙堂；政策卡：经文,建筑：伊斯兰学校|建筑：寺庙|建筑：摩诃菩提寺|建筑：木板教堂|建筑：高棉庙堂|政策卡：经文,是,一手,否
+CIVIC_THE_ENLIGHTENMENT,启蒙运动,ERA_RENAISSANCE,720,CIVIC_DIPLOMATIC_SERVICE|CIVIC_HUMANISM,同您开战的文明，宗教 旅游业绩减半。,政策卡：理性主义|政策卡：自由主义|政策卡：自由市场,是,一手,否
+CIVIC_TOTALITARIANISM,极权主义,ERA_MODERN,1640,CIVIC_IDEOLOGY,政策卡：军事管制；政策卡：第三选择,政策卡：军事管制|政策卡：第三选择,是,一手,否
+CIVIC_URBANIZATION,城市化,ERA_INDUSTRIAL,1210,CIVIC_CIVIL_ENGINEERING|CIVIC_NATIONALISM,区域：社区；政策卡：公共交通；政策卡：军事研究；政策卡：军队现代化,区域：社区|政策卡：公共交通|政策卡：军事研究|政策卡：军队现代化,是,一手,否

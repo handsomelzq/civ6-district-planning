@@ -1,0 +1,78 @@
+科技id,名称,时代,成本,前置科技,功能说明,解锁内容,区域规划相关,数据来源,待核
+TECH_ADVANCED_AI,高级人工智能,ERA_FUTURE,2200,无,解锁末日机甲升级：无人机防空 +100 防空战斗力。,无,否,一手,否
+TECH_ADVANCED_BALLISTICS,高级弹道学,ERA_ATOMIC,1480,TECH_REPLACEABLE_PARTS|TECH_STEEL,无额外功能说明,无,否,一手,否
+TECH_ADVANCED_FLIGHT,现代航空,ERA_ATOMIC,1480,TECH_RADIO,建筑：机场,建筑：机场,是,一手,否
+TECH_ADVANCED_POWER_CELLS,高级能量电池,ERA_FUTURE,2200,无,单位的二氧化碳排放降低50%。解锁末日机甲升级：粒子束攻城巨炮 进攻城市和军营时 远程攻击的效率为100%，+30 远程攻击力。,无,否,一手,否
+TECH_ANIMAL_HUSBANDRY,畜牧业,ERA_ANCIENT,25,无,可收获 牛、 羊和 鹿。,无,否,一手,否
+TECH_APPRENTICESHIP,学徒,ERA_MEDIEVAL,300,TECH_CURRENCY|TECH_HORSEBACK_RIDING,矿山改良设施的 生产力+1 。,区域：商业同业工会|区域：工业区|建筑：工作坊,是,一手,否
+TECH_ARCHERY,箭术,ERA_ANCIENT,50,TECH_ANIMAL_HUSBANDRY,建筑：阿耳忒弥斯神庙,建筑：阿耳忒弥斯神庙,是,一手,否
+TECH_ASTROLOGY,占星术,ERA_ANCIENT,50,无,区域：圣地；区域：拉夫拉修道院；建筑：巨石阵；建筑：神社,区域：圣地|区域：拉夫拉修道院|建筑：巨石阵|建筑：神社,是,一手,否
+TECH_ASTRONOMY,天文学,ERA_RENAISSANCE,730,TECH_EDUCATION,建筑：布达拉宫,建筑：布达拉宫,是,一手,否
+TECH_BALLISTICS,弹道学,ERA_INDUSTRIAL,930,TECH_METAL_CASTING,无额外功能说明,无,否,一手,否
+TECH_BANKING,银行业,ERA_RENAISSANCE,600,TECH_EDUCATION|TECH_STIRRUPS,建筑：大巴扎；建筑：大津巴布韦；建筑：银行,建筑：大巴扎|建筑：大津巴布韦|建筑：银行,是,一手,否
+TECH_BRONZE_WORKING,铸铜术,ERA_ANCIENT,80,TECH_MINING,允许砍伐雨林。显示 铁资源。,区域：伊坎达|区域：军营|区域：城池|建筑：兵营|建筑：皇家学堂,是,一手,否
+TECH_BUTTRESS,扶壁,ERA_MEDIEVAL,300,TECH_MATHEMATICS|TECH_SHIPBUILDING,区域：堤坝；建筑：圣索菲亚大教堂,区域：堤坝|建筑：圣索菲亚大教堂,是,一手,否
+TECH_CARTOGRAPHY,制图学,ERA_RENAISSANCE,600,TECH_BUTTRESS,渔船改良设施+2 金币。所有海军和水运单位可在海洋单元格上航行。,建筑：西印度交易所,是,一手,否
+TECH_CASTLES,城堡,ERA_MEDIEVAL,390,TECH_CONSTRUCTION,长城相邻加成中包含 文化值加成。如果使用凯瑟琳·德·美第奇（黑王后），能免费获得1名间谍。,建筑：中世纪城墙|建筑：阿尔罕布拉宫,是,一手,否
+TECH_CELESTIAL_NAVIGATION,天文导航,ERA_CLASSICAL,120,TECH_ASTROLOGY|TECH_SAILING,可使商人上船，并收获 鱼和 螃蟹。,区域：U型港|区域：港口|区域：皇家海军船坞|建筑：大灯塔|建筑：灯塔,是,一手,否
+TECH_CHEMISTRY,化学,ERA_MODERN,1370,TECH_REPLACEABLE_PARTS|TECH_SANITATION,建筑：研究实验室,建筑：研究实验室,是,一手,否
+TECH_COMBINED_ARMS,联合作战,ERA_ATOMIC,1480,TECH_COMBUSTION|TECH_STEEL,无额外功能说明,无,否,一手,否
+TECH_COMBUSTION,内燃机,ERA_MODERN,1370,TECH_REFINING|TECH_STEEL,水运单位+1 移动力。,建筑：金门大桥,是,一手,否
+TECH_COMPOSITES,复合材料,ERA_INFORMATION,1850,TECH_SYNTHETIC_MATERIALS,无额外功能说明,无,否,一手,否
+TECH_COMPUTERS,电脑,ERA_ATOMIC,1660,TECH_ELECTRICITY|TECH_RADIO,可以额外招募1个间谍。在帝国全境内+25% 旅游业绩。,建筑：拦洪坝,是,一手,否
+TECH_CONSTRUCTION,建造,ERA_CLASSICAL,200,TECH_HORSEBACK_RIDING|TECH_MASONRY,建筑：兵马俑,建筑：兵马俑,是,一手,否
+TECH_CURRENCY,货币,ERA_CLASSICAL,120,TECH_WRITING,区域：商业中心；区域：曼丁哥市场；建筑：市场；建筑：纺织会馆,区域：商业中心|区域：曼丁哥市场|建筑：市场|建筑：纺织会馆,是,一手,否
+TECH_CYBERNETICS,控制论,ERA_FUTURE,2200,无,解锁末日机甲升级：增强机动 +3 移动力。可进行1次跳跃，跨过山脉地貌。,无,否,一手,否
+TECH_ECONOMICS,经济,ERA_INDUSTRIAL,1070,TECH_METAL_CASTING|TECH_SCIENTIFIC_THEORY,建筑：大本钟；建筑：证券交易所,建筑：大本钟|建筑：证券交易所,是,一手,否
+TECH_EDUCATION,教育,ERA_MEDIEVAL,390,TECH_APPRENTICESHIP|TECH_MATHEMATICS,建筑：大学；建筑：桑科雷大学；建筑：航海学校,建筑：大学|建筑：桑科雷大学|建筑：航海学校,是,一手,否
+TECH_ELECTRICITY,电力,ERA_MODERN,1370,TECH_STEAM_POWER,建筑：水电站坝；建筑：燃油发电厂；建筑：码头,建筑：水电站坝|建筑：燃油发电厂|建筑：码头,是,一手,否
+TECH_ENGINEERING,工程,ERA_CLASSICAL,200,TECH_THE_WHEEL,区域：水渠；区域：浴场；建筑：马丘比丘,区域：水渠|区域：浴场|建筑：马丘比丘,是,一手,否
+TECH_FLIGHT,飞行,ERA_MODERN,1250,TECH_INDUSTRIALIZATION|TECH_SCIENTIFIC_THEORY,为所有能提供 文化值的改良设施提供 旅游业绩加成。产出的 旅游业绩等于改良设施的 文化值输出。,区域：航空港|建筑：机库,是,一手,否
+TECH_FUTURE_TECH,未来科技,ERA_FUTURE,2600,无,可多次完成，增加分数胜利点数。每次完成后，所有城市建造城市项目时 生产力均+5%。,无,否,一手,否
+TECH_GUIDANCE_SYSTEMS,制导系统,ERA_INFORMATION,1850,TECH_ADVANCED_BALLISTICS|TECH_ROCKETRY,无额外功能说明,无,否,一手,否
+TECH_GUNPOWDER,火药,ERA_RENAISSANCE,600,TECH_APPRENTICESHIP|TECH_MILITARY_ENGINEERING|TECH_STIRRUPS,采石场改良设施+1 生产力。为苏莱曼一世（立法者）解锁1个 总督头衔。,无,否,一手,否
+TECH_HORSEBACK_RIDING,骑马,ERA_CLASSICAL,120,TECH_ARCHERY,建筑：斡耳朵；建筑：马厩,建筑：斡耳朵|建筑：马厩,是,一手,否
+TECH_INDUSTRIALIZATION,工业化,ERA_INDUSTRIAL,930,TECH_MASS_PRODUCTION|TECH_SQUARE_RIGGING,矿山改良设施+1 生产力。,建筑：工厂|建筑：燃煤发电厂|建筑：电子厂|建筑：鲁尔山谷,是,一手,否
+TECH_IRON_WORKING,炼铁术,ERA_CLASSICAL,120,TECH_BRONZE_WORKING,区域：奥皮杜姆；建筑：博尔戈尔山,区域：奥皮杜姆|建筑：博尔戈尔山,是,一手,否
+TECH_IRRIGATION,灌溉,ERA_ANCIENT,50,TECH_POTTERY,可清理沼泽，并收获 香蕉。,建筑：沟渠|建筑：空中花园,是,一手,否
+TECH_LASERS,激光,ERA_INFORMATION,1850,TECH_NUCLEAR_FISSION,无额外功能说明,无,否,一手,否
+TECH_MACHINERY,机械,ERA_MEDIEVAL,300,TECH_ENGINEERING|TECH_IRON_WORKING,建筑：基尔瓦基斯瓦尼,建筑：基尔瓦基斯瓦尼,是,一手,否
+TECH_MASONRY,砌砖,ERA_ANCIENT,80,TECH_MINING,允许收获 石材。,建筑：远古城墙|建筑：金字塔,是,一手,否
+TECH_MASS_PRODUCTION,批量生产,ERA_RENAISSANCE,600,TECH_BUTTRESS|TECH_EDUCATION|TECH_MILITARY_TACTICS,建筑：威尼斯军械库；建筑：造船厂,建筑：威尼斯军械库|建筑：造船厂,是,一手,否
+TECH_MATHEMATICS,数学,ERA_CLASSICAL,200,TECH_CURRENCY,所有海军单位+1 移动力。,区域：外交区|建筑：佩特拉古城|建筑：领事馆,是,一手,否
+TECH_METAL_CASTING,金属铸造,ERA_RENAISSANCE,730,TECH_GUNPOWDER,无额外功能说明,无,否,一手,否
+TECH_MILITARY_ENGINEERING,军事工程学,ERA_MEDIEVAL,390,TECH_CONSTRUCTION,建筑：兵工厂,建筑：兵工厂,是,一手,否
+TECH_MILITARY_SCIENCE,军事学,ERA_INDUSTRIAL,930,TECH_PRINTING|TECH_SIEGE_TACTICS,建筑：军事学院,建筑：军事学院,是,一手,否
+TECH_MILITARY_TACTICS,战术,ERA_MEDIEVAL,300,TECH_MATHEMATICS,建筑：休伊神庙,建筑：休伊神庙,是,一手,否
+TECH_MINING,采矿业,ERA_ANCIENT,25,无,允许砍伐树林和开采 铜。,无,否,一手,否
+TECH_NANOTECHNOLOGY,纳米技术,ERA_INFORMATION,2155,TECH_COMPOSITES,无额外功能说明,无,否,一手,否
+TECH_NUCLEAR_FISSION,核裂变,ERA_ATOMIC,1660,TECH_ADVANCED_BALLISTICS|TECH_COMBINED_ARMS,建筑：核电站,建筑：核电站,是,一手,否
+TECH_NUCLEAR_FUSION,核聚变,ERA_INFORMATION,2155,TECH_LASERS,无额外功能说明,无,否,一手,否
+TECH_OFFWORLD_MISSION,外星任务,ERA_FUTURE,2500,无,无额外功能说明,无,否,一手,否
+TECH_PLASTICS,塑料,ERA_ATOMIC,1480,TECH_COMBUSTION,渔船+1 食物。,无,否,一手,否
+TECH_POTTERY,制陶术,ERA_ANCIENT,25,无,允许收获由农场改良的加成资源。,建筑：大浴场|建筑：粮仓,是,一手,否
+TECH_PREDICTIVE_SYSTEMS,预报系统,ERA_FUTURE,2200,无,采石场、油井和石油钻机改良设施提供的 生产力+1。,无,否,一手,否
+TECH_PRINTING,印刷术,ERA_RENAISSANCE,600,TECH_MACHINERY,为所有其他文明提供高于一个等级的外交能见度。从 著作巨作中获得的所有 旅游业绩收益翻倍。,建筑：紫禁城,是,一手,否
+TECH_RADIO,无线电,ERA_MODERN,1370,TECH_FLIGHT|TECH_STEAM_POWER,建筑：广播中心；建筑：电影制片厂,建筑：广播中心|建筑：电影制片厂,是,一手,否
+TECH_REFINING,精炼,ERA_MODERN,1250,TECH_RIFLING,无额外功能说明,无,否,一手,否
+TECH_REPLACEABLE_PARTS,零件规格化,ERA_MODERN,1250,TECH_ECONOMICS,将农场改良设施升级为机械化农业。为相邻的每个农场改良设施+1 食物。牧场改良设施提供的 生产力+1。,建筑：食品市场,是,一手,否
+TECH_RIFLING,膛线,ERA_INDUSTRIAL,1070,TECH_BALLISTICS|TECH_MILITARY_SCIENCE,无额外功能说明,无,否,一手,否
+TECH_ROBOTICS,机器人技术,ERA_INFORMATION,2155,TECH_COMPUTERS|TECH_GUIDANCE_SYSTEMS|TECH_LASERS|TECH_SATELLITES,牧场改良设施提供的 食物+1。,无,否,一手,否
+TECH_ROCKETRY,火箭研究,ERA_ATOMIC,1480,TECH_CHEMISTRY|TECH_RADIO,采石场改良设施+1 生产力。,区域：宇航中心,是,一手,否
+TECH_SAILING,航海术,ERA_ANCIENT,50,无,允许建造者上船。,无,否,一手,否
+TECH_SANITATION,卫生设备,ERA_INDUSTRIAL,1070,TECH_SCIENTIFIC_THEORY,梯井改良设施+1 住房。,建筑：下水道|建筑：匈牙利议会大厦,是,一手,否
+TECH_SATELLITES,卫星,ERA_INFORMATION,1850,TECH_ADVANCED_FLIGHT|TECH_ROCKETRY,无额外功能说明,无,否,一手,否
+TECH_SCIENTIFIC_THEORY,科学理论,ERA_INDUSTRIAL,930,TECH_ASTRONOMY|TECH_BANKING,种植园改良设施提供+1 食物。,建筑：牛津大学,是,一手,否
+TECH_SEASTEADS,海洋家园,ERA_FUTURE,2200,无,奖励1点外交胜利点数。,无,否,一手,否
+TECH_SHIPBUILDING,造船术,ERA_CLASSICAL,200,TECH_SAILING,允许所有陆地单位上船。,建筑：巨像,是,一手,否
+TECH_SIEGE_TACTICS,攻城术,ERA_RENAISSANCE,730,TECH_CASTLES,建筑：堡垒；建筑：文艺复兴城墙,建筑：堡垒|建筑：文艺复兴城墙,是,一手,否
+TECH_SMART_MATERIALS,智能材料,ERA_FUTURE,2200,无,解锁末日机甲升级：强力装甲 防御陆地与海军单位时+10 战斗力。,无,否,一手,否
+TECH_SQUARE_RIGGING,横帆装置,ERA_RENAISSANCE,730,TECH_CARTOGRAPHY,水运单位+1 移动力。,无,否,一手,否
+TECH_STEALTH_TECHNOLOGY,隐形技术,ERA_INFORMATION,1850,TECH_SYNTHETIC_MATERIALS,无额外功能说明,无,否,一手,否
+TECH_STEAM_POWER,蒸汽动力,ERA_INDUSTRIAL,1070,TECH_INDUSTRIALIZATION,水运单位+2 移动力。,区域：运河|建筑：巴拿马运河,是,一手,否
+TECH_STEEL,钢铁,ERA_MODERN,1250,TECH_RIFLING,从伐木场改良设施获得的 生产力+1。解锁城市防御，为所有城市提供400点自动防御力和发起远程攻击的能力。之前的城墙改良设施将全部过时，攻城单位进攻时不再拥有特殊效果。,建筑：埃菲尔铁塔,是,一手,否
+TECH_STIRRUPS,马镫,ERA_MEDIEVAL,390,TECH_APPRENTICESHIP|TECH_HORSEBACK_RIDING,牧场改良设施提供的 食物+1。,无,否,一手,否
+TECH_SYNTHETIC_MATERIALS,合成材料,ERA_ATOMIC,1660,TECH_PLASTICS,营地产出的 金币+2。,建筑：生物圈,是,一手,否
+TECH_TELECOMMUNICATIONS,远程通信,ERA_INFORMATION,1850,TECH_COMPUTERS,无额外功能说明,无,否,一手,否
+TECH_THE_WHEEL,轮子,ERA_ANCIENT,80,TECH_MINING,建筑：水磨,建筑：水磨,是,一手,否
+TECH_WRITING,写作,ERA_ANCIENT,50,TECH_POTTERY,区域：书院；区域：天文台；区域：学院；建筑：图书馆；建筑：埃特曼安吉神庙,区域：书院|区域：天文台|区域：学院|建筑：图书馆|建筑：埃特曼安吉神庙,是,一手,否

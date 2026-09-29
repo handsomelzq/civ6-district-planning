@@ -21,9 +21,16 @@ import {
 import { PRESETS, sandboxBoard, type PresetId } from "./presets.ts";
 import { brushInfo, type InfoBrush } from "./brush_info.ts";
 import { localIconSrc } from "./local_icons.ts";
+import {
+  eraIndex, eraName, loadProgression, prerequisiteClosure,
+  type ProgressionData, type ProgressionNode, type TreeKind,
+} from "./progression.ts";
 
 const rules = new Rules(TABLE_TEXTS as never);
 const { levels, problems } = loadLevels(rules, LEVEL_TEXTS as never);
+const progression: ProgressionData = loadProgression(TABLE_TEXTS as never);
+const progressionName = (id: string): string =>
+  progression.techs.get(id)?.name ?? progression.civics.get(id)?.name ?? rules.name(id);
 
 // ── 可放置的区域调色板 ────────────────────────────────────────────────
 // 只列首期用到的区域。取自 districts.csv，不硬编码名称。
@@ -73,6 +80,8 @@ type App = {
   preset: PresetId;
   selectedCity: string;
   showDebug: boolean;
+  activePolicies: Set<string>;
+  progressionTab: "政策卡" | TreeKind;
 };
 
 const app: App = {
@@ -83,6 +92,8 @@ const app: App = {
   focusYield: "科技",
   preset: "mountain", selectedCity: "A",
   showDebug: false,
+  activePolicies: new Set(),
+  progressionTab: "政策卡",
 };
 
 // ── 交互：放置 / 编辑 / 撤销 ──────────────────────────────────────────
@@ -414,6 +425,102 @@ function settingsHtml(): string {
   </div>`;
 }
 
+function progressionNodeButton(kind: TreeKind, node: ProgressionNode): string {
+  const unlocked = kind === "科技"
+    ? app.board.已解锁科技.has(node.id)
+    : app.board.已解锁市政.has(node.id);
+  const prereq = node.prereqs.length
+    ? `前置：${node.prereqs.map(progressionName).join("、")}`
+    : "无前置";
+  const unlocks = node.unlocks.length ? node.unlocks.join(" · ") : "";
+  return `<button class="progression-node ${node.focus ? "focus" : ""} ${unlocked ? "unlocked" : ""}"
+      data-progression-kind="${kind}" data-progression-id="${esc(node.id)}"
+      title="${esc(node.functionText)}">
+      <span class="node-top"><i>${unlocked ? "已解锁" : "可研究"}</i><b>${esc(node.cost)}</b></span>
+      <strong>${esc(node.name)}</strong>
+      <small>${esc(node.functionText)}</small>
+      <em>${esc(prereq)}</em>
+      ${unlocks ? `<span class="node-unlocks">解锁：${esc(unlocks)}</span>` : ""}
+    </button>`;
+}
+
+function progressionHtml(): string {
+  const tab = (name: "政策卡" | TreeKind, label: string) =>
+    `<button class="progression-tab ${app.progressionTab === name ? "on" : ""}"
+      data-progression-tab="${name}">${label}</button>`;
+  const tabs = `<div class="progression-tabs">${tab("政策卡", "政策卡")}
+    ${tab("科技", "科技树")} ${tab("文化", "文化树")}</div>`;
+  if (app.progressionTab === "政策卡") {
+    const active = app.activePolicies.size;
+    const cards = progression.policies.map((p) => {
+      const on = app.activePolicies.has(p.id);
+      return `<button class="policy-card ${on ? "on" : ""}" data-policy-id="${p.id}">
+        <span class="policy-slot">${esc(p.slot)}</span>
+        <strong>${esc(p.name)}</strong><small>${esc(p.tag)}</small>
+        <p>${esc(p.functionText)}</p>
+        <em>前置市政：${esc(progressionName(p.prereqCivic))}</em>
+        <b class="policy-state">${on ? "已装配" : "加入政策栏"}</b>
+      </button>`;
+    }).join("");
+    return `${tabs}<div class="progression-summary"><b>规划政策栏 ${active}</b>
+      <span>点击卡片自由装配；卡面效果完全采用游戏原文。</span></div>
+      <div class="policy-grid">${cards}</div>`;
+  }
+  const nodes = app.progressionTab === "科技" ? progression.techs : progression.civics;
+  const grouped = new Map<string, ProgressionNode[]>();
+  for (const node of nodes.values()) {
+    const list = grouped.get(node.era) ?? [];
+    list.push(node); grouped.set(node.era, list);
+  }
+  const eras = [...grouped].sort(([a], [b]) =>
+    eraIndex(a) - eraIndex(b) || a.localeCompare(b))
+    .map(([era, list]) => `<section class="era-column">
+      <header><span>${esc(eraName(era))}</span><i>${list.length}</i></header>
+      <div>${list.sort((a, b) => a.name.localeCompare(b.name, "zh-CN"))
+        .map((node) => progressionNodeButton(app.progressionTab, node)).join("")}</div>
+    </section>`).join("");
+  const unlocked = app.progressionTab === "科技"
+    ? app.board.已解锁科技.size : app.board.已解锁市政.size;
+  return `${tabs}<div class="progression-summary"><b>${app.progressionTab} ${unlocked} / ${nodes.size}</b>
+    <span>点击任意节点，自动解锁它的完整前置链。</span>
+    <span class="focus-legend">金线 = 区域规划相关</span></div>
+    <div class="tree-board">${eras}</div>`;
+}
+
+function renderProgression() {
+  $("progression-content").innerHTML = progressionHtml();
+}
+
+function openProgression(tab: "政策卡" | TreeKind = app.progressionTab) {
+  app.progressionTab = tab;
+  renderProgression();
+  $("progression-modal").hidden = false;
+  wire();
+}
+
+function selectProgressionNode(kind: TreeKind, id: string) {
+  if (kind === "科技") {
+    const next = new Set(app.board.已解锁科技);
+    for (const item of prerequisiteClosure(progression.techs, id)) next.add(item);
+    app.board = { ...app.board, 已解锁科技: next };
+  } else {
+    const next = new Set(app.board.已解锁市政);
+    for (const item of prerequisiteClosure(progression.civics, id)) next.add(item);
+    app.board = { ...app.board, 已解锁市政: next };
+  }
+  render();
+  renderProgression();
+  wire();
+}
+
+function togglePolicy(id: string) {
+  const next = new Set(app.activePolicies);
+  if (next.has(id)) next.delete(id); else next.add(id);
+  app.activePolicies = next;
+  renderProgression();
+  wire();
+}
+
 function enterMode(mode: "自由" | "挑战") {
   $("home-screen").hidden = true;
   $("app-shell").hidden = false;
@@ -428,6 +535,7 @@ function openSettings() {
 
 function leaveApp() {
   $("settings-modal").hidden = true;
+  $("progression-modal").hidden = true;
   $("app-shell").hidden = true;
   $("home-screen").hidden = false;
 }
@@ -516,6 +624,22 @@ function wire() {
     app.showDebug = showRules.checked;
     render();
   };
+  document.querySelectorAll<HTMLElement>(".progression-tab").forEach((tab) => {
+    tab.onclick = () => openProgression(tab.dataset.progressionTab as "政策卡" | TreeKind);
+  });
+  document.querySelectorAll<HTMLElement>(".progression-node").forEach((node) => {
+    node.onclick = () => selectProgressionNode(
+      node.dataset.progressionKind as TreeKind, node.dataset.progressionId!);
+  });
+  document.querySelectorAll<HTMLElement>(".policy-card").forEach((card) => {
+    card.onclick = () => togglePolicy(card.dataset.policyId!);
+  });
+  const progressionClose = document.getElementById("progression-close");
+  if (progressionClose) progressionClose.onclick = () => { $("progression-modal").hidden = true; };
+  const progressionModal = document.getElementById("progression-modal");
+  if (progressionModal) progressionModal.onclick = (event) => {
+    if (event.target === progressionModal) progressionModal.hidden = true;
+  };
 }
 
 function setMode(m: "自由" | "挑战") {
@@ -530,6 +654,7 @@ function setMode(m: "自由" | "挑战") {
     app.board = { ...sandboxBoard(app.preset), 文明: first,
       领袖: rules.leadersByCiv.get(first)?.[0]?.id };
     app.selectedCity = "A"; app.undo = []; app.focusYield = "科技";
+    app.activePolicies = new Set();
     $("levellist").style.display = "none";
     $("play").style.display = "";
     render();
@@ -551,4 +676,8 @@ const home = document.getElementById("home");
 if (home) home.onclick = leaveApp;
 const homeSettings = document.getElementById("home-settings");
 if (homeSettings) homeSettings.onclick = openSettings;
+const homeProgression = document.getElementById("home-progression");
+if (homeProgression) homeProgression.onclick = () => openProgression("政策卡");
+const progressionButton = document.getElementById("progression");
+if (progressionButton) progressionButton.onclick = () => openProgression();
 document.getElementById("settings")?.setAttribute("aria-label", "设置");

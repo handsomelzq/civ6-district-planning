@@ -54,11 +54,12 @@
 │   ├── 数值设计.md                产出量级、相邻 vs 建筑、难度曲线
 │   └── 测试清单.md                数值对账、通关路径、回归影响矩阵
 ├── 配置表/                   ← 唯一事实来源，由解析脚本生成
-│   ├── 字段说明.md                18 张表的字段、来源与校验规则
+│   ├── 字段说明.md                规则表与研究树字段、来源与校验规则
 │   └── *.csv
 ├── web/                      ← 网页（零依赖，构建后双击 index.html 即可玩）
 │   ├── index.html                单文件样式，无外部字体无 CDN
-│   ├── app.ts                    状态与两个模式的接线
+│   ├── app.ts                    状态、两个模式与研究系统的接线
+│   ├── progression.ts            科技树、文化树、政策卡数据与前置链
 │   ├── render.ts                 SVG 六边形地图 + 拆解面板
 │   ├── presets.ts                三种多城初始环境
 │   └── levels.ts                 关卡加载与**加载期校验**（G1/G2/G3）
@@ -66,7 +67,7 @@
 │   ├── evaluate.ts               ★ evaluate(rules, board) -> 产出明细树
 │   ├── rational.ts               精确有理数，全程不用浮点
 │   ├── rules.ts / board.ts / hex.ts / csv.ts
-├── tests/                    ← node:test，55 条
+├── tests/                    ← node:test，61 条
 │   ├── calibration.test.ts       对照游戏内实测读数（不过就别看后面了）
 │   ├── crosscheck.test.ts        与 Python 原型 60 盘面逐项对账
 │   ├── invariants.test.ts        I1–I4
@@ -94,7 +95,7 @@ python3 Tools/motif_check.py               # 关卡母题验证（先校准，�
 求值器与网页（TypeScript）。也是零依赖 —— **Node 24 原生跑 TypeScript**，测试用内置 `node:test`，构建用内置的 `module.stripTypeScriptTypes`：
 
 ```bash
-npm test                                   # 55 条测试：校准 / 不变量 / 多城 / 日本 / 关卡阈值
+npm test                                   # 61 条测试：校准 / 不变量 / 多城 / 日本 / 研究系统 / 关卡阈值
 node Tools/build_web.mjs                   # 构建网页（把 .ts 剥成 .js，配置表内联）
 node Tools/serve.mjs                       # http://localhost:8123/web/
 ```
@@ -105,6 +106,7 @@ node Tools/serve.mjs                       # http://localhost:8123/web/
 
 ```bash
 python3 Tools/parse_civ6_xml.py            # 游戏 XML → 配置表 CSV
+python3 Tools/parse_progression.py         # 生成完整科技树、文化树与精选政策卡
 ```
 
 **可复现性是这套工具的硬指标**：重跑 `parse_civ6_xml.py` 可重建 14 张游戏数据表，包括日本区域相邻修正表。
@@ -116,10 +118,11 @@ python3 Tools/parse_civ6_xml.py            # 游戏 XML → 配置表 CSV
 | 部分 | 状态 |
 |---|---|
 | 拆解案 | 3/4 篇由一手数据填实；军事篇仍为二手，标 `待核=是` |
-| 配置表 | 14 张生成表 + 2 张关卡表；`units` / `combat_modifiers` 阻塞于军事实测 |
+| 配置表 | 14 张规则生成表 + 3 张研究树表 + 2 张关卡表；`units` / `combat_modifiers` 阻塞于军事实测 |
 | 关卡 | 9 关可进入，L-04 已作废。现有九关的原最优解均违反每城唯一性，须重新设计；当前阈值对账测试记录了这一已知缺口 |
-| **求值器** | ✅ **已实现**（TypeScript，零依赖），55 条测试全过：游戏内读数、四条不变量、60 盘面 Python 对账、多城上限、日本能力与 9 关旧阈值对账 |
+| **求值器** | ✅ **已实现**（TypeScript，零依赖），61 条测试全过：游戏内读数、四条不变量、60 盘面 Python 对账、多城上限、日本能力、研究系统与 9 关旧阈值对账 |
 | **两模式 UI** | ✅ **可玩**。自由模式：三种多城环境、四文明及全部对应领袖、圣地信仰、每城产出、日本明治维新、路德维希奇观文化；挑战模式：9 关、目标进度条、配额、星级结算（关卡布局待修） |
+| **研究系统** | ✅ **可用**。完整 77 科技、61 市政；点击节点自动补齐前置链；9 张区域规划精选政策卡可自由装配 |
 | 技术栈 | ✅ **TypeScript + Web**（2026-09-25 定）。Node 24 原生跑 TS，测试用内置 `node:test`，`package.json` 里零依赖 |
 
 表行数：`adjacency_rules` 103、`trait_adjacency_modifiers` 8（含日本六条、波兰雅德维加一条、德国路德维希一条）、`buildings` 85、`districts` 36、`civs` 100、`leaders` 126、`techs` 77、`civics` 61、`improvements` 59、`resources` 54、`features` 50、`wonders` 34、`terrains` 17、`excluded_adjacencies` 12。

@@ -192,6 +192,32 @@ text{text-anchor:middle;pointer-events:none;font-family:var(--sans)}.dname{font-
 .settings-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:15px}.switch-row{display:grid;grid-template-columns:auto 1fr;gap:2px 8px;align-items:center;color:var(--ink);font-size:12px;margin-top:15px}
 .switch-row input{accent-color:var(--teal)}.switch-row small{grid-column:2;color:var(--muted);font-size:10px}
 
+.progression-modal{place-items:stretch;padding:30px}.progression-modal .modal-card{width:min(1180px,100%);height:min(860px,100%);display:flex;flex-direction:column;padding:20px}
+.progression-modal .modal-head{margin-bottom:10px}.progression-modal .modal-head h2{font-size:27px}
+.progression-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.progression-tab{border:0;border-radius:0;background:transparent;color:var(--muted);padding:8px 16px;position:relative}
+.progression-tab.on{color:var(--gold-hot);background:rgba(209,178,106,.08)}.progression-tab.on:after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;background:var(--gold)}
+.progression-summary{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-bottom:12px}
+.progression-summary b{color:var(--gold-hot);font:16px var(--display)}.focus-legend{color:var(--gold)}
+.tree-board{display:flex;gap:10px;overflow:auto;flex:1;padding:2px 2px 12px}
+.era-column{min-width:206px;flex:1;background:rgba(7,17,23,.48);border:1px solid var(--line);padding:8px}
+.era-column>header{height:auto;position:static;padding:0 2px 8px;border:0;background:transparent;backdrop-filter:none;display:flex;justify-content:space-between;color:var(--gold);font:16px var(--display)}
+.era-column>header i{font:10px var(--sans);color:var(--muted);font-style:normal;padding-top:4px}
+.progression-node{display:block;width:100%;text-align:left;margin:5px 0;padding:8px 9px;background:rgba(17,35,43,.75);border:1px solid rgba(167,190,195,.15);border-left:2px solid transparent}
+.progression-node:hover{transform:none;background:rgba(102,199,196,.10);border-color:var(--teal)}
+.progression-node.focus{border-left-color:var(--gold)}.progression-node.unlocked{background:rgba(102,199,196,.16);border-color:rgba(102,199,196,.48)}
+.progression-node .node-top{display:flex;justify-content:space-between;color:var(--muted);font-size:9px;margin-bottom:3px}
+.progression-node .node-top i{font-style:normal}.progression-node.unlocked .node-top i{color:var(--teal)}
+.progression-node .node-top b{font-weight:500;color:var(--gold)}.progression-node strong{display:block;color:var(--ink);font:16px var(--display);margin-bottom:4px}
+.progression-node small{display:block;color:#c7d1d1;line-height:1.4}.progression-node em{display:block;color:var(--faint);font-size:9px;font-style:normal;margin-top:6px}
+.node-unlocks{display:block;color:var(--teal);font-size:9px;margin-top:5px;line-height:1.35;white-space:normal}
+.policy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;overflow:auto;padding:2px}
+.policy-card{display:flex;flex-direction:column;align-items:flex-start;min-height:172px;text-align:left;padding:14px;background:rgba(17,35,43,.72);border:1px solid var(--line);border-top:2px solid var(--gold);position:relative}
+.policy-card:hover{transform:translateY(-2px);border-color:var(--gold-hot)}.policy-card.on{background:rgba(102,199,196,.12);border-color:var(--teal);border-top-color:var(--teal)}
+.policy-slot{color:var(--gold);font-size:9px;letter-spacing:.12em}.policy-card strong{font:21px var(--display);color:#f4f0e3;margin:8px 0 2px}
+.policy-card small{color:var(--teal);font-size:10px}.policy-card p{color:#c7d1d1;font-size:11px;margin:12px 0;line-height:1.5}.policy-card em{font-style:normal;color:var(--muted);font-size:10px;margin-top:auto}
+.policy-state{display:block;margin-top:10px;color:var(--gold-hot);font-size:10px;font-weight:500}.policy-card.on .policy-state{color:var(--teal)}
+
 @media(max-width:1100px){
   main{grid-template-columns:210px minmax(0,1fr)}#right{grid-column:1/-1;border-left:0;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:18px}
   #right>h4:nth-of-type(3),#breakdown{grid-column:1/-1}.settings-grid{grid-template-columns:1fr 1fr}
@@ -229,6 +255,7 @@ text{text-anchor:middle;pointer-events:none;font-family:var(--sans)}.dname{font-
     </div>
     <div class="home-tools">
       <button class="home-tool" id="home-settings">⚙ 设置</button>
+      <button class="home-tool" id="home-progression">✦ 研究系统</button>
       <a class="home-tool" href="https://github.com/handsomelzq/civ6-district-planning/tree/main/设计" target="_blank" rel="noreferrer">▱ 拆解文档 ↗</a>
       <a class="home-tool" href="https://github.com/handsomelzq/civ6-district-planning/blob/main/README.md" target="_blank" rel="noreferrer">⌘ 项目说明 ↗</a>
     </div>
@@ -248,6 +275,7 @@ text{text-anchor:middle;pointer-events:none;font-family:var(--sans)}.dname{font-
     </div>
     <div class="header-tools">
       <button class="header-tool" id="home">入口</button>
+      <button class="header-tool" id="progression">研究</button>
       <button class="header-tool" id="settings">设置</button>
     </div>
   </header>
@@ -277,6 +305,13 @@ text{text-anchor:middle;pointer-events:none;font-family:var(--sans)}.dname{font-
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settings-title">
     <div class="modal-head"><h2 id="settings-title">设置</h2><button class="modal-close" id="settings-close" aria-label="关闭">×</button></div>
     <div id="settings-content"></div>
+  </div>
+</div>
+
+<div id="progression-modal" class="modal progression-modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="progression-title">
+    <div class="modal-head"><h2 id="progression-title">研究系统</h2><button class="modal-close" id="progression-close" aria-label="关闭">×</button></div>
+    <div id="progression-content"></div>
   </div>
 </div>
 
