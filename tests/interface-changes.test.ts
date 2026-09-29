@@ -71,7 +71,10 @@ test("入口页提供模式选择、设置入口和拆解文档入口", () => {
   assert.match(page, /data-enter-mode="自由"/);
   assert.match(page, /data-enter-mode="挑战"/);
   assert.match(appSource, /addEventListener\("click",/);
-  assert.match(page, /dist\/web\/app\.js\?v=20260929-2/);
+  assert.match(appSource, /TABLE_TEXTS\["tech_tree\.csv"\]/);
+  assert.match(appSource, /TABLE_TEXTS\["civic_tree\.csv"\]/);
+  assert.match(appSource, /TABLE_TEXTS\["policy_cards\.csv"\]/);
+  assert.match(page, /dist\/web\/app\.js\?v=20260929-3/);
   assert.match(page, /id="home-settings"/);
   assert.match(page, /id="settings-modal"/);
   assert.match(page, /\/tree\/main\/设计/);

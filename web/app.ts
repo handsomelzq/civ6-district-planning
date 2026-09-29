@@ -28,7 +28,11 @@ import {
 
 const rules = new Rules(TABLE_TEXTS as never);
 const { levels, problems } = loadLevels(rules, LEVEL_TEXTS as never);
-const progression: ProgressionData = loadProgression(TABLE_TEXTS as never);
+const progression: ProgressionData = loadProgression({
+  tech_tree: TABLE_TEXTS["tech_tree.csv"],
+  civic_tree: TABLE_TEXTS["civic_tree.csv"],
+  policy_cards: TABLE_TEXTS["policy_cards.csv"],
+});
 const progressionName = (id: string): string =>
   progression.techs.get(id)?.name ?? progression.civics.get(id)?.name ?? rules.name(id);
 
