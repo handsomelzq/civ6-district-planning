@@ -11,6 +11,7 @@ import assert from "node:assert/strict";
 import { evaluate, total, countSameTypeNeighbors } from "../src/evaluate.ts";
 import { fmt } from "../src/rational.ts";
 import { R, board, at } from "./helpers.ts";
+import { districtPlacementConstraint } from "../src/placement.ts";
 
 const y = (spec: Record<string, object>, yieldType: string, opts = {}) =>
   fmt(total(evaluate(R, board(spec as never, opts)), yieldType));
@@ -93,6 +94,87 @@ describe("布尔型类别：与邻格数量无关，只记一次", () => {
     assert.equal(c({
       "0,0": { 区域: "DISTRICT_CAMPUS" }, "1,0": { 区域: "DISTRICT_CAMPUS" },
     }, "CIVILIZATION_KOREA"), 1);
+  });
+});
+
+describe("区域落位约束（Civilopedia / Districts 字段）", () => {
+  test("军营类区域不可紧邻城市中心，且特色区域读取自身属性", () => {
+    const adjacent = board({
+      "0,0": { 区域: "DISTRICT_ENCAMPMENT" },
+      "1,0": { 区域: "DISTRICT_CITY_CENTER" },
+    });
+    assert.match(
+      districtPlacementConstraint(R, adjacent, at(0, 0), "DISTRICT_ENCAMPMENT"),
+      /不可紧邻城市中心/,
+    );
+    assert.match(
+      districtPlacementConstraint(
+        R,
+        board({
+          "0,0": { 区域: "DISTRICT_THANH" },
+          "1,0": { 区域: "DISTRICT_CITY_CENTER" },
+        }, { 文明: "CIVILIZATION_VIETNAM" }),
+        at(0, 0),
+        "DISTRICT_THANH",
+      ),
+      /不可紧邻城市中心/,
+    );
+  });
+
+  test("水渠类区域必须同时贴城市中心与淡水来源", () => {
+    const noWater = board({
+      "0,0": { 区域: "DISTRICT_AQUEDUCT" },
+      "1,0": { 区域: "DISTRICT_CITY_CENTER" },
+    });
+    assert.match(
+      districtPlacementConstraint(R, noWater, at(0, 0), "DISTRICT_AQUEDUCT"),
+      /需要紧邻城市中心与淡水来源/,
+    );
+
+    const valid = board({
+      "0,0": { 区域: "DISTRICT_AQUEDUCT" },
+      "1,0": { 区域: "DISTRICT_CITY_CENTER" },
+      "0,1": { 地形: "TERRAIN_GRASS_MOUNTAIN" },
+    });
+    assert.equal(
+      districtPlacementConstraint(R, valid, at(0, 0), "DISTRICT_AQUEDUCT"),
+      "",
+    );
+  });
+
+  test("区域专属地形与地貌合法性不能被全局可建标记替代", () => {
+    const coast = board({ "0,0": { 区域: "DISTRICT_HARBOR", 地形: "TERRAIN_GRASS" } });
+    assert.match(
+      districtPlacementConstraint(R, coast, at(0, 0), "DISTRICT_HARBOR"),
+      /不可建在草原上/,
+    );
+    const wonder = board({
+      "0,0": { 区域: "DISTRICT_CAMPUS", 地形: "TERRAIN_GRASS",
+        地貌: "FEATURE_PAMUKKALE" },
+    });
+    assert.match(
+      districtPlacementConstraint(R, wonder, at(0, 0), "DISTRICT_CAMPUS"),
+      /不可建在棉花堡上/,
+    );
+    const forest = board({
+      "0,0": { 区域: "DISTRICT_CAMPUS", 地形: "TERRAIN_GRASS",
+        地貌: "FEATURE_FOREST" },
+    });
+    assert.equal(
+      districtPlacementConstraint(R, forest, at(0, 0), "DISTRICT_CAMPUS"),
+      "",
+      "森林属于可建区域地貌，建造区域时由 withDistrict 移除",
+    );
+  });
+
+  test("求值器与落位函数使用同一套约束诊断", () => {
+    const b = board({
+      "0,0": { 区域: "DISTRICT_AQUEDUCT" },
+      "1,0": { 区域: "DISTRICT_CITY_CENTER" },
+    });
+    const issue = districtPlacementConstraint(R, b, at(0, 0), "DISTRICT_AQUEDUCT");
+    assert.ok(evaluate(R, b).诊断.some((d) => d.位置?.q === 0 &&
+      d.位置?.r === 0 && d.说明 === `${issue}（E06）`));
   });
 });
 
@@ -183,8 +265,11 @@ describe("替换解析与精确匹配（求值顺序第 1 步、边界 E11）", 
 describe("建筑（第 7 步）与合法性（第 3 步）", () => {
   test("特色区域沿替换关系**继承**建筑：书院能建图书馆（边界 E15b）", () => {
     const tree = evaluate(R, board({
-      "0,0": { 区域: "DISTRICT_CAMPUS", 建筑: ["BUILDING_LIBRARY"] },
-    } as never, { 文明: "CIVILIZATION_KOREA" }));
+      // 游戏本体 District_ValidTerrains：书院只能落在丘陵地形。
+      "0,0": { 地形: "TERRAIN_GRASS_HILLS",
+        区域: "DISTRICT_CAMPUS", 建筑: ["BUILDING_LIBRARY"] },
+    } as never, { 文明: "CIVILIZATION_KOREA",
+      已解锁科技: ["TECH_WRITING"] }));
     // 书院 自身 +4，图书馆 +2
     assert.equal(fmt(total(tree, "科技")), "6");
     assert.deepEqual(tree.诊断, [], "不该报「图书馆不能建在书院上」");
@@ -193,7 +278,7 @@ describe("建筑（第 7 步）与合法性（第 3 步）", () => {
   test("建筑建错区域会被诊断拦下，且不计入产出（边界 E15）", () => {
     const tree = evaluate(R, board({
       "0,0": { 区域: "DISTRICT_HOLY_SITE", 建筑: ["BUILDING_LIBRARY"] },
-    } as never));
+    } as never, { 已解锁科技: ["TECH_WRITING", "TECH_ASTROLOGY"] }));
     assert.equal(fmt(total(tree, "科技")), "0");
     assert.equal(tree.诊断.length, 1);
     assert.match(tree.诊断[0].说明, /不能建在/);
@@ -203,7 +288,7 @@ describe("建筑（第 7 步）与合法性（第 3 步）", () => {
     const tree = evaluate(R, board({
       "0,0": { 区域: "DISTRICT_CITY_CENTER" },
       "4,0": { 区域: "DISTRICT_CAMPUS" },
-    } as never));
+    } as never, { 已解锁科技: ["TECH_WRITING"] }));
     assert.equal(tree.诊断.length, 1);
     assert.match(tree.诊断[0].说明, /超出城市 3 格工作范围/);
   });
@@ -223,15 +308,19 @@ describe("前置与废弃（边界 E14，当前是防御性分支）", () => {
   });
 });
 
-describe("唯一性上限（E17b · SDD §10 D12）", () => {
+describe("唯一性上限（E17b / E17c · SDD §10 D12）", () => {
   const diag = (spec: Parameters<typeof board>[0], civ?: string) =>
-    evaluate(R, board(spec, { 文明: civ })).诊断
+    evaluate(R, board(spec, {
+      文明: civ,
+      已解锁科技: ["TECH_WRITING", "TECH_STEAM_POWER"],
+      已解锁市政: ["CIVIC_STATE_WORKFORCE"],
+    })).诊断
       .filter((d) => d.级别 === "错误").map((d) => d.说明);
 
   test("每城上限 1：一座城里放两座学院 → 报错", () => {
     assert.deepEqual(
       diag({ "0,0": { 区域: "DISTRICT_CAMPUS" }, "1,0": { 区域: "DISTRICT_CAMPUS" } }),
-      ["学院 放了 2 座，超过每城上限 1（E17b）"]);
+      ["学院 在本城放了 2 座，超过每城上限 1（E17c）"]);
   });
 
   test("每城上限 无限：两座运河合法（OnePerCity=false 的 4 个区域之一）", () => {
@@ -248,9 +337,10 @@ describe("唯一性上限（E17b · SDD §10 D12）", () => {
 
   test("上限按**替换后**的有效区域计数：韩国的两座学院都解析成书院，仍然违规", () => {
     assert.deepEqual(
-      diag({ "0,0": { 区域: "DISTRICT_CAMPUS" }, "1,0": { 区域: "DISTRICT_CAMPUS" } },
+      diag({ "0,0": { 地形: "TERRAIN_GRASS_HILLS", 区域: "DISTRICT_CAMPUS" },
+             "1,0": { 地形: "TERRAIN_GRASS_HILLS", 区域: "DISTRICT_CAMPUS" } },
            "CIVILIZATION_KOREA"),
-      ["书院 放了 2 座，超过每城上限 1（E17b）"]);
+      ["书院 在本城放了 2 座，超过每城上限 1（E17c）"]);
   });
 
   test("一座就不报错（边界：恰好等于上限）", () => {

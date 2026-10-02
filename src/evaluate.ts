@@ -15,8 +15,22 @@ import { type Axial, key } from "./hex.ts";
 import { isNone } from "./csv.ts";
 import { type AdjacencyRule, type Rules } from "./rules.ts";
 import {
-  type BoardState, type Tile, districtPositions, neighborTiles, tileAt, inWorkRange, cityFor,
+  type BoardState, type Tile, districtPositions, neighborTiles, tileAt, cityFor,
 } from "./board.ts";
+import { validateBoard } from "./legality.ts";
+
+/** 当前静态求值器能完整结算的政策卡。UI 只开放这组卡，避免出现“装上但没效果”。 */
+export const SUPPORTED_POLICY_IDS: ReadonlySet<string> = new Set([
+  "POLICY_NATURAL_PHILOSOPHY", "POLICY_SCRIPTURE", "POLICY_AESTHETICS",
+  "POLICY_CRAFTSMEN", "POLICY_URBAN_PLANNING",
+]);
+
+/** 当前表内的信条均可完整结算；集合导出给 UI，避免展示“选了但不生效”的信条。 */
+export const SUPPORTED_BELIEF_IDS: ReadonlySet<string> = new Set([
+  "BELIEF_DANCE_OF_THE_AURORA", "BELIEF_DESERT_FOLKLORE", "BELIEF_SACRED_PATH",
+  "BELIEF_WORK_ETHIC", "BELIEF_LAY_MINISTRY", "BELIEF_DIVINE_INSPIRATION",
+  "BELIEF_CHORAL_MUSIC", "BELIEF_FEED_THE_WORLD",
+]);
 
 // ── 输出：产出明细树（SDD §3.7）────────────────────────────────────────
 export type Tier = "主要档" | "标准档" | "固定";
@@ -69,6 +83,49 @@ export const g = (计数: number, 所需数量: number, 加成值: Rat): Rat =>
 
 const tierOf = (r: AdjacencyRule): Tier =>
   r.目标类别 === "自身" ? "固定" : r.所需数量 === 1 ? "主要档" : "标准档";
+
+/** 区域规划政策卡对相邻加成的倍率。政策卡名称和效果来自 policy_cards.csv。
+ *
+ * 这里只实现本期求值器能表达的四张「相邻加成」卡；建筑、住房和建造者卡仍
+ * 保留在研究系统中，但没有对应的局面变量，不会被伪造为产出数字。
+ */
+function adjacencyPolicyMultiplier(rules: Rules, board: BoardState, districtId: string): {
+  multiplier: number; cards: string[];
+} {
+  const cards = new Set(board.已装配政策);
+  const ids: string[] = [];
+  const replaced = rules.districts.get(districtId)?.替换区域id;
+  const baseId = replaced && !isNone(replaced) ? replaced : districtId;
+  if (baseId === "DISTRICT_CAMPUS" && cards.has("POLICY_NATURAL_PHILOSOPHY")) {
+    ids.push("POLICY_NATURAL_PHILOSOPHY");
+  }
+  if (baseId === "DISTRICT_HOLY_SITE" && cards.has("POLICY_SCRIPTURE")) {
+    ids.push("POLICY_SCRIPTURE");
+  }
+  if (baseId === "DISTRICT_THEATER" && cards.has("POLICY_AESTHETICS")) {
+    ids.push("POLICY_AESTHETICS");
+  }
+  if (baseId === "DISTRICT_INDUSTRIAL_ZONE" && cards.has("POLICY_CRAFTSMEN")) {
+    ids.push("POLICY_CRAFTSMEN");
+  }
+  return { multiplier: ids.length ? 2 : 1, cards: ids };
+}
+
+const baseDistrictId = (rules: Rules, districtId: string): string => {
+  const replaced = rules.districts.get(districtId)?.替换区域id;
+  return replaced && !isNone(replaced) ? replaced : districtId;
+};
+
+const selectedBeliefs = (board: BoardState): ReadonlySet<string> =>
+  board.已选宗教信条 ?? new Set<string>();
+
+/** 宗教窄表中的 `类别:目标:产出:值`。配置生成器已把通用 Modifier 图压平。 */
+const beliefEffect = (raw: string): [string, string, string, Rat] => {
+  const [kind, target, yieldType, amount] = raw.split(":");
+  if (!kind || !target || !yieldType || amount === undefined)
+    throw new Error(`宗教结构化效果格式错误：${raw}`);
+  return [kind, target, yieldType, rat(Number(amount))];
+};
 
 // ── 目标匹配（SDD §3.4）──────────────────────────────────────────────
 /**
@@ -180,6 +237,15 @@ function gateOf(rule: AdjacencyRule, board: BoardState): Leaf["未生效"] | und
 // ── 求值 ──────────────────────────────────────────────────────────────
 export function evaluate(rules: Rules, board: BoardState): YieldTree {
   const 诊断: Diagnostic[] = [];
+  // 合法性只在共享入口中实现一次。求值器仍然结算非法局面，
+  // 但把每个结构化问题转成现有的面板诊断格式，不静默丢弃产出。
+  for (const legality of validateBoard(rules, board)) {
+    诊断.push({
+      级别: legality.severity === "错误" ? "错误" : "提示",
+      位置: legality.position,
+      说明: `${legality.message}（${legality.code}）`,
+    });
+  }
   // 第 2 步 · 规则排除：按文明/领袖 trait 摘掉被排除的相邻规则。
   //   必须在替换之后、求值之前。不实现这一步，高卢会表现得比实际强很多。
   const excluded = rules.excludedFor(board.文明, board.领袖);
@@ -196,56 +262,15 @@ export function evaluate(rules: Rules, board: BoardState): YieldTree {
     slot.leaves.push(leaf);
   };
 
-  // 第 3 步（前半）· 唯一性校验。必须在逐格循环**之外**先统计一遍：
-  //   「同一区域放了几座」是整盘的性质，在单格循环里看不到。
-  //   每城与每玩家分别计数；跨城只共享每玩家上限。
-  const 计数 = new Map<string, Axial[]>();
-  const 每城计数 = new Map<string, Axial[]>();
-  for (const p of districtPositions(board)) {
-    const did = rules.effective(tileAt(board, p)!.区域!, board.文明);
-    (计数.get(did) ?? 计数.set(did, []).get(did)!).push(p);
-    const cid = cityFor(board, p)?.id ?? "未归属";
-    const ck = `${cid}@${did}`;
-    (每城计数.get(ck) ?? 每城计数.set(ck, []).get(ck)!).push(p);
-  }
-  for (const [did, ps] of 计数) {
-    const d = rules.districts.get(did);
-    if (d === undefined) continue;
-    if (!board.城市?.length) {
-      const lim = Math.min(d.每城上限, d.每玩家上限);
-      if (ps.length > lim) 诊断.push({
-        级别: "错误", 位置: ps[lim],
-        说明: `${rules.name(did)} 放了 ${ps.length} 座，超过${d.每玩家上限 <= d.每城上限 ? "每玩家上限" : "每城上限"} ${lim}（E17b）`,
-      });
-      continue;
-    }
-    if (ps.length > d.每玩家上限) {
-      诊断.push({
-        级别: "错误", 位置: ps[d.每玩家上限],
-        说明: `${rules.name(did)} 放了 ${ps.length} 座，超过每玩家上限 ${d.每玩家上限}（E17b）`,
-      });
-    }
-  }
-  for (const [ck, ps] of board.城市?.length ? 每城计数 : []) {
-    const did = ck.slice(ck.indexOf("@") + 1);
-    const d = rules.districts.get(did);
-    if (d && ps.length > d.每城上限 && d.每城上限 < d.每玩家上限) 诊断.push({
-      级别: "错误", 位置: ps[d.每城上限],
-      说明: `${rules.name(did)} 在${cityFor(board, ps[0])?.名称 ?? "本城"}放了 ${ps.length} 座，超过每城上限 ${d.每城上限}（E17b）`,
-    });
-  }
-
   for (const p of districtPositions(board)) {
     const tile = tileAt(board, p)!;
     // 第 1 步 · 替换解析：把基础区域 id 解析成这个文明下的有效区域 id。
     const did = rules.effective(tile.区域!, board.文明);
     const dname = rules.name(did);
+    const d = rules.districts.get(did);
     const srcKey = `${did}@${key(p)}`;
-
-    // 第 3 步 · 合法性校验：标记而不静默丢弃。
-    if (!inWorkRange(board, p)) {
-      诊断.push({ 级别: "错误", 位置: p, 说明: `${dname} 超出城市 3 格工作范围（E16）` });
-    }
+    const baseDid = baseDistrictId(rules, did);
+    let faithAdjacency = ZERO;
 
     // 第 4 步 · 地块基础产出：**本期不实现**，理由见文件末尾的「三个空步骤」。
     // 第 5 步 · 区域基础产出：**不存在**，文明 6 的区域自身零产出。
@@ -270,12 +295,19 @@ export function evaluate(rules: Rules, board: BoardState): YieldTree {
         continue;
       }
       const 计数 = countFor(rules, rule, board, p);
-      const 增量 = g(计数, rule.所需数量, rule.加成值);
+      const baseIncrement = g(计数, rule.所需数量, rule.加成值);
+      // Self=true 的书院 +4 在游戏中属于学院相邻加成，也受自然哲学翻倍。
+      const policy = adjacencyPolicyMultiplier(rules, board, did);
+      const 增量 = policy.multiplier === 1
+        ? baseIncrement
+        : mul(baseIncrement, rat(policy.multiplier));
+      if (rule.产出类型 === "信仰") faithAdjacency = add(faithAdjacency, 增量);
       // ⭐ 即使增量为 0 也记账（边界 E1）：
       //   「为什么没有加成」与「有多少加成」是同等重要的信息。
       push(rule.产出类型, srcKey, dname, p, {
         增量, 规则id: rule.规则id, 计数, 档位,
-        说明: describeTarget(rules, rule, 计数),
+        说明: `${describeTarget(rules, rule, 计数)}${
+          policy.cards.length ? `；政策卡生效：${policy.cards.join("、")}` : ""}`,
       });
     }
 
@@ -284,10 +316,58 @@ export function evaluate(rules: Rules, board: BoardState): YieldTree {
     for (const mod of rules.traitAdjacency.get(board.文明 ?? "") ?? []) {
       if (mod.区域id !== did) continue;
       const n = neighborTiles(board, p).filter((t) => t.区域 !== undefined).length;
+      const policy = adjacencyPolicyMultiplier(rules, board, did);
+      const baseIncrement = mul(rat(n), mod.每邻格加成);
+      const increment = policy.multiplier === 1 ? baseIncrement : mul(baseIncrement, rat(2));
+      if (mod.产出类型 === "信仰") faithAdjacency = add(faithAdjacency, increment);
       push(mod.产出类型, srcKey, dname, p, {
-        增量: mul(rat(n), mod.每邻格加成), 规则id: mod.修正id,
-        计数: n, 档位: "主要档", 说明: `文明能力：相邻任意区域 ×${n}（+1/个）`,
+        增量: increment,
+        规则id: mod.修正id, 计数: n, 档位: "主要档",
+        说明: `文明能力：相邻任意区域 ×${n}（+1/个）${
+          policy.cards.length ? `；政策卡生效：${policy.cards.join("、")}` : ""}`,
       });
+    }
+
+
+    // 宗教信条：按用户要求不模拟每座城的宗教归属；选中的信条对所有相关区块生效。
+    // 万神殿相邻先进入信仰相邻总额，随后职业道德镜像该总额为生产力。
+    for (const beliefId of selectedBeliefs(board)) {
+      const belief = rules.religionBeliefs.get(beliefId);
+      if (!belief) continue;
+      for (const raw of belief.结构化效果) {
+        const [kind, target, yieldType, amount] = beliefEffect(raw);
+        if (baseDid !== "DISTRICT_HOLY_SITE" ||
+            (kind !== "圣地地形相邻" && kind !== "圣地地貌相邻")) continue;
+        const n = neighborTiles(board, p).filter((tile) =>
+          kind === "圣地地形相邻" ? tile.地形 === target : tile.地貌 === target).length;
+        const policy = adjacencyPolicyMultiplier(rules, board, did);
+        const increment = mul(mul(rat(n), amount), rat(policy.multiplier));
+        if (yieldType === "信仰") faithAdjacency = add(faithAdjacency, increment);
+        push(yieldType, srcKey, dname, p, {
+          增量: increment, 规则id: `${beliefId}@${target}`, 计数: n, 档位: "主要档",
+          说明: `宗教信条·${belief.名称}：相邻 ${rules.name(target)} ×${n}（+${amount.n / amount.d}/个）${
+            policy.cards.length ? `；政策卡生效：${policy.cards.join("、")}` : ""}`,
+        });
+      }
+    }
+    if (baseDid === "DISTRICT_HOLY_SITE" &&
+        selectedBeliefs(board).has("BELIEF_WORK_ETHIC")) {
+      push("生产力", srcKey, dname, p, {
+        增量: faithAdjacency, 规则id: "BELIEF_WORK_ETHIC", 计数: 1, 档位: "固定",
+        说明: `宗教信条·职业道德：镜像本圣地的信仰相邻加成（${faithAdjacency.n / faithAdjacency.d}）`,
+      });
+    }
+    for (const beliefId of selectedBeliefs(board)) {
+      const belief = rules.religionBeliefs.get(beliefId);
+      if (!belief) continue;
+      for (const raw of belief.结构化效果) {
+        const [kind, target, yieldType, amount] = beliefEffect(raw);
+        if (kind !== "区域固定" || baseDid !== target) continue;
+        push(yieldType, srcKey, dname, p, {
+          增量: amount, 规则id: beliefId, 计数: 1, 档位: "固定",
+          说明: `宗教信条·${belief.名称}：${dname} +${amount.n / amount.d} ${yieldType}`,
+        });
+      }
     }
 
     // 第 7 步 · 建筑增量
@@ -314,6 +394,18 @@ export function evaluate(rules: Rules, board: BoardState): YieldTree {
           增量: v, 规则id: bid, 计数: 1, 档位: "固定", 说明: "建筑产出",
         });
       }
+      for (const beliefId of selectedBeliefs(board)) {
+        const belief = rules.religionBeliefs.get(beliefId);
+        if (!belief) continue;
+        for (const raw of belief.结构化效果) {
+          const [kind, target, yieldType, amount] = beliefEffect(raw);
+          if (kind !== "建筑固定" || bid !== target) continue;
+          push(yieldType, `${bid}@${key(p)}`, b.名称, p, {
+            增量: amount, 规则id: beliefId, 计数: 1, 档位: "固定",
+            说明: `宗教信条·${belief.名称}：${b.名称} +${amount.n / amount.d} ${yieldType}`,
+          });
+        }
+      }
     }
   }
 
@@ -329,6 +421,38 @@ export function evaluate(rules: Rules, board: BoardState): YieldTree {
         增量: mul(rat(n), mod.每邻格加成), 规则id: mod.修正id,
         计数: n, 档位: "主要档", 说明: `奇观相邻区域 ×${n}（+${mod.每邻格加成.n / mod.每邻格加成.d}/个）`,
       });
+    }
+  }
+
+  for (const beliefId of selectedBeliefs(board)) {
+    const belief = rules.religionBeliefs.get(beliefId);
+    if (!belief) continue;
+    for (const raw of belief.结构化效果) {
+      const [kind, , yieldType, amount] = beliefEffect(raw);
+      if (kind !== "奇观固定") continue;
+      for (const [k, tile] of board.tiles) {
+        if (!tile.世界奇观) continue;
+        const p = { q: Number(k.split(",")[0]), r: Number(k.split(",")[1]) };
+        push(yieldType, `${beliefId}@${k}`, belief.名称, p, {
+          增量: amount, 规则id: beliefId, 计数: 1, 档位: "固定",
+          说明: `宗教信条·${belief.名称}：世界奇观 +${amount.n / amount.d} ${yieldType}`,
+        });
+      }
+    }
+  }
+
+  // 城市规划：对当前局面中的每座城市提供 +1 生产力。
+  // 城市不是相邻规则的来源，因此单独记为全局政策来源。
+  if (board.已装配政策.has("POLICY_URBAN_PLANNING")) {
+    const cities = board.城市?.length
+      ? board.城市
+      : [{ id: "单城", 名称: "本城", 中心: board.中心 }];
+    for (const city of cities) {
+      push("生产力", `POLICY_URBAN_PLANNING@${city.id}`,
+        `城市规划 · ${city.名称}`, city.中心, {
+          增量: rat(1), 规则id: "POLICY_URBAN_PLANNING",
+          计数: 1, 档位: "固定", 说明: "政策卡：所有城市 +1 生产力",
+        });
     }
   }
 

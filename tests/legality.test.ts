@@ -5,6 +5,8 @@ import {
   validateDistrictPlacement,
   type LegalityIssue,
 } from "../src/legality.ts";
+import { evaluate, total } from "../src/evaluate.ts";
+import { fmt } from "../src/rational.ts";
 import { R, at, board } from "./helpers.ts";
 import { type BoardState } from "../src/board.ts";
 
@@ -239,5 +241,42 @@ describe("共享区域合法性入口", () => {
       issue.code === "E17c" && issue.districtId === "DISTRICT_SEOWON"));
     assert.ok(issues.some((issue) => issue.code === "E16"));
     assert.equal(codes(issues).filter((code) => code === "E01").length, 0);
+  });
+
+  test("evaluate 将共享校验错误转换为 Diagnostic，并保留非法区域的产出节点", () => {
+    const b = placedBoard({
+      "0,0": { 区域: "DISTRICT_CITY_CENTER" },
+      "1,0": { 区域: "DISTRICT_CAMPUS" },
+      "2,0": { 区域: "DISTRICT_CAMPUS" },
+      "4,0": { 区域: "DISTRICT_CAMPUS" },
+      "4,1": { 地形: "TERRAIN_GRASS_MOUNTAIN" },
+    }, { 已解锁科技: ["TECH_WRITING"] });
+    const tree = evaluate(R, b);
+    const messages = tree.诊断.map((diagnostic) => diagnostic.说明);
+    assert.ok(messages.some((message) => message.includes("E17c")));
+    assert.ok(messages.some((message) => message.includes("E16")));
+    assert.equal(tree.产出.some((node) =>
+      node.来源.some((source) => source.来源 === "学院" &&
+        source.位置?.q === 4 && source.位置?.r === 0)), true);
+    assert.equal(fmt(total(tree, "科技")), "2.5",
+      "非法区域仍按现有产出规则参与结算");
+  });
+
+  test("evaluate 保留 E05、E06，且不把挑战预算当作局面错误", () => {
+    const encampment = evaluate(R, placedBoard({
+      "0,0": { 区域: "DISTRICT_ENCAMPMENT" },
+      "1,0": { 区域: "DISTRICT_CITY_CENTER" },
+    }, { 已解锁科技: ["TECH_BRONZE_WORKING"] }));
+    assert.ok(encampment.诊断.some((diagnostic) =>
+      diagnostic.说明.includes("E05")));
+
+    const aqueduct = evaluate(R, placedBoard({
+      "0,0": { 区域: "DISTRICT_AQUEDUCT" },
+      "1,0": { 区域: "DISTRICT_CITY_CENTER" },
+    }, { 已解锁科技: ["TECH_ENGINEERING"] }));
+    assert.ok(aqueduct.诊断.some((diagnostic) =>
+      diagnostic.说明.includes("E06")));
+    assert.equal(aqueduct.诊断.some((diagnostic) =>
+      diagnostic.说明.includes("G5")), false);
   });
 });

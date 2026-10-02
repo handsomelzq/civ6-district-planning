@@ -274,6 +274,8 @@ export function validateBoard(
 ): LegalityIssue[] {
   const out: LegalityIssue[] = [];
   const counts = countDistricts(rules, board, undefined);
+  const emittedCityLimits = new Set<string>();
+  const emittedPlayerLimits = new Set<string>();
   for (const position of districtPositions(board)) {
     const tile = tileAt(board, position);
     if (!tile?.区域) continue;
@@ -295,19 +297,26 @@ export function validateBoard(
     out.push(...researchIssues(district, rules, board, position, id));
     const playerCount = counts.byPlayer.get(id)?.length ?? 0;
     const cityCount = counts.byCity.get(`${cityId}@${id}`)?.length ?? 0;
-    if (cityCount > district.每城上限) {
+    const cityLimitKey = `${cityId}@${id}`;
+    const sameLimit = district.每城上限 === district.每玩家上限;
+    if (cityCount > district.每城上限 &&
+        !(sameLimit && playerCount > district.每玩家上限) &&
+        !emittedCityLimits.has(cityLimitKey)) {
       out.push(issue(
         "E17c", "城市",
         `${rules.name(id)} 在${cityNameFor(board, cityId)}放了 ${cityCount} 座，超过每城上限 ${district.每城上限}`,
         position, id, cityId,
       ));
+      emittedCityLimits.add(cityLimitKey);
     }
-    if (playerCount > district.每玩家上限) {
+    if (playerCount > district.每玩家上限 &&
+        !emittedPlayerLimits.has(id)) {
       out.push(issue(
         "E17b", "玩家",
         `${rules.name(id)} 放了 ${playerCount} 座，超过每玩家上限 ${district.每玩家上限}`,
         position, id,
       ));
+      emittedPlayerLimits.add(id);
     }
   }
   return out.sort((a, b) => {
