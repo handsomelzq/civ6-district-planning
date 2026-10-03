@@ -368,3 +368,11 @@ test("放置提示使用共享合法性结果，并按错误码合并研究弹�
   assert.match(appSource, /validateDistrictPlacement/);
   assert.doesNotMatch(appSource, /districtPlacementConstraint\(rules/);
 });
+
+test("非法挑战关卡在列表中禁用开始，并由 startLevel 防御性拦截", () => {
+  assert.match(appSource, /lv\.可开始/);
+  assert.match(appSource, /disabled/);
+  assert.match(appSource, /if \(!lv \|\| !lv\.可开始\) return/);
+  assert.match(appSource, /lv\?\.可开始/);
+  assert.match(appSource, /lv\.问题/);
+});

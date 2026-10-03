@@ -16,8 +16,9 @@ import { evaluate, total } from "../src/evaluate.ts";
 import { fmt } from "../src/rational.ts";
 import { withDistrict, type BoardState } from "../src/board.ts";
 import { parseKey } from "../src/hex.ts";
-import { parseCsv } from "../src/csv.ts";
+import { parseCsv, parseList } from "../src/csv.ts";
 import { R, board } from "./helpers.ts";
+import { loadLevels } from "../web/levels.ts";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const FX = JSON.parse(readFileSync(
@@ -26,24 +27,62 @@ const CASES = FX.cases as any[];
 
 const LEVELS = parseCsv(readFileSync(
   path.join(here, "..", "配置表", "levels.csv"), "utf8"));
+const LEVEL_BY_ID = new Map(LEVELS.map((r) => [r["关卡id"], r]));
+
+test("关卡加载会标记非法初始局面为不可开始，并保留具体问题", () => {
+  const levelText = [
+    "关卡id,名称,文明id,领袖id,已解锁科技,已解锁市政,城市中心坐标,人口,目标类型,目标产出类型,目标值,约束类型,约束值,三星阈值,二星阈值,关卡类别,母题,贪心基线结果",
+    'BAD-01,非法测试,CIVILIZATION_GERMANY,LEADER_BARBAROSSA,TECH_WRITING,无,"0,0",4,单一产出达标,科技,5,区域数,1,5,5,教学,无,0',
+  ].join("\n");
+  const tileText = [
+    "关卡id,坐标,地形,地貌,资源,自然奇观,河流边,初始区域,初始建筑",
+    'BAD-01,"0,0",TERRAIN_GRASS,无,无,无,无,DISTRICT_CAMPUS,无',
+    'BAD-01,"1,0",TERRAIN_GRASS,无,无,无,无,DISTRICT_CAMPUS,无',
+  ].join("\n");
+  const loaded = loadLevels(R, {
+    "levels.csv": levelText,
+    "level_tiles.csv": tileText,
+  });
+  assert.equal(loaded.levels.length, 1);
+  assert.equal(loaded.levels[0].可开始, false);
+  assert.ok(loaded.levels[0].问题.some((problem) => problem.includes("E17c")));
+  assert.ok(loaded.problems.some((problem) =>
+    problem.includes("BAD-01") && problem.includes("E17c")));
+});
 
 /** 已知的 E17b（唯一性上限）违规，按关卡冻结。**这是待修的问题清单，不是期望值。**
  *  修好一关就删掉它那一行。全部删空之后，把上面第 5 步改回 `assert.deepEqual(errs, [])`。
  *  来源：2026-09-26 补 districts 的两列上限后逐关跑出来的，见 关卡设计.md §9。 */
 const KNOWN_E17B: Record<string, string[]> = {
-  "L-01": ["学院 放了 2 座，超过每城上限 1（E17b）"],
-  "L-02": ["学院 放了 3 座，超过每城上限 1（E17b）"],
-  "L-03": ["学院 放了 2 座，超过每城上限 1（E17b）"],
-  "L-05": ["学院 放了 4 座，超过每城上限 1（E17b）"],
-  "L-06": ["学院 放了 2 座，超过每城上限 1（E17b）",
+  "L-01": ["学院 在本城放了 2 座，超过每城上限 1（E17c）"],
+  "L-02": ["学院 在本城放了 3 座，超过每城上限 1（E17c）"],
+  "L-03": ["学院 在本城放了 2 座，超过每城上限 1（E17c）"],
+  "L-05": ["学院 在本城放了 4 座，超过每城上限 1（E17c）"],
+  "L-06": ["学院 在本城放了 2 座，超过每城上限 1（E17c）",
            "市政广场 放了 2 座，超过每玩家上限 1（E17b）"],
-  "L-07": ["学院 放了 2 座，超过每城上限 1（E17b）",
+  "L-07": ["学院 在本城放了 2 座，超过每城上限 1（E17c）",
            "市政广场 放了 2 座，超过每玩家上限 1（E17b）"],
-  "L-08": ["学院 放了 3 座，超过每城上限 1（E17b）",
+  "L-08": ["学院 在本城放了 3 座，超过每城上限 1（E17c）",
            "市政广场 放了 2 座，超过每玩家上限 1（E17b）"],
-  "L-09": ["书院 放了 5 座，超过每城上限 1（E17b）"],
-  "L-10": ["书院 放了 2 座，超过每城上限 1（E17b）",
-           "圣地 放了 2 座，超过每城上限 1（E17b）"],
+  "L-09": ["书院 在本城放了 5 座，超过每城上限 1（E17c）"],
+  "L-10": ["书院 在本城放了 2 座，超过每城上限 1（E17c）",
+           "圣地 在本城放了 2 座，超过每城上限 1（E17c）"],
+};
+
+/** 旧 fixture 的候选布局还使用了尚未解锁的区域，暂按候选解问题冻结。
+ *  这与初始关卡加载校验分开；Task 6 重做关卡时一并清空。 */
+const KNOWN_E14: Record<string, string[]> = {
+  "L-03": ["市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）"],
+  "L-06": ["市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）",
+           "市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）"],
+  "L-07": ["圣地 缺少前置科技：TECH_ASTROLOGY（E14t）",
+           "市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）",
+           "市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）"],
+  "L-08": ["市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）",
+           "市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）"],
+  "L-10": ["圣地 缺少前置科技：TECH_ASTROLOGY（E14t）",
+           "圣地 缺少前置科技：TECH_ASTROLOGY（E14t）",
+           "市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）"],
 };
 
 describe(`关卡阈值对账（${CASES.length} 关）`, () => {
@@ -54,7 +93,12 @@ describe(`关卡阈值对账（${CASES.length} 关）`, () => {
       for (const [k, t] of Object.entries<any>(c.地块)) {
         spec[k] = { 地形: t["地形"], 地貌: t["地貌"], 区域: t["区域"] };
       }
-      let b: BoardState = board(spec as never, { 文明: c.文明 });
+      const level = LEVEL_BY_ID.get(c.关卡id)!;
+      let b: BoardState = board(spec as never, {
+        文明: c.文明,
+        已解锁科技: parseList(level["已解锁科技"]),
+        已解锁市政: parseList(level["已解锁市政"]),
+      });
 
       // 2. 按最优布局放置
       for (const step of c.最优布局) {
@@ -89,13 +133,20 @@ describe(`关卡阈值对账（${CASES.length} 关）`, () => {
       //    篡改规则来迎合错误的关卡。冻结成特征测试能同时做到两件事 —— CI 不红，
       //    且一旦违规集合发生任何变化（修好了，或又坏了新的）立刻失败。
       const errs = tree.诊断.filter((d) => d.级别 === "错误");
-      const other = errs.filter((d) => !d.说明.includes("E17b"));
-      assert.deepEqual(other, [], `${c.关卡id} 出现了 E17b 之外的合法性错误：` +
-        other.map((e) => e.说明).join("；"));
+      const candidateIssues = errs.map((e) => e.说明).sort();
+      const expectedIssues = [
+        ...(KNOWN_E14[c.关卡id] ?? []),
+        ...(KNOWN_E17B[c.关卡id] ?? []),
+      ].sort();
+      assert.deepEqual(candidateIssues, expectedIssues,
+        `${c.关卡id} 的候选布局合法性问题集合变了。若是修好了关卡，请同步删掉 ` +
+        `KNOWN_E14/KNOWN_E17B 里对应的条目；若是新坏的，那是回归。`);
       assert.deepEqual(
-        errs.map((e) => e.说明).sort(), (KNOWN_E17B[c.关卡id] ?? []).slice().sort(),
-        `${c.关卡id} 的 E17b 违规集合变了。若是修好了关卡，请同步删掉 KNOWN_E17B ` +
-        `里对应的条目；若是新坏的，那是回归。`);
+        errs.filter((e) => e.说明.includes("E17b") || e.说明.includes("E17c"))
+          .map((e) => e.说明).sort(),
+        (KNOWN_E17B[c.关卡id] ?? []).slice().sort(),
+        `${c.关卡id} 的 E17b/E17c 违规集合变了。若是修好了关卡，请同步删掉 ` +
+        `KNOWN_E17B 里对应的条目；若是新坏的，那是回归。`);
     });
   }
 

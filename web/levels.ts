@@ -9,6 +9,7 @@ import { parseKey, type Axial } from "../src/hex.ts";
 import { type BoardState, type Tile } from "../src/board.ts";
 import { type Rules } from "../src/rules.ts";
 import { evaluate, total } from "../src/evaluate.ts";
+import { validateBoard } from "../src/legality.ts";
 import { type Rat, parseRat, cmp, fmt, ZERO, add } from "../src/rational.ts";
 
 export type Level = {
@@ -27,6 +28,8 @@ export type Level = {
   readonly 三星阈值: Rat;
   readonly 贪心基线: string;
   readonly 初始局面: BoardState;
+  readonly 可开始: boolean;
+  readonly 问题: readonly string[];
 };
 
 /** 解析 `目标值`：`4.5` 或 `科技:4|信仰:3`（见 关卡设计.md §7.4）。 */
@@ -77,28 +80,40 @@ export function loadLevels(
       领袖: r["领袖id"],
       已解锁科技: new Set(parseList(r["已解锁科技"])),
       已解锁市政: new Set(parseList(r["已解锁市政"])),
+      已装配政策: new Set<string>(),
+      已选宗教信条: new Set<string>(),
     };
+    const levelProblems: string[] = [];
+    for (const legality of validateBoard(rules, board)) {
+      levelProblems.push(
+        `${id}：初始局面非法 —— ${legality.message}（${legality.code}）`,
+      );
+    }
+    if (Number(r["约束值"]) <= 0) {
+      levelProblems.push(`${id}：约束值不为正（G3）`);
+    }
+
+    const tree = evaluate(rules, board);
+    let already = true;
+    for (const [y, v] of 目标) {
+      if (cmp(total(tree, y), v) < 0) already = false;
+    }
+    if (already) {
+      levelProblems.push(`${id}：初始局面已经达成目标，这是关卡配错（G1）`);
+    }
+
     const lv: Level = {
       关卡id: id, 名称: r["名称"], 文明: r["文明id"], 领袖: r["领袖id"],
       关卡类别: r["关卡类别"], 母题: r["母题"], 目标类型: r["目标类型"],
       目标, 约束类型: r["约束类型"], 约束值: Number(r["约束值"]),
       二星阈值: parseRat(r["二星阈值"]), 三星阈值: parseRat(r["三星阈值"]),
       贪心基线: r["贪心基线结果"], 初始局面: board,
+      可开始: levelProblems.length === 0,
+      问题: levelProblems,
     };
 
     // ── 加载校验（SDD-挑战模式 §5、边界 G1–G3）────────────────────────
-    const tree = evaluate(rules, board);
-    for (const d of tree.诊断) {
-      if (d.级别 === "错误") problems.push(`${id}：初始局面非法 —— ${d.说明}（G2）`);
-    }
-    if (lv.约束值 <= 0) problems.push(`${id}：约束值不为正（G3）`);
-    let already = true;
-    for (const [y, v] of 目标) {
-      if (cmp(total(tree, y), v) < 0) already = false;
-    }
-    if (already) {
-      problems.push(`${id}：初始局面已经达成目标，这是关卡配错（G1）`);
-    }
+    problems.push(...levelProblems);
     levels.push(lv);
   }
   return { levels, problems };

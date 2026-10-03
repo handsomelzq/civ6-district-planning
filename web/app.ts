@@ -430,7 +430,10 @@ function levelListHtml(): string {
       <td>${esc(goalText(lv))}</td>
       <td>配额 ${lv.约束值}</td>
       <td class="muted">贪心 ${esc(lv.贪心基线)}</td>
-      <td><button class="play" data-lv="${esc(lv.关卡id)}">开始</button></td>
+      <td>${lv.可开始
+        ? `<button class="play" data-lv="${esc(lv.关卡id)}">开始</button>`
+        : `<button class="play" data-lv="${esc(lv.关卡id)}" disabled title="${esc(lv.问题.join("；"))}">不可开始</button>
+           <small class="muted">${esc(lv.问题[0] ?? "关卡校验失败")}</small>`}</td>
     </tr>`).join("");
   const warn = problems.length === 0 ? "" :
     `<div class="warn">加载校验发现 ${problems.length} 个问题：<br>${
@@ -443,7 +446,8 @@ function levelListHtml(): string {
 }
 
 function startLevel(id: string) {
-  const lv = levels.find((l) => l.关卡id === id)!;
+  const lv = levels.find((l) => l.关卡id === id);
+  if (!lv || !lv.可开始) return;
   app.level = lv;
   app.randomSeed = undefined;
   app.levelStart = lv.初始局面;
@@ -788,7 +792,10 @@ function wire() {
     b.onclick = () => startLevel(b.dataset.lv!);
   });
   document.querySelectorAll<HTMLElement>("tr[data-lv]").forEach((t) => {
-    t.onclick = () => startLevel(t.dataset.lv!);
+    t.onclick = () => {
+      const lv = levels.find((candidate) => candidate.关卡id === t.dataset.lv);
+      if (lv?.可开始) startLevel(t.dataset.lv!);
+    };
   });
   const settings = document.getElementById("settings");
   if (settings) settings.onclick = openSettings;
