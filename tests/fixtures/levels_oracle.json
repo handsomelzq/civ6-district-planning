@@ -12,18 +12,18 @@
    ],
    "最优布局": [
     {
-     "坐标": "-1,0",
-     "区域": "DISTRICT_CAMPUS"
+     "坐标": "-1,-1",
+     "区域": "DISTRICT_HOLY_SITE"
     },
     {
-     "坐标": "-1,1",
+     "坐标": "-1,0",
      "区域": "DISTRICT_CAMPUS"
     }
    ],
    "最优产出": {
-    "科技": "5"
+    "科技": "3"
    },
-   "三星阈值": "5",
+   "三星阈值": "3",
    "地块": {
     "-3,0": {
      "地形": "TERRAIN_OCEAN"
@@ -149,22 +149,22 @@
    ],
    "最优布局": [
     {
+     "坐标": "-2,0",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    {
      "坐标": "-2,1",
-     "区域": "DISTRICT_CAMPUS"
+     "区域": "DISTRICT_GOVERNMENT"
     },
     {
      "坐标": "-1,0",
      "区域": "DISTRICT_CAMPUS"
-    },
-    {
-     "坐标": "-1,1",
-     "区域": "DISTRICT_CAMPUS"
     }
    ],
    "最优产出": {
-    "科技": "4"
+    "科技": "2.5"
    },
-   "三星阈值": "4",
+   "三星阈值": "2.5",
    "地块": {
     "-3,0": {
      "地形": "TERRAIN_OCEAN"
@@ -290,22 +290,22 @@
    ],
    "最优布局": [
     {
-     "坐标": "-2,1",
+     "坐标": "-2,0",
      "区域": "DISTRICT_GOVERNMENT"
+    },
+    {
+     "坐标": "-2,1",
+     "区域": "DISTRICT_HOLY_SITE"
     },
     {
      "坐标": "-1,0",
      "区域": "DISTRICT_CAMPUS"
-    },
-    {
-     "坐标": "-1,1",
-     "区域": "DISTRICT_CAMPUS"
     }
    ],
    "最优产出": {
-    "科技": "5"
+    "科技": "2.5"
    },
-   "三星阈值": "5",
+   "三星阈值": "2.5",
    "地块": {
     "-3,0": {
      "地形": "TERRAIN_OCEAN"
@@ -431,26 +431,26 @@
    ],
    "最优布局": [
     {
+     "坐标": "-3,2",
+     "区域": "DISTRICT_HOLY_SITE"
+    },
+    {
      "坐标": "-1,1",
-     "区域": "DISTRICT_CAMPUS"
+     "区域": "DISTRICT_GOVERNMENT"
     },
     {
      "坐标": "0,1",
      "区域": "DISTRICT_CAMPUS"
     },
     {
-     "坐标": "1,-1",
-     "区域": "DISTRICT_CAMPUS"
-    },
-    {
      "坐标": "1,0",
-     "区域": "DISTRICT_CAMPUS"
+     "区域": "DISTRICT_COMMERCIAL_HUB"
     }
    ],
    "最优产出": {
-    "科技": "5"
+    "科技": "2.5"
    },
-   "三星阈值": "5",
+   "三星阈值": "2.5",
    "地块": {
     "-3,0": {
      "地形": "TERRAIN_OCEAN"
@@ -585,17 +585,17 @@
     },
     {
      "坐标": "3,-1",
-     "区域": "DISTRICT_GOVERNMENT"
+     "区域": "DISTRICT_HOLY_SITE"
     },
     {
      "坐标": "3,0",
-     "区域": "DISTRICT_CAMPUS"
+     "区域": "DISTRICT_COMMERCIAL_HUB"
     }
    ],
    "最优产出": {
-    "科技": "7"
+    "科技": "2.5"
    },
-   "三星阈值": "7",
+   "三星阈值": "2.5",
    "地块": {
     "-3,0": {
      "地形": "TERRAIN_GRASS"
@@ -722,7 +722,7 @@
    "最优布局": [
     {
      "坐标": "2,-1",
-     "区域": "DISTRICT_CAMPUS"
+     "区域": "DISTRICT_GOVERNMENT"
     },
     {
      "坐标": "2,0",
@@ -730,24 +730,24 @@
     },
     {
      "坐标": "2,1",
-     "区域": "DISTRICT_GOVERNMENT"
+     "区域": "DISTRICT_HOLY_SITE"
     },
     {
      "坐标": "3,-1",
-     "区域": "DISTRICT_GOVERNMENT"
+     "区域": "DISTRICT_COMMERCIAL_HUB"
     },
     {
      "坐标": "3,0",
-     "区域": "DISTRICT_CAMPUS"
+     "区域": "DISTRICT_THEATER"
     }
    ],
    "最优产出": {
-    "科技": "9.5"
+    "科技": "3"
    },
-   "三星阈值": "9.5",
+   "三星阈值": "3",
    "地块": {
     "-3,0": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "-3,1": {
      "地形": "TERRAIN_OCEAN"
@@ -756,7 +756,7 @@
      "地形": "TERRAIN_OCEAN"
     },
     "-3,3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "-2,-1": {
      "地形": "TERRAIN_OCEAN"
@@ -792,7 +792,7 @@
      "地形": "TERRAIN_OCEAN"
     },
     "0,-3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "0,-2": {
      "地形": "TERRAIN_GRASS_MOUNTAIN"
@@ -808,7 +808,7 @@
      "地形": "TERRAIN_OCEAN"
     },
     "0,2": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "0,3": {
      "地形": "TERRAIN_GRASS_MOUNTAIN"
@@ -838,25 +838,25 @@
      "地形": "TERRAIN_OCEAN"
     },
     "2,-1": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "2,0": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "2,1": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "3,-3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "3,-2": {
      "地形": "TERRAIN_OCEAN"
     },
     "3,-1": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "3,0": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     }
    }
   },
@@ -875,28 +875,28 @@
     },
     {
      "坐标": "-3,3",
-     "区域": "DISTRICT_CAMPUS"
+     "区域": "DISTRICT_GOVERNMENT"
     },
     {
      "坐标": "0,-3",
-     "区域": "DISTRICT_CAMPUS"
+     "区域": "DISTRICT_HOLY_SITE"
     },
     {
      "坐标": "0,2",
-     "区域": "DISTRICT_CAMPUS"
+     "区域": "DISTRICT_COMMERCIAL_HUB"
     },
     {
      "坐标": "2,-1",
-     "区域": "DISTRICT_CAMPUS"
+     "区域": "DISTRICT_THEATER"
     }
    ],
    "最优产出": {
-    "科技": "20"
+    "科技": "4"
    },
-   "三星阈值": "20",
+   "三星阈值": "4",
    "地块": {
     "-3,0": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "-3,1": {
      "地形": "TERRAIN_OCEAN"
@@ -905,7 +905,7 @@
      "地形": "TERRAIN_OCEAN"
     },
     "-3,3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "-2,-1": {
      "地形": "TERRAIN_OCEAN"
@@ -941,7 +941,7 @@
      "地形": "TERRAIN_OCEAN"
     },
     "0,-3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "0,-2": {
      "地形": "TERRAIN_GRASS_MOUNTAIN"
@@ -957,7 +957,7 @@
      "地形": "TERRAIN_OCEAN"
     },
     "0,2": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "0,3": {
      "地形": "TERRAIN_GRASS_MOUNTAIN"
@@ -987,25 +987,25 @@
      "地形": "TERRAIN_OCEAN"
     },
     "2,-1": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "2,0": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "2,1": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "3,-3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "3,-2": {
      "地形": "TERRAIN_OCEAN"
     },
     "3,-1": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "3,0": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     }
    }
   },
@@ -1020,10 +1020,6 @@
    ],
    "最优布局": [
     {
-     "坐标": "-3,0",
-     "区域": "DISTRICT_CAMPUS"
-    },
-    {
      "坐标": "-1,3",
      "区域": "DISTRICT_GOVERNMENT"
     },
@@ -1037,17 +1033,17 @@
     },
     {
      "坐标": "1,2",
-     "区域": "DISTRICT_GOVERNMENT"
+     "区域": "DISTRICT_COMMERCIAL_HUB"
     }
    ],
    "最优产出": {
-    "信仰": "3.5",
-    "科技": "4.5"
+    "信仰": "2.5",
+    "科技": "2.5"
    },
-   "三星阈值": "8",
+   "三星阈值": "5",
    "地块": {
     "-3,0": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "-3,1": {
      "地形": "TERRAIN_OCEAN"
@@ -1056,7 +1052,7 @@
      "地形": "TERRAIN_OCEAN"
     },
     "-3,3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "-2,-1": {
      "地形": "TERRAIN_OCEAN"
@@ -1089,10 +1085,10 @@
      "地形": "TERRAIN_OCEAN"
     },
     "-1,3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "0,-3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "0,-2": {
      "地形": "TERRAIN_OCEAN"
@@ -1108,10 +1104,10 @@
      "地形": "TERRAIN_OCEAN"
     },
     "0,2": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "0,3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "1,-3": {
      "地形": "TERRAIN_GRASS_MOUNTAIN"
@@ -1129,13 +1125,13 @@
      "地形": "TERRAIN_OCEAN"
     },
     "1,2": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "2,-3": {
      "地形": "TERRAIN_OCEAN"
     },
     "2,-2": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "2,-1": {
      "地形": "TERRAIN_OCEAN"
@@ -1156,7 +1152,7 @@
      "地形": "TERRAIN_OCEAN"
     },
     "3,0": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     }
    }
   },
@@ -1175,12 +1171,8 @@
      "区域": "DISTRICT_CAMPUS"
     },
     {
-     "坐标": "-3,3",
-     "区域": "DISTRICT_CAMPUS"
-    },
-    {
      "坐标": "-1,3",
-     "区域": "DISTRICT_HOLY_SITE"
+     "区域": "DISTRICT_GOVERNMENT"
     },
     {
      "坐标": "0,2",
@@ -1188,17 +1180,21 @@
     },
     {
      "坐标": "0,3",
-     "区域": "DISTRICT_GOVERNMENT"
+     "区域": "DISTRICT_COMMERCIAL_HUB"
+    },
+    {
+     "坐标": "1,2",
+     "区域": "DISTRICT_THEATER"
     }
    ],
    "最优产出": {
-    "信仰": "4",
-    "科技": "8"
+    "信仰": "2.5",
+    "科技": "4"
    },
-   "三星阈值": "12",
+   "三星阈值": "6.5",
    "地块": {
     "-3,0": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "-3,1": {
      "地形": "TERRAIN_OCEAN"
@@ -1207,7 +1203,7 @@
      "地形": "TERRAIN_OCEAN"
     },
     "-3,3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "-2,-1": {
      "地形": "TERRAIN_OCEAN"
@@ -1240,10 +1236,10 @@
      "地形": "TERRAIN_OCEAN"
     },
     "-1,3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "0,-3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "0,-2": {
      "地形": "TERRAIN_OCEAN"
@@ -1259,10 +1255,10 @@
      "地形": "TERRAIN_OCEAN"
     },
     "0,2": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "0,3": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "1,-3": {
      "地形": "TERRAIN_GRASS_MOUNTAIN"
@@ -1280,13 +1276,13 @@
      "地形": "TERRAIN_OCEAN"
     },
     "1,2": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "2,-3": {
      "地形": "TERRAIN_OCEAN"
     },
     "2,-2": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     },
     "2,-1": {
      "地形": "TERRAIN_OCEAN"
@@ -1307,7 +1303,7 @@
      "地形": "TERRAIN_OCEAN"
     },
     "3,0": {
-     "地形": "TERRAIN_GRASS"
+     "地形": "TERRAIN_GRASS_HILLS"
     }
    }
   }

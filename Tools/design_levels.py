@@ -9,7 +9,7 @@
 
 只用标准库。地图规模：半径 3 的六边形 37 格（关卡设计.md §4）。
 """
-import csv, io, itertools, json, pathlib, sys
+import csv, io, json, pathlib, sys
 from fractions import Fraction
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from prototype_eval import (Rules, Board, eval_board, greedy, effective, fmt,
@@ -26,6 +26,7 @@ OCEAN = "TERRAIN_OCEAN"   # 海洋，是否可建区域=否；海岸(TERRAIN_COA
 FOREST, JUNGLE = "FEATURE_FOREST", "FEATURE_JUNGLE"
 CAMPUS, GOV, CENTER = "DISTRICT_CAMPUS", "DISTRICT_GOVERNMENT", "DISTRICT_CITY_CENTER"
 HOLY = "DISTRICT_HOLY_SITE"
+COMMERCIAL, THEATER = "DISTRICT_COMMERCIAL_HUB", "DISTRICT_THEATER"
 
 
 def ring3():
@@ -240,18 +241,18 @@ OUTER = [p for p in ring3() if max(abs(p[0]), abs(p[1]), abs(p[0] + p[1])) == 3]
 # ── L-01 教学 · 主要档相邻（山脉每座 +1）──────────────────────────
 level("L-01", "读山", make((0, 0), mountains=[(2, 0), (2, -1), (-2, 0), (-2, 1)],
                            water=OUTER),
-      [CAMPUS], 2, "教学", "无",
-      "两侧各有一对山脉。目标：学会「每座山 +1」是主要档，挨得越多越好。")
+      [CAMPUS, HOLY], 2, "教学", "无",
+      "两侧各有一对山脉。目标：学会「每座山 +1」是主要档，优先把学院放到山边。")
 
 # ── L-02 教学 · 标准档相邻（区域之间每 2 个 +1）────────────────────
 level("L-02", "抱团", make((0, 0), water=OUTER),
-      [CAMPUS], 3, "教学", "无",
-      "全图无山无林。唯一的科技来源是区域互给的标准档加成——放两个比放一个的两倍更多。")
+      [CAMPUS, HOLY, GOV], 3, "教学", "无",
+      "全图无山无林。学院通过相邻的其他区域获得标准档加成，放成一团比孤立放置更高。")
 
 # ── L-03 教学 · 政府广场（自身零产出，给每个邻居 +1）───────────────
 level("L-03", "枢纽", make((0, 0), water=OUTER),
-      [CAMPUS, GOV], 3, "教学", "无",
-      "政府广场自己不产科技，但给每个相邻区域 +1。学会「有的区域价值在别人身上」。")
+      [CAMPUS, GOV, HOLY], 3, "教学", "无",
+      "政府广场自己不产科技，但给相邻学院 +1。学会「有的区域价值在别人身上」。")
 
 # ── L-04 母题 A · 争格 ── **故意保留的反向回归用例** ────────────────
 # 母题 A 已删除（关卡设计.md §2.2）：它只能靠贪心的平局打破来"通过"。
@@ -262,7 +263,7 @@ level("L-04", "一格双优",
       make((0, 0),
            mountains=[(2, 0), (2, -1), (3, -2), (3, 0), (-3, 2), (-3, 0)],
            land=[(1, 0), (3, -1), (-3, 1)]),
-      [CAMPUS], 2, "普通", "A",
+      [CAMPUS, HOLY], 2, "普通", "A",
       "(1,0) 挨 2 山又挨城市中心；两个诱饵各挨 2 山但孤立。贪心去吃两个诱饵，最优必须占住 (1,0)。")
 
 # ── L-05 母题 B · 集群中心（预算 4；低于 4 数学上不成立）────────────
@@ -272,8 +273,8 @@ level("L-05", "组团",
            mountains=[(3, -1), (0, 3), (-3, 1), (0, -3)],
            land=[(1, 0), (1, -1), (0, 1), (-1, 1),          # 协同块
                  (3, 0), (1, 2), (-3, 2), (1, -3)]),        # 诱饵（各挨 1 山）
-      [CAMPUS], 4, "普通", "B",
-      "4 个隔海孤格各挨 1 山（+1）；中心周围 4 格互相相邻。诱饵数=预算，贪心会全花在诱饵上。")
+      [CAMPUS, HOLY, GOV, COMMERCIAL], 4, "普通", "B",
+      "4 个隔海孤格各挨 1 山；中心周围 4 格互相相邻。四种区域各一座，贪心会先拿山边诱饵。")
 
 # ── L-06 母题 C · 投资型放置 ──────────────────────────────────────
 # 2026-09-25 重做。第一版在这张 37 格地图上贪心达标，我当时归因为「半径 3 对母题 C
@@ -290,8 +291,8 @@ COMBO_MTN = [(-2, 0), (-2, 3), (0, -2), (0, 3)]
 
 level("L-06", "先修路",
       make((0, 0), mountains=COMBO_MTN, land=COMBO_CLUSTER + COMBO_BAITS),
-      [CAMPUS, GOV], 4, "普通", "C",
-      "协同块远离城市中心与山脉，单独放一个区域进去一分不得。最优＝两座政府广场夹两座学院。")
+      [CAMPUS, GOV, HOLY, COMMERCIAL], 4, "普通", "C",
+      "协同块远离城市中心与山脉，单独放一个区域进去一分不得。四种区域各一座，先修路后成团。")
 
 # ── L-08 / L-09 母题 E · 同一片地形，只换文明 ────────────────────────
 # 这一对是 GDD §6 验证指标「文明有差异」的实测关卡，所以**地形必须逐格相同**
@@ -312,13 +313,13 @@ def e_board():
 
 
 level("L-08", "成团",
-      e_board(), [CAMPUS, GOV], 5, "普通", "E",
-      "常规文明版。学院要抱团、要贴山：最优是把 5 个预算全砸进东边那块协同块。")
+      e_board(), [CAMPUS, GOV, HOLY, COMMERCIAL, THEATER], 5, "普通", "E",
+      "常规文明版。学院要抱团、要贴山；五种区域各一座，最优仍集中在东侧协同块。")
 
 level("L-09", "各自为政",
-      e_board(), [CAMPUS, GOV], 5, "对照", "E",
-      "与 L-08 同一片地形，换韩国。书院固定 +4 但每相邻一区域 −1，且完全不吃山脉——"
-      "最优解从「抱团」反转为「尽量分开」。",
+      e_board(), [CAMPUS, GOV, HOLY, COMMERCIAL, THEATER], 5, "对照", "E",
+      "与 L-08 同一片地形，换韩国。书院固定 +4 但每相邻一区域 −1，且完全不吃山脉；"
+      "在五种区域各一座的约束下，最优结构转向分散。",
       civ="CIVILIZATION_KOREA", leader="LEADER_SEONDEOK")
 
 # ── L-07 / L-10 母题 B+C · 多产出 ───────────────────────────────────
@@ -337,12 +338,12 @@ def m_board():
                 land=M_CLUSTER + M_BAITS)
 
 
-mlevel("L-07", "两头顾", m_board(), [CAMPUS, HOLY, GOV], 5, "普通", "B+C",
+mlevel("L-07", "两头顾", m_board(), [CAMPUS, HOLY, GOV, COMMERCIAL, THEATER], 5, "普通", "B+C",
        "科技与信仰同时达标。山脉两种产出通吃，所以诱饵好拿；但目标向量要求均衡，"
        "只靠诱饵凑不齐——必须在协同块里放市政广场同时喂学院和圣地。",
        ["科技", "信仰"])
 
-mlevel("L-10", "反着来", m_board(), [CAMPUS, HOLY, GOV], 5, "普通", "B+C+E",
+mlevel("L-10", "反着来", m_board(), [CAMPUS, HOLY, GOV, COMMERCIAL, THEATER], 5, "普通", "B+C+E",
        "与 L-07 同一片地形，换韩国。书院要分开、圣地要抱团——**两种产出在同一张盘面上"
        "要求相反的结构**，这是本作最难的一关。",
        ["科技", "信仰"], civ="CIVILIZATION_KOREA", leader="LEADER_SEONDEOK")
@@ -370,6 +371,25 @@ def apply_plan(L, plan):
         b = b.copy_with(p, effective(R, d0, L["civ"]))
     tot = eval_board(R, b, L["civ"])[0]
     return sum((tot.get(y, Fraction(0)) for y in yields_of(L)), Fraction(0))
+
+
+def unlocked_for(L):
+    """返回覆盖本关候选区域前置的最小科技 / 市政集合。"""
+    techs, civics = set(), set()
+    for raw_id in L["palette"]:
+        row = R.districts.get(effective(R, raw_id, L["civ"]))
+        if row is None:
+            continue
+        for item in (row.get("前置科技") or "").split("|"):
+            if item and item != "无":
+                techs.add(item)
+        for item in (row.get("前置市政") or "").split("|"):
+            if item and item != "无":
+                civics.add(item)
+    return (
+        "|".join(sorted(techs)) or "无",
+        "|".join(sorted(civics)) or "无",
+    )
 
 
 def cross_check():
@@ -452,8 +472,9 @@ def emit():
                            % (L["lid"], L["name"], L["motif"], fmt(L["G"]), fmt(L["T"])))
             continue
         center = [p for p, t in L["board"].tiles.items() if t["区域"] == CENTER][0]
+        unlocked_techs, unlocked_civics = unlocked_for(L)
         lv.append([L["lid"], L["name"], L["civ"], L["leader"],
-                   "TECH_WRITING", "无", "%d,%d" % center, 4,
+                   unlocked_techs, unlocked_civics, "%d,%d" % center, 4,
                    L["goal_kind"], L["goal_types"], L["goal_value"],
                    "区域数", L["budget"],
                    fmt(L["star3"]), fmt(L["star2"]), L["kind"],

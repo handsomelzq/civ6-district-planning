@@ -13,7 +13,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import * as path from "node:path";
 import { evaluate, total } from "../src/evaluate.ts";
-import { fmt } from "../src/rational.ts";
+import { fmt, cmp } from "../src/rational.ts";
 import { withDistrict, type BoardState } from "../src/board.ts";
 import { parseKey } from "../src/hex.ts";
 import { parseCsv, parseList } from "../src/csv.ts";
@@ -50,40 +50,22 @@ test("关卡加载会标记非法初始局面为不可开始，并保留具体�
     problem.includes("BAD-01") && problem.includes("E17c")));
 });
 
-/** 已知的 E17b（唯一性上限）违规，按关卡冻结。**这是待修的问题清单，不是期望值。**
- *  修好一关就删掉它那一行。全部删空之后，把上面第 5 步改回 `assert.deepEqual(errs, [])`。
- *  来源：2026-09-26 补 districts 的两列上限后逐关跑出来的，见 关卡设计.md §9。 */
-const KNOWN_E17B: Record<string, string[]> = {
-  "L-01": ["学院 在本城放了 2 座，超过每城上限 1（E17c）"],
-  "L-02": ["学院 在本城放了 3 座，超过每城上限 1（E17c）"],
-  "L-03": ["学院 在本城放了 2 座，超过每城上限 1（E17c）"],
-  "L-05": ["学院 在本城放了 4 座，超过每城上限 1（E17c）"],
-  "L-06": ["学院 在本城放了 2 座，超过每城上限 1（E17c）",
-           "市政广场 放了 2 座，超过每玩家上限 1（E17b）"],
-  "L-07": ["学院 在本城放了 2 座，超过每城上限 1（E17c）",
-           "市政广场 放了 2 座，超过每玩家上限 1（E17b）"],
-  "L-08": ["学院 在本城放了 3 座，超过每城上限 1（E17c）",
-           "市政广场 放了 2 座，超过每玩家上限 1（E17b）"],
-  "L-09": ["书院 在本城放了 5 座，超过每城上限 1（E17c）"],
-  "L-10": ["书院 在本城放了 2 座，超过每城上限 1（E17c）",
-           "圣地 在本城放了 2 座，超过每城上限 1（E17c）"],
-};
-
-/** 旧 fixture 的候选布局还使用了尚未解锁的区域，暂按候选解问题冻结。
- *  这与初始关卡加载校验分开；Task 6 重做关卡时一并清空。 */
-const KNOWN_E14: Record<string, string[]> = {
-  "L-03": ["市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）"],
-  "L-06": ["市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）",
-           "市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）"],
-  "L-07": ["圣地 缺少前置科技：TECH_ASTROLOGY（E14t）",
-           "市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）",
-           "市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）"],
-  "L-08": ["市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）",
-           "市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）"],
-  "L-10": ["圣地 缺少前置科技：TECH_ASTROLOGY（E14t）",
-           "圣地 缺少前置科技：TECH_ASTROLOGY（E14t）",
-           "市政广场 缺少前置市政：CIVIC_STATE_WORKFORCE（E14c）"],
-};
+test("当前 9 个挑战关卡的初始局面全部合法且未提前达成目标", () => {
+  const loaded = loadLevels(R, {
+    "levels.csv": readFileSync(
+      path.join(here, "..", "配置表", "levels.csv"), "utf8"),
+    "level_tiles.csv": readFileSync(
+      path.join(here, "..", "配置表", "level_tiles.csv"), "utf8"),
+  });
+  assert.equal(loaded.problems.length, 0, loaded.problems.join("；"));
+  assert.equal(loaded.levels.length, 9);
+  assert.ok(loaded.levels.every((level) => level.可开始));
+  assert.ok(loaded.levels.every((level) => {
+    const tree = evaluate(R, level.初始局面);
+    return [...level.目标].some(([yieldType, target]) =>
+      cmp(total(tree, yieldType), target) < 0);
+  }));
+});
 
 describe(`关卡阈值对账（${CASES.length} 关）`, () => {
   for (const c of CASES) {
@@ -118,35 +100,11 @@ describe(`关卡阈值对账（${CASES.length} 关）`, () => {
       assert.equal(String(sum), c.三星阈值,
         `${c.关卡id} 的三星阈值与最优布局算出来的合计不符`);
 
-      // 5. 残局本身必须合法 —— 关卡不该带着诊断错误发给玩家（边界 E18）
-      //
-      // ⚠️ **当前全部 9 关都违反 E17b**，这条断言因此退化成「特征测试」：它冻结
-      //    已知的违规集合，而不是断言没有违规。
-      //
-      //    2026-09-26 补上 districts.每城上限 / 每玩家上限 两列后才发现：文明 6 的
-      //    一座城市**每种专业化区域只能有一座**（OnePerCity 默认为真），而市政广场
-      //    与外交区是**全文明唯一**（MaxPerPlayer=1）。9 关的最优布局全都在一座城里
-      //    摆了多座同类区域 —— L-09 摆了 5 座书院，L-06/07/08 摆了 2 座市政广场。
-      //    **这些局面在游戏里摆不出来**，见 关卡设计.md §9 与 SDD §10 D12。
-      //
-      //    为什么不把断言删掉、也不把 E17b 降成警告：删掉等于把问题藏起来，降级等于
-      //    篡改规则来迎合错误的关卡。冻结成特征测试能同时做到两件事 —— CI 不红，
-      //    且一旦违规集合发生任何变化（修好了，或又坏了新的）立刻失败。
+      // 5. 最优候选布局必须通过与产品一致的共享合法性规则。
       const errs = tree.诊断.filter((d) => d.级别 === "错误");
-      const candidateIssues = errs.map((e) => e.说明).sort();
-      const expectedIssues = [
-        ...(KNOWN_E14[c.关卡id] ?? []),
-        ...(KNOWN_E17B[c.关卡id] ?? []),
-      ].sort();
-      assert.deepEqual(candidateIssues, expectedIssues,
-        `${c.关卡id} 的候选布局合法性问题集合变了。若是修好了关卡，请同步删掉 ` +
-        `KNOWN_E14/KNOWN_E17B 里对应的条目；若是新坏的，那是回归。`);
-      assert.deepEqual(
-        errs.filter((e) => e.说明.includes("E17b") || e.说明.includes("E17c"))
-          .map((e) => e.说明).sort(),
-        (KNOWN_E17B[c.关卡id] ?? []).slice().sort(),
-        `${c.关卡id} 的 E17b/E17c 违规集合变了。若是修好了关卡，请同步删掉 ` +
-        `KNOWN_E17B 里对应的条目；若是新坏的，那是回归。`);
+      assert.deepEqual(errs, [],
+        `${c.关卡id} 的最优候选布局存在合法性错误：` +
+        errs.map((e) => e.说明).join("；"));
     });
   }
 
