@@ -8,14 +8,15 @@
 范围（刻意收窄）：
   - 只算**区域的相邻加成**。不算地块基础产出、建筑、每市民产出——
     关卡母题是纯粹关于相邻结构的，这些项对验证不构成影响。
-  - 不做合法性校验（工作范围、配额、前置）。手写的实验盘自己保证合法。
+  - 不做完整合法性校验（工作范围、地形与前置等）；搜索阶段只检查区域
+    的每城 / 每玩家数量上限，手写的实验盘自己保证其他条件合法。
 
 它同时是一份**交叉校验参照实现**：产品求值器写出来后，两份独立实现
 在同一批盘面上给出相同结果，是比单测更强的证据。
 
 规则与算法出处：设计/SDD-局面求值器.md §3.3、§3.5。只用标准库。
 """
-import csv, io, pathlib, sys
+import csv, io, itertools, pathlib, sys
 from collections import defaultdict
 from fractions import Fraction
 
@@ -158,6 +159,83 @@ def effective(rules, did, civ):
     return rules.replace.get(civ, {}).get(did, did)
 
 
+def _limit(row, column):
+    raw = (row.get(column) or "").strip()
+    if raw in ("", "无限"):
+        return None
+    return int(raw)
+
+
+def can_place_district(rules, board, district_id, civ=None):
+    """只检查搜索阶段需要的区域数量上限。
+
+    设计期原型是单城盘面，因此「每城上限」与「每玩家上限」都对当前盘面
+    的有效区域总数计数。计数先做文明特色区域替换，和产品端的 effective()
+    语义保持一致。
+    """
+    effective_id = effective(rules, district_id, civ)
+    row = rules.districts.get(effective_id)
+    if row is None:
+        return True
+    count = sum(
+        1 for tile in board.tiles.values()
+        if tile.get("区域") and effective(rules, tile["区域"], civ) == effective_id
+    )
+    for column in ("每城上限", "每玩家上限"):
+        limit = _limit(row, column)
+        if limit is not None and count + 1 > limit:
+            return False
+    return True
+
+
+def frontier(rules, board, palette, maxk, civ=None, yield_type="科技"):
+    """最优前沿：{预算 k: 该预算下的最优目标产出}，以及各自的布局。"""
+    empties = sorted(board.empties(rules))
+    best = {}
+    for k in range(1, maxk + 1):
+        bv, bp = Fraction(-1), None
+        for spots in itertools.combinations(empties, k):
+            for combo in itertools.product(palette, repeat=k):
+                b = board
+                valid = True
+                for p, d0 in zip(spots, combo):
+                    if not can_place_district(rules, b, d0, civ):
+                        valid = False
+                        break
+                    b = b.copy_with(p, effective(rules, d0, civ))
+                if not valid:
+                    continue
+                v = eval_board(rules, b, civ)[0].get(yield_type, Fraction(0))
+                if v > bv:
+                    bv, bp = v, list(zip(spots, combo))
+        best[k] = (bv, bp)
+    return best
+
+
+def enumerate_layouts(rules, board, palette, maxk, yields, civ=None):
+    """穷举预算内的全部合法布局，返回 [(plan, {产出类型: 值})]。"""
+    empties = sorted(board.empties(rules))
+    out = []
+    for k in range(1, maxk + 1):
+        for spots in itertools.combinations(empties, k):
+            for combo in itertools.product(palette, repeat=k):
+                b = board
+                valid = True
+                for p, d0 in zip(spots, combo):
+                    if not can_place_district(rules, b, d0, civ):
+                        valid = False
+                        break
+                    b = b.copy_with(p, effective(rules, d0, civ))
+                if not valid:
+                    continue
+                tot = eval_board(rules, b, civ)[0]
+                out.append((
+                    list(zip(spots, combo)),
+                    dict((y, tot.get(y, Fraction(0))) for y in yields),
+                ))
+    return out
+
+
 def greedy(rules, board, palette, budget, yield_type, civ=None, leader=None,
            best_ties=True, branch_cap=8, score=None):
     """贪心基线，定义见 设计/关卡设计.md §7。
@@ -192,6 +270,8 @@ def greedy(rules, board, palette, budget, yield_type, civ=None, leader=None,
         for pos in sorted(cur.empties(rules)):
             for d0 in palette:
                 d = effective(rules, d0, civ)
+                if not can_place_district(rules, cur, d0, civ):
+                    continue
                 nxt = cur.copy_with(pos, d)
                 cands.append((val(nxt) - base, pos, d, nxt))
         if not cands:

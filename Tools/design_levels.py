@@ -13,12 +13,15 @@ import csv, io, itertools, json, pathlib, sys
 from fractions import Fraction
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from prototype_eval import (Rules, Board, eval_board, greedy, effective, fmt,
-                            capped_progress)
+                            capped_progress, frontier, enumerate_layouts)
 
 R = Rules()
 OUT = pathlib.Path(__file__).resolve().parent.parent / "配置表"
 
-FLAT, MTN, MTN2 = "TERRAIN_GRASS", "TERRAIN_GRASS_MOUNTAIN", "TERRAIN_PLAINS_MOUNTAIN"
+FLAT, HILLS, MTN, MTN2 = (
+    "TERRAIN_GRASS", "TERRAIN_GRASS_HILLS",
+    "TERRAIN_GRASS_MOUNTAIN", "TERRAIN_PLAINS_MOUNTAIN",
+)
 OCEAN = "TERRAIN_OCEAN"   # 海洋，是否可建区域=否；海岸(TERRAIN_COAST)在文明 6 里可建，不能当填充用
 FOREST, JUNGLE = "FEATURE_FOREST", "FEATURE_JUNGLE"
 CAMPUS, GOV, CENTER = "DISTRICT_CAMPUS", "DISTRICT_GOVERNMENT", "DISTRICT_CITY_CENTER"
@@ -35,8 +38,8 @@ def ring3():
     return out
 
 
-def make(center, mountains=(), forests=(), water=(), districts=(), land=None):
-    """默认草原；指定处放山脉/森林/水域；districts 是 (坐标, 区域id)。
+def make(center, mountains=(), hills=(), forests=(), water=(), districts=(), land=None):
+    """默认草原；指定处放丘陵、山脉/森林/水域；districts 是 (坐标, 区域id)。
 
     land 若给出，则**只有列出的格子是陆地**，其余全为海岸（不可建）。
     这是隔离「诱饵」与「协同块」的手段——见 设计/关卡设计.md §2.0.1：
@@ -50,6 +53,8 @@ def make(center, mountains=(), forests=(), water=(), districts=(), land=None):
         for p in ring3():
             if p not in keep:
                 t[p]["地形"] = OCEAN
+    for p in hills:
+        t[p]["地形"] = HILLS
     for p in mountains:
         t[p]["地形"] = MTN
     for p in water:
@@ -60,24 +65,6 @@ def make(center, mountains=(), forests=(), water=(), districts=(), land=None):
     for p, d in districts:
         t[p]["区域"] = d
     return Board(t)
-
-
-def frontier(board, palette, maxk, civ=None):
-    """最优前沿：{预算 k: 该预算下的最优目标产出}，以及各自的布局。"""
-    empties = sorted(board.empties(R))
-    best = {}
-    for k in range(1, maxk + 1):
-        bv, bp = Fraction(-1), None
-        for spots in itertools.combinations(empties, k):
-            for combo in itertools.product(palette, repeat=k):
-                b = board
-                for p, d0 in zip(spots, combo):
-                    b = b.copy_with(p, effective(R, d0, civ))
-                v = eval_board(R, b, civ)[0].get(YT, Fraction(0))
-                if v > bv:
-                    bv, bp = v, list(zip(spots, combo))
-        best[k] = (bv, bp)
-    return best
 
 
 def render(board):
@@ -117,7 +104,7 @@ def level(lid, name, board, palette, budget, kind, motif, note, civ="CIVILIZATIO
     assert kind in ("普通", "教学", "对照"), kind
     g_board, steps = greedy(R, board, palette, budget, YT, civ)
     G = eval_board(R, g_board, civ)[0].get(YT, Fraction(0))
-    fr = frontier(board, palette, budget, civ)
+    fr = frontier(R, board, palette, budget, civ)
     V = fr[budget][0]
     # 目标值：落在贪心与最优之间，靠最优一侧；取半整数网格上的一格
     # 目标值＝贪心基线 + 一个最小步长（0.5）。
@@ -177,22 +164,6 @@ def qualifies(L):
 # 循环依赖：封顶贪心的标量化需要目标向量，而目标向量又要从贪心推。
 # 所以多产出关卡**把流程反过来**：先由穷举定目标向量，再验证贪心达不到。
 
-def enumerate_layouts(board, palette, maxk, yields, civ=None):
-    """穷举预算内的全部布局，返回 [(plan, {产出类型: 值})]。"""
-    empties = sorted(board.empties(R))
-    out = []
-    for k in range(1, maxk + 1):
-        for spots in itertools.combinations(empties, k):
-            for combo in itertools.product(palette, repeat=k):
-                b = board
-                for p, d0 in zip(spots, combo):
-                    b = b.copy_with(p, effective(R, d0, civ))
-                tot = eval_board(R, b, civ)[0]
-                out.append((list(zip(spots, combo)),
-                            dict((y, tot.get(y, Fraction(0))) for y in yields)))
-    return out
-
-
 def mlevel(lid, name, board, palette, budget, kind, motif, note, yields,
            civ="CIVILIZATION_GERMANY", leader="LEADER_BARBAROSSA"):
     """多产出同时达标的关卡。目标向量取「最均衡的可达布局」。
@@ -200,7 +171,7 @@ def mlevel(lid, name, board, palette, budget, kind, motif, note, yields,
     为什么是最均衡那一点：多产出关卡的设计意图是**逼玩家拆分预算**，而拆分
     正是单指标贪心的盲区。若目标向量偏向某一种产出，关卡就退化成单产出关。
     """
-    layouts = enumerate_layouts(board, palette, budget, yields, civ)
+    layouts = enumerate_layouts(R, board, palette, budget, yields, civ)
     U = dict((y, max(v[y] for _, v in layouts)) for y in yields)      # 各产出的单独上界
 
     def balance(v):
@@ -334,7 +305,10 @@ E_MTN = [(-2, 0), (-2, 3), (0, -2), (0, 3), (2, -3)]
 
 
 def e_board():
-    return make((0, 0), mountains=E_MTN, land=E_CLUSTER + E_BAITS)
+    # L-08/L-09 共用同一片地形；所有可放置格设为草原丘陵，
+    # 因为韩国书院的 District_ValidTerrains 只允许丘陵地形。
+    return make((0, 0), mountains=E_MTN, hills=E_CLUSTER + E_BAITS,
+                land=E_CLUSTER + E_BAITS)
 
 
 level("L-08", "成团",
@@ -357,7 +331,10 @@ M_MTN = [(-2, 0), (-2, 2), (1, -3), (3, -3), (2, 0)]
 
 
 def m_board():
-    return make((0, 0), mountains=M_MTN, land=M_CLUSTER + M_BAITS)
+    # L-07/L-10 共用同一片地形；把可放置格设为草原丘陵，保证
+    # L-10 的韩国书院候选格满足游戏本体的落位规则。
+    return make((0, 0), mountains=M_MTN, hills=M_CLUSTER + M_BAITS,
+                land=M_CLUSTER + M_BAITS)
 
 
 mlevel("L-07", "两头顾", m_board(), [CAMPUS, HOLY, GOV], 5, "普通", "B+C",
