@@ -6,10 +6,18 @@
 import { Rules } from "../src/rules.ts";
 import { TABLE_TEXTS } from "./tables.gen.js";      // 构建期生成，见 Tools/build_web.mjs
 import { LEVEL_TEXTS } from "./levels.gen.js";      // 同上
-import { evaluate, total, type YieldTree } from "../src/evaluate.ts";
+import {
+  evaluate, total, SUPPORTED_POLICY_IDS, SUPPORTED_BELIEF_IDS, type YieldTree,
+} from "../src/evaluate.ts";
 import {
   type BoardState, type Tile, withDistrict, districtPositions, inWorkRange,
+  moveCityCenter,
 } from "../src/board.ts";
+import { cityCenterPlacementConstraint } from "../src/placement.ts";
+import {
+  validateDistrictPlacement,
+  type LegalityIssue,
+} from "../src/legality.ts";
 import { type Axial, key, parseKey, distance } from "../src/hex.ts";
 import { fmt, cmp, sub, ZERO, isZero, type Rat } from "../src/rational.ts";
 import {
@@ -18,11 +26,13 @@ import {
 import {
   loadLevels, meetsGoal, starsOf, scoreOf, goalText, type Level,
 } from "./levels.ts";
-import { PRESETS, sandboxBoard, type PresetId } from "./presets.ts";
-import { brushInfo, type InfoBrush } from "./brush_info.ts";
+import { PRESETS, randomSandboxBoard, sandboxBoard, type PresetId } from "./presets.ts";
+import {
+  brushInfo, formatLegalityIssue, formatResearchAlert, type InfoBrush,
+} from "./brush_info.ts";
 import { localIconSrc } from "./local_icons.ts";
 import {
-  eraIndex, eraName, loadProgression, prerequisiteClosure,
+  eraName, loadProgression, prerequisiteClosure, progressionGraphLayout,
   type ProgressionData, type ProgressionNode, type TreeKind,
 } from "./progression.ts";
 
@@ -32,6 +42,7 @@ const progression: ProgressionData = loadProgression({
   tech_tree: TABLE_TEXTS["tech_tree.csv"],
   civic_tree: TABLE_TEXTS["civic_tree.csv"],
   policy_cards: TABLE_TEXTS["policy_cards.csv"],
+  religion_beliefs: TABLE_TEXTS["religion_beliefs.csv"],
 });
 const progressionName = (id: string): string =>
   progression.techs.get(id)?.name ?? progression.civics.get(id)?.name ?? rules.name(id);
@@ -66,7 +77,8 @@ type Brush =
   | { kind: "移除" }
   | { kind: "地形"; id: string }
   | { kind: "地貌"; id: string }
-  | { kind: "世界奇观"; id: string };
+  | { kind: "世界奇观"; id: string }
+  | { kind: "城市中心" };
 
 type App = {
   mode: "自由" | "挑战";
@@ -82,10 +94,11 @@ type App = {
   levelStart?: BoardState;
   settled?: "达成" | "失败";
   preset: PresetId;
+  randomSeed?: number;
   selectedCity: string;
   showDebug: boolean;
-  activePolicies: Set<string>;
-  progressionTab: "政策卡" | TreeKind;
+  progressionTab: "政策卡" | "宗教" | TreeKind;
+  placementAlert?: { title: string; body: string };
 };
 
 const app: App = {
@@ -94,37 +107,59 @@ const app: App = {
   undo: [],
   brush: { kind: "区域", id: PALETTE[0] },
   focusYield: "科技",
-  preset: "mountain", selectedCity: "A",
+  preset: "mountain", selectedCity: "A", randomSeed: undefined,
   showDebug: false,
-  activePolicies: new Set(),
   progressionTab: "政策卡",
 };
 
 // ── 交互：放置 / 编辑 / 撤销 ──────────────────────────────────────────
 /** 不可放置的原因。空字符串表示可放。规则来自求值器侧的约束，不在这里另立。 */
+function placementIssues(
+  b: BoardState, p: Axial, districtId: string,
+): LegalityIssue[] {
+  return validateDistrictPlacement(rules, b, p, districtId, {
+    mode: app.mode,
+    selectedCityId: app.mode === "自由" ? app.selectedCity : undefined,
+    challengeBudgetRemaining: app.mode === "挑战" ? remainingBudget() : undefined,
+  });
+}
+
 function blockReason(b: BoardState, p: Axial, districtId: string): string {
-  const t = b.tiles.get(key(p));
-  if (!t) return "不在盘面上";
-  if (t.区域) return `已有 ${rules.name(rules.effective(t.区域, b.文明))}`;
-  if (!rules.buildableTerrain.has(t.地形)) return "该地形不可建区域";
-  if (!inWorkRange(b, p, app.mode === "自由" ? app.selectedCity : undefined))
-    return "超出所选城市 3 格工作范围（E16）";
-  const effective = rules.effective(districtId, b.文明);
-  const d = rules.districts.get(effective);
-  if (d) {
-    const placed = districtPositions(b).filter((xy) =>
-      rules.effective(b.tiles.get(key(xy))!.区域!, b.文明) === effective);
-    if (placed.length >= d.每玩家上限) return "已达到每玩家上限";
-    const own = placed.filter((xy) =>
-      (b.tiles.get(key(xy))!.所属城市 ?? "A") === app.selectedCity);
-    if (app.mode === "自由" && own.length >= d.每城上限) return "该城已建过此区域";
-  }
-  if (app.mode === "挑战" && remainingBudget() <= 0) return "放置配额已用完";
-  return "";
+  const first = placementIssues(b, p, districtId)[0];
+  return first ? formatLegalityIssue(first) : "";
+}
+
+function sandboxCurrent(): BoardState {
+  return app.randomSeed === undefined
+    ? sandboxBoard(app.preset)
+    : randomSandboxBoard(app.randomSeed);
+}
+
+function showPlacementAlert(issues: readonly LegalityIssue[]): void {
+  if (!issues.length) return;
+  const research = formatResearchAlert(issues);
+  app.placementAlert = {
+    title: "无法建造区域",
+    body: research.join("；") || formatLegalityIssue(issues[0]),
+  };
+  const modal = document.getElementById("placement-alert");
+  if (!modal) return;
+  const title = document.getElementById("placement-alert-title");
+  const body = document.getElementById("placement-alert-body");
+  if (title) title.textContent = app.placementAlert.title;
+  if (body) body.textContent = app.placementAlert.body;
+  modal.hidden = false;
 }
 
 function blockedMap(): Map<string, string> {
   const m = new Map<string, string>();
+  if (app.brush.kind === "城市中心") {
+    for (const k of app.board.tiles.keys()) {
+      const reason = cityCenterPlacementConstraint(app.board, parseKey(k), app.selectedCity);
+      if (reason) m.set(k, reason);
+    }
+    return m;
+  }
   if (app.brush.kind !== "区域") return m;
   for (const k of app.board.tiles.keys()) {
     const p = parseKey(k);
@@ -151,10 +186,26 @@ function onClick(p: Axial) {
   if (!t) return;
   const b = app.brush;
   if (b.kind === "区域") {
-    if (blockReason(app.board, p, b.id)) { render(); return; }
+    const issues = placementIssues(app.board, p, b.id);
+    if (issues.length) { showPlacementAlert(issues); render(); return; }
     push();
     app.board = withDistrict(app.board, p, b.id, rules.removedByDistrict,
       app.mode === "自由" ? app.selectedCity : undefined);
+  } else if (b.kind === "城市中心") {
+    if (app.mode !== "自由") { render(); return; }
+    const reason = cityCenterPlacementConstraint(app.board, p, app.selectedCity);
+    if (reason) {
+      const modal = document.getElementById("placement-alert");
+      const title = document.getElementById("placement-alert-title");
+      const body = document.getElementById("placement-alert-body");
+      if (title) title.textContent = "无法移动城市中心";
+      if (body) body.textContent = reason;
+      if (modal) modal.hidden = false;
+      render();
+      return;
+    }
+    push();
+    app.board = moveCityCenter(app.board, app.selectedCity, p);
   } else if (b.kind === "移除") {
     // 挑战模式里不许拆关卡自带的区域 —— 那是残局的一部分
     const start = app.levelStart?.tiles.get(k);
@@ -260,6 +311,7 @@ function tileInfo(): string {
   else if (app.board.城市?.every((city) => distance(city.中心, p) > 3)) bits.push("中立地块 · 城市工作范围外");
   if (t.世界奇观) bits.push(`世界奇观 ${esc(t.世界奇观)}`);
   if (t.河流边) bits.push("临河");
+  if (t.湖泊) bits.push("湖泊");
   if (t.区域) {
     const did = rules.effective(t.区域, app.board.文明);
     bits.push(`区域 ${esc(rules.name(did))}`);
@@ -277,10 +329,9 @@ function modeBar(tree: YieldTree): string {
       `<option value="${esc(l.id)}" ${app.board.领袖 === l.id ? "selected" : ""}>${esc(l.名称)}</option>`).join("");
     const cityOpts = (app.board.城市 ?? []).map((c) =>
       `<option value="${c.id}" ${app.selectedCity === c.id ? "selected" : ""}>${esc(c.名称)}</option>`).join("");
-    const presetOpts = PRESETS.map((p) =>
-      `<option value="${p.id}" ${app.preset === p.id ? "selected" : ""}>${esc(p.name)}</option>`).join("");
     const civAbility = rules.civAbility.get(app.board.文明 ?? "") ?? "";
-    return `<label>环境 <select id="preset">${presetOpts}</select></label>
+    return `<button id="random-template">随机生成城市模板</button>
+      ${app.randomSeed === undefined ? "" : `<span class="civ-ability">种子 ${app.randomSeed}</span>`}
       <label>当前建设城市 <select id="city">${cityOpts}</select></label>
       <label>文明 <select id="civ">${opts}</select></label>
       <label>领袖 <select id="leader">${leaderOpts}</select></label>
@@ -344,6 +395,7 @@ function paletteHtml(): string {
   const btn = (b: Brush, label: string, sub = "") => {
     const on = JSON.stringify(app.brush) === JSON.stringify(b);
     const id = b.kind === "区域" ? rules.effective(b.id, app.board.文明) :
+      b.kind === "城市中心" ? "DISTRICT_CITY_CENTER" :
       b.kind === "移除" ? "" : b.id;
     const icon = localIconSrc(id);
     return `<button class="pb ${on ? "on" : ""}" data-brush='${JSON.stringify(b)}'>
@@ -358,6 +410,8 @@ function paletteHtml(): string {
   }).join("");
   let html = `<div class="pgroup"><h4>放置区域</h4><div class="prow">${districts}</div></div>`;
   if (app.mode === "自由") {
+    html += `<div class="pgroup"><h4>城市编辑</h4><div class="prow">${
+      btn({ kind: "城市中心" }, "移动城市中心", "当前城市")}</div></div>`;
     html += `<div class="pgroup"><h4>改地形</h4><div class="prow">${
       TERRAIN_EDIT.map(([id, nm]) => btn({ kind: "地形", id }, nm)).join("")}</div></div>`;
     html += `<div class="pgroup"><h4>改地貌</h4><div class="prow">${
@@ -391,6 +445,7 @@ function levelListHtml(): string {
 function startLevel(id: string) {
   const lv = levels.find((l) => l.关卡id === id)!;
   app.level = lv;
+  app.randomSeed = undefined;
   app.levelStart = lv.初始局面;
   app.board = lv.初始局面;
   app.undo = [];
@@ -433,70 +488,128 @@ function progressionNodeButton(kind: TreeKind, node: ProgressionNode): string {
   const unlocked = kind === "科技"
     ? app.board.已解锁科技.has(node.id)
     : app.board.已解锁市政.has(node.id);
-  const prereq = node.prereqs.length
-    ? `前置：${node.prereqs.map(progressionName).join("、")}`
-    : "无前置";
-  const unlocks = node.unlocks.length ? node.unlocks.join(" · ") : "";
+  const icon = kind === "科技"
+    ? (node.focus ? "DISTRICT_CAMPUS" : "BUILDING_GREAT_LIBRARY")
+    : (node.focus ? "DISTRICT_GOVERNMENT" : "BUILDING_FORBIDDEN_CITY");
   return `<button class="progression-node ${node.focus ? "focus" : ""} ${unlocked ? "unlocked" : ""}"
       data-progression-kind="${kind}" data-progression-id="${esc(node.id)}"
-      title="${esc(node.functionText)}">
-      <span class="node-top"><i>${unlocked ? "已解锁" : "可研究"}</i><b>${esc(node.cost)}</b></span>
-      <strong>${esc(node.name)}</strong>
-      <small>${esc(node.functionText)}</small>
-      <em>${esc(prereq)}</em>
-      ${unlocks ? `<span class="node-unlocks">解锁：${esc(unlocks)}</span>` : ""}
+      title="${esc(node.functionText)}${node.unlocks.length ? `｜解锁：${node.unlocks.join("；")}` : ""}">
+      <span class="node-top"><i class="node-era">${esc(eraName(node.era))}</i><b>${unlocked ? "已解锁" : `成本 ${esc(node.cost)}`}</b></span>
+      <span class="node-title"><img class="node-icon" src="${localIconSrc(icon)}" alt=""><strong>${esc(node.name)}</strong></span>
+      <span class="node-bottom">${node.focus ? "区域规划重点" : node.prereqs.length ? `前置 ${node.prereqs.length}` : "起始节点"}</span>
     </button>`;
 }
 
+function progressionTree(kind: TreeKind, nodes: ReadonlyMap<string, ProgressionNode>): string {
+  const positions = progressionGraphLayout(nodes);
+  const columns = [...nodes.values()].sort((a, b) =>
+    (positions.get(a.id)?.column ?? 0) - (positions.get(b.id)?.column ?? 0)
+    || (positions.get(a.id)?.row ?? 0) - (positions.get(b.id)?.row ?? 0)
+    || a.name.localeCompare(b.name, "zh-CN"));
+  const nodeW = 214, nodeH = 34, right = 78;
+  const maxColumn = Math.max(...[...positions.values()].map((point) => point.column), 0);
+  const maxRow = Math.max(...[...positions.values()].map((point) => point.row), 0);
+  const width = Math.max(980, 52 + maxColumn * 288 + nodeW + right);
+  const height = Math.max(520, 46 + maxRow * 38 + nodeH + 22);
+  const lines: string[] = [];
+  for (const node of columns) {
+    const to = positions.get(node.id)!;
+    for (const parent of node.prereqs) {
+      const from = positions.get(parent);
+      if (!from) continue;
+      const x1 = from.x + nodeW, y1 = from.y + nodeH / 2;
+      const x2 = to.x, y2 = to.y + nodeH / 2;
+      const bend = (x1 + x2) / 2;
+      const parentUnlocked = kind === "科技"
+        ? app.board.已解锁科技.has(parent)
+        : app.board.已解锁市政.has(parent);
+      lines.push(`<path class="tree-branch ${node.focus ? "focus" : ""} ${parentUnlocked ? "unlocked" : ""}" d="M${x1},${y1} C${bend},${y1} ${bend},${y2} ${x2},${y2}"/>`);
+    }
+  }
+  const layers = Array.from({ length: maxColumn + 1 }, (_, column) =>
+    `<div class="tree-layer" style="left:${52 + column * 288}px">研究层 ${String(column + 1).padStart(2, "0")}</div>`).join("");
+  const cards = columns.map((node) => {
+    const p = positions.get(node.id)!;
+    return `<div class="tree-node-wrap" style="left:${p.x}px;top:${p.y}px;width:${nodeW}px">${
+      progressionNodeButton(kind, node)}</div>`;
+  }).join("");
+  return `<div class="tree-canvas ${kind === "科技" ? "science-tree" : "civic-tree"}" style="width:${width}px;height:${height}px">${layers}<svg aria-hidden="true" viewBox="0 0 ${width} ${height}">${lines.join("")}</svg>${cards}</div>`;
+}
+
+function progressionHoverHtml(kind: TreeKind, node?: ProgressionNode): string {
+  if (!node) return `<b>悬停查看节点</b><p>将鼠标移到任一${kind}节点上，查看其功能、前置条件和解锁内容。</p>
+    <small>点击节点会自动补全并解锁通往该节点的前置链。</small>`;
+  const prereqs = node.prereqs.map(progressionName);
+  return `<b>${esc(node.name)}</b><p>${esc(node.functionText)}</p>
+    <small>${prereqs.length ? `前置：${esc(prereqs.join("、"))}` : "无前置节点"}${node.unlocks.length
+      ? `　｜　解锁：${esc(node.unlocks.join("；"))}` : ""}</small>`;
+}
+
 function progressionHtml(): string {
-  const tab = (name: "政策卡" | TreeKind, label: string) =>
-    `<button class="progression-tab ${app.progressionTab === name ? "on" : ""}"
-      data-progression-tab="${name}">${label}</button>`;
-  const tabs = `<div class="progression-tabs">${tab("政策卡", "政策卡")}
-    ${tab("科技", "科技树")} ${tab("文化", "文化树")}</div>`;
   if (app.progressionTab === "政策卡") {
-    const active = app.activePolicies.size;
-    const cards = progression.policies.map((p) => {
-      const on = app.activePolicies.has(p.id);
+    const active = app.board.已装配政策;
+    const slots = Array.from({ length: 3 }, (_, index) => {
+      const id = [...active][index];
+      const policy = progression.policies.find((p) => p.id === id);
+      return `<div class="policy-equipped ${policy ? "filled" : ""}">
+        <span>政策槽 ${index + 1}</span><b>${policy ? esc(policy.name) : "空闲"}</b>
+        ${policy ? `<button data-policy-remove="${esc(policy.id)}" aria-label="卸下${esc(policy.name)}">×</button>` : ""}
+      </div>`;
+    }).join("");
+    const cards = progression.policies.filter((p) => SUPPORTED_POLICY_IDS.has(p.id)).map((p) => {
+      const on = active.has(p.id);
+      const icon = p.id === "POLICY_NATURAL_PHILOSOPHY" ? "DISTRICT_CAMPUS"
+        : p.id === "POLICY_SCRIPTURE" ? "DISTRICT_HOLY_SITE"
+        : p.id === "POLICY_AESTHETICS" ? "DISTRICT_THEATER"
+        : p.id === "POLICY_CRAFTSMEN" ? "DISTRICT_INDUSTRIAL_ZONE"
+        : "DISTRICT_CITY_CENTER";
       return `<button class="policy-card ${on ? "on" : ""}" data-policy-id="${p.id}">
-        <span class="policy-slot">${esc(p.slot)}</span>
+        <span class="policy-card-head"><img class="policy-icon" src="${localIconSrc(icon)}" alt=""><span class="policy-slot">${esc(p.slot)}</span></span>
         <strong>${esc(p.name)}</strong><small>${esc(p.tag)}</small>
         <p>${esc(p.functionText)}</p>
         <em>前置市政：${esc(progressionName(p.prereqCivic))}</em>
         <b class="policy-state">${on ? "已装配" : "加入政策栏"}</b>
       </button>`;
     }).join("");
-    return `${tabs}<div class="progression-summary"><b>规划政策栏 ${active}</b>
-      <span>点击卡片自由装配；卡面效果完全采用游戏原文。</span></div>
+    return `<div class="policy-slots">${slots}</div>
+      <div class="progression-summary"><b>已装配 ${active.size} / 3</b>
+      <span>卡面规则来自游戏本体；装配后立即计入当前局面。</span></div>
       <div class="policy-grid">${cards}</div>`;
   }
-  const nodes = app.progressionTab === "科技" ? progression.techs : progression.civics;
-  const grouped = new Map<string, ProgressionNode[]>();
-  for (const node of nodes.values()) {
-    const list = grouped.get(node.era) ?? [];
-    list.push(node); grouped.set(node.era, list);
+  if (app.progressionTab === "宗教") {
+    const active = app.board.已选宗教信条 ?? new Set<string>();
+    const grouped = new Map<string, typeof progression.beliefs>();
+    for (const belief of progression.beliefs.filter((b) => SUPPORTED_BELIEF_IDS.has(b.id))) {
+      grouped.set(belief.beliefClass, [...(grouped.get(belief.beliefClass) ?? []), belief]);
+    }
+    return `<div class="progression-summary"><b>已选择 ${active.size} 项信条</b>
+      <span>不模拟城市宗教归属；选中后效果直接作用于当前规划局面。</span></div>
+      <div class="belief-groups">${[...grouped].map(([beliefClass, beliefs]) =>
+        `<section class="belief-group"><h3>${esc(beliefClass)}</h3><div class="belief-grid">${beliefs.map((belief) => {
+          const on = active.has(belief.id);
+          return `<button class="policy-card belief-card ${on ? "on" : ""}" data-belief-id="${belief.id}">
+            <span class="policy-card-head"><img class="policy-icon" src="${localIconSrc("DISTRICT_HOLY_SITE")}" alt=""><span class="policy-slot">${esc(belief.beliefClass)}</span></span><strong>${esc(belief.name)}</strong>
+            <p>${esc(belief.functionText)}</p><b class="policy-state">${on ? "已采用" : "选择信条"}</b>
+          </button>`;
+        }).join("")}</div></section>`).join("")}</div>`;
   }
-  const eras = [...grouped].sort(([a], [b]) =>
-    eraIndex(a) - eraIndex(b) || a.localeCompare(b))
-    .map(([era, list]) => `<section class="era-column">
-      <header><span>${esc(eraName(era))}</span><i>${list.length}</i></header>
-      <div>${list.sort((a, b) => a.name.localeCompare(b.name, "zh-CN"))
-        .map((node) => progressionNodeButton(app.progressionTab, node)).join("")}</div>
-    </section>`).join("");
+  const nodes = app.progressionTab === "科技" ? progression.techs : progression.civics;
   const unlocked = app.progressionTab === "科技"
     ? app.board.已解锁科技.size : app.board.已解锁市政.size;
-  return `${tabs}<div class="progression-summary"><b>${app.progressionTab} ${unlocked} / ${nodes.size}</b>
-    <span>点击任意节点，自动解锁它的完整前置链。</span>
-    <span class="focus-legend">金线 = 区域规划相关</span></div>
-    <div class="tree-board">${eras}</div>`;
+  return `<div class="progression-summary"><b>${app.progressionTab} ${unlocked} / ${nodes.size}</b>
+    <span>点击节点自动解锁完整前置链；悬停查看具体功能。</span>
+    <span class="focus-legend">金色节点 = 区域规划相关</span></div>
+    <div id="progression-hover" class="progression-hover" aria-live="polite">${progressionHoverHtml(app.progressionTab)}</div>
+    <div class="tree-board">${progressionTree(app.progressionTab, nodes)}</div>`;
 }
 
 function renderProgression() {
   $("progression-content").innerHTML = progressionHtml();
 }
 
-function openProgression(tab: "政策卡" | TreeKind = app.progressionTab) {
+function openProgression(tab: "政策卡" | "宗教" | TreeKind = app.progressionTab) {
   app.progressionTab = tab;
+  $("progression-title").textContent = tab === "政策卡" ? "政策" : tab === "宗教" ? "宗教" : `${tab}树`;
   renderProgression();
   $("progression-modal").hidden = false;
   wire();
@@ -518,9 +631,29 @@ function selectProgressionNode(kind: TreeKind, id: string) {
 }
 
 function togglePolicy(id: string) {
-  const next = new Set(app.activePolicies);
-  if (next.has(id)) next.delete(id); else next.add(id);
-  app.activePolicies = next;
+  const next = new Set(app.board.已装配政策);
+  if (next.has(id)) next.delete(id);
+  else if (next.size < 3) next.add(id);
+  app.board = { ...app.board, 已装配政策: next };
+  render();
+  renderProgression();
+  wire();
+}
+
+function toggleBelief(id: string) {
+  const selected = new Set(app.board.已选宗教信条 ?? []);
+  const belief = progression.beliefs.find((item) => item.id === id);
+  if (!belief) return;
+  if (selected.has(id)) selected.delete(id);
+  else {
+    // 文明 VI 每种信条类别在一个宗教中至多选择一项；选择同类新项时替换旧项。
+    for (const other of progression.beliefs) {
+      if (other.beliefClass === belief.beliefClass) selected.delete(other.id);
+    }
+    selected.add(id);
+  }
+  app.board = { ...app.board, 已选宗教信条: selected };
+  render();
   renderProgression();
   wire();
 }
@@ -546,6 +679,36 @@ function leaveApp() {
 
 // ── 事件接线 ──────────────────────────────────────────────────────────
 function wire() {
+  const treeBoard = document.querySelector<HTMLElement>(".tree-board");
+  if (treeBoard) {
+    let dragging = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+    treeBoard.onpointerdown = (event) => {
+      // 节点本身保留点击研究功能；从画布空白区按下才启动平移。
+      if (event.button !== 0 || (event.target as HTMLElement).closest(".progression-node")) return;
+      dragging = true;
+      startX = event.clientX;
+      startScrollLeft = treeBoard.scrollLeft;
+      treeBoard.classList.add("dragging");
+      treeBoard.setPointerCapture(event.pointerId);
+    };
+    treeBoard.onpointermove = (event) => {
+      if (!dragging) return;
+      treeBoard.scrollLeft = startScrollLeft - (event.clientX - startX);
+    };
+    const stopDragging = (event: PointerEvent) => {
+      if (!dragging) return;
+      dragging = false;
+      treeBoard.classList.remove("dragging");
+      if (treeBoard.hasPointerCapture(event.pointerId)) treeBoard.releasePointerCapture(event.pointerId);
+    };
+    treeBoard.onpointerup = stopDragging;
+    treeBoard.onpointercancel = stopDragging;
+    treeBoard.onpointerleave = (event) => {
+      if (dragging && !treeBoard.hasPointerCapture(event.pointerId)) stopDragging(event);
+    };
+  }
   $("map").querySelectorAll<SVGGElement>("g.hex").forEach((g) => {
     const p = parseKey(g.dataset.xy!);
     g.onclick = () => onClick(p);
@@ -590,10 +753,14 @@ function wire() {
   };
   const city = document.getElementById("city") as HTMLSelectElement | null;
   if (city) city.onchange = () => { app.selectedCity = city.value; render(); };
-  const preset = document.getElementById("preset") as HTMLSelectElement | null;
-  if (preset) preset.onchange = () => {
-    app.preset = preset.value as PresetId;
-    app.board = { ...sandboxBoard(app.preset), 文明: app.board.文明, 领袖: app.board.领袖 };
+  const randomTemplate = document.getElementById("random-template");
+  if (randomTemplate) randomTemplate.onclick = () => {
+    app.randomSeed = Math.floor(Math.random() * 0xFFFFFFFF);
+    app.board = {
+      ...randomSandboxBoard(app.randomSeed),
+      文明: app.board.文明,
+      领袖: app.board.领袖,
+    };
     app.selectedCity = "A"; app.undo = []; app.selected = undefined; render();
   };
   document.querySelectorAll<HTMLElement>(".citysum").forEach((el) => {
@@ -606,7 +773,7 @@ function wire() {
   };
   const reset = document.getElementById("reset");
   if (reset) reset.onclick = () => {
-    push(); app.board = { ...sandboxBoard(app.preset), 文明: app.board.文明,
+    push(); app.board = { ...sandboxCurrent(), 文明: app.board.文明,
       领袖: app.board.领袖 }; render();
   };
   const retry = document.getElementById("retry");
@@ -631,6 +798,15 @@ function wire() {
   if (modal) modal.onclick = (event) => {
     if (event.target === modal) modal.hidden = true;
   };
+  const placementClose = document.getElementById("placement-alert-close");
+  if (placementClose) placementClose.onclick = () => {
+    const placementModal = document.getElementById("placement-alert");
+    if (placementModal) placementModal.hidden = true;
+  };
+  const placementModal = document.getElementById("placement-alert");
+  if (placementModal) placementModal.onclick = (event) => {
+    if (event.target === placementModal) placementModal.hidden = true;
+  };
   const showRules = document.getElementById("show-rules") as HTMLInputElement | null;
   if (showRules) showRules.onchange = () => {
     app.showDebug = showRules.checked;
@@ -640,11 +816,28 @@ function wire() {
     tab.onclick = () => openProgression(tab.dataset.progressionTab as "政策卡" | TreeKind);
   });
   document.querySelectorAll<HTMLElement>(".progression-node").forEach((node) => {
+    const kind = node.dataset.progressionKind as TreeKind;
+    const detail = () => {
+      const current = (kind === "科技" ? progression.techs : progression.civics)
+        .get(node.dataset.progressionId!);
+      const panel = document.getElementById("progression-hover");
+      if (panel) panel.innerHTML = progressionHoverHtml(kind, current);
+    };
+    const clearDetail = () => {
+      const panel = document.getElementById("progression-hover");
+      if (panel) panel.innerHTML = progressionHoverHtml(kind);
+    };
+    node.onmouseenter = node.onfocus = detail;
+    node.onmouseleave = node.onblur = clearDetail;
     node.onclick = () => selectProgressionNode(
-      node.dataset.progressionKind as TreeKind, node.dataset.progressionId!);
+      kind, node.dataset.progressionId!);
   });
   document.querySelectorAll<HTMLElement>(".policy-card").forEach((card) => {
-    card.onclick = () => togglePolicy(card.dataset.policyId!);
+    if (card.dataset.policyId) card.onclick = () => togglePolicy(card.dataset.policyId!);
+    if (card.dataset.beliefId) card.onclick = () => toggleBelief(card.dataset.beliefId!);
+  });
+  document.querySelectorAll<HTMLElement>("[data-policy-remove]").forEach((button) => {
+    button.onclick = () => togglePolicy(button.dataset.policyRemove!);
   });
   const progressionClose = document.getElementById("progression-close");
   if (progressionClose) progressionClose.onclick = () => { $("progression-modal").hidden = true; };
@@ -662,11 +855,11 @@ function setMode(m: "自由" | "挑战") {
     t.classList.toggle("on", t.dataset.mode === m));
   if (m === "自由") {
     app.level = undefined; app.levelStart = undefined;
+    app.randomSeed = undefined;
     const first = CIVS[0][0];
-    app.board = { ...sandboxBoard(app.preset), 文明: first,
+    app.board = { ...randomSandboxBoard(Math.floor(Math.random() * 0xFFFFFFFF)), 文明: first,
       领袖: rules.leadersByCiv.get(first)?.[0]?.id };
     app.selectedCity = "A"; app.undo = []; app.focusYield = "科技";
-    app.activePolicies = new Set();
     $("levellist").style.display = "none";
     $("play").style.display = "";
     render();
@@ -693,6 +886,12 @@ const homeSettings = document.getElementById("home-settings");
 if (homeSettings) homeSettings.onclick = openSettings;
 const homeProgression = document.getElementById("home-progression");
 if (homeProgression) homeProgression.onclick = () => openProgression("政策卡");
-const progressionButton = document.getElementById("progression");
-if (progressionButton) progressionButton.onclick = () => openProgression();
+const policiesButton = document.getElementById("policies");
+if (policiesButton) policiesButton.onclick = () => openProgression("政策卡");
+const religionButton = document.getElementById("religion");
+if (religionButton) religionButton.onclick = () => openProgression("宗教");
+const techTreeButton = document.getElementById("tech-tree");
+if (techTreeButton) techTreeButton.onclick = () => openProgression("科技");
+const civicTreeButton = document.getElementById("civic-tree");
+if (civicTreeButton) civicTreeButton.onclick = () => openProgression("文化");
 document.getElementById("settings")?.setAttribute("aria-label", "设置");

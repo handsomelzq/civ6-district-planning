@@ -2,10 +2,30 @@
 import { parseCsv, parseKv } from "../src/csv.ts";
 import { fmt } from "../src/rational.ts";
 import { type Rules } from "../src/rules.ts";
+import { type LegalityIssue } from "../src/legality.ts";
 
 export type BrushInfo = { title: string; lines: string[] };
+export const formatLegalityIssue = (issue: LegalityIssue): string =>
+  `${issue.message}（${issue.code}）`;
+
+/** 把研究层问题转换为弹窗正文；调用方只按结构化错误码筛选，不解析中文文案。 */
+export function formatResearchAlert(
+  issues: readonly LegalityIssue[],
+): string[] {
+  return issues
+    .filter((issue) => issue.code === "E14t" || issue.code === "E14c")
+    .map((issue) => {
+      const marker = issue.code === "E14t" ? "缺少前置科技：" : "缺少前置市政：";
+      const label = issue.code === "E14t" ? "缺少科技：" : "缺少市政：";
+      const index = issue.message.indexOf(marker);
+      return index >= 0
+        ? label + issue.message.slice(index + marker.length)
+        : issue.message;
+    });
+}
 export type InfoBrush =
   | { kind: "区域" | "地形" | "地貌" | "世界奇观"; id: string }
+  | { kind: "城市中心" }
   | { kind: "移除" };
 
 const yieldText = (s: string): string => {
@@ -18,6 +38,10 @@ export function brushInfo(
   texts: Record<string, string>,
 ): BrushInfo {
   if (brush.kind === "移除") return { title: "移除区域", lines: ["点击已放置的区域格以移除区域及其建筑。"] };
+  if (brush.kind === "城市中心") return {
+    title: "移动城市中心",
+    lines: ["先在右侧选择城市，再点击地图上的目标陆地格。", "城市中心至少相隔 4 格；旧城市领土会保留为中立地块。"],
+  };
   if (brush.kind === "区域") {
     const id = rules.effective(brush.id, civ);
     const district = rules.districts.get(id);

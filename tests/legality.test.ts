@@ -279,4 +279,18 @@ describe("共享区域合法性入口", () => {
     assert.equal(aqueduct.诊断.some((diagnostic) =>
       diagnostic.说明.includes("G5")), false);
   });
+
+  test("挑战模式预算耗尽时返回 G5，而自由模式不返回 G5", () => {
+    const b = placedBoard({ "0,0": {} }, { 已解锁科技: ["TECH_WRITING"] });
+    const challenge = validateDistrictPlacement(
+      R, b, at(0, 0), "DISTRICT_CAMPUS",
+      { mode: "挑战", challengeBudgetRemaining: 0 },
+    );
+    assert.equal(first(challenge, "G5").layer, "模式");
+    const free = validateDistrictPlacement(
+      R, b, at(0, 0), "DISTRICT_CAMPUS",
+      { mode: "自由", challengeBudgetRemaining: 0 },
+    );
+    assert.equal(free.some((candidate) => candidate.code === "G5"), false);
+  });
 });
