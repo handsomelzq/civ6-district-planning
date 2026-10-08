@@ -293,4 +293,66 @@ describe("共享区域合法性入口", () => {
     );
     assert.equal(free.some((candidate) => candidate.code === "G5"), false);
   });
+
+  test("人口配额：人口 4 的城市最多放 2 个专业化区域", () => {
+    const issues = validateDistrictPlacement(
+      R,
+      placedBoard({
+        "0,0": { 区域: "DISTRICT_CAMPUS" },
+        "1,0": { 区域: "DISTRICT_HOLY_SITE" },
+        "0,1": {},
+      }, {
+        人口: 4,
+        已解锁科技: ["TECH_WRITING", "TECH_ASTROLOGY"],
+        已解锁市政: ["CIVIC_DRAMA_POETRY"],
+      }),
+      at(0, 1), "DISTRICT_THEATER",
+      { selectedCityId: "单城" },
+    );
+    const population = first(issues, "E17p");
+    assert.equal(population.layer, "城市");
+    assert.match(population.message, /人口可建 2 个专业化区域/);
+  });
+
+  test("德国文明能力为每座城市提供 1 个额外人口区域配额", () => {
+    const issues = validateDistrictPlacement(
+      R,
+      placedBoard({
+        "0,0": { 区域: "DISTRICT_CAMPUS" },
+        "1,0": { 区域: "DISTRICT_HOLY_SITE" },
+        "0,1": {},
+      }, {
+        人口: 4, 文明: "CIVILIZATION_GERMANY",
+        已解锁科技: ["TECH_WRITING", "TECH_ASTROLOGY"],
+      }),
+      at(0, 1), "DISTRICT_THEATER",
+    );
+    assert.equal(issues.some((candidate) => candidate.code === "E17p"), false);
+  });
+
+  test("资源、自然奇观和世界奇观都不能被区域占用", () => {
+    const resource = validateDistrictPlacement(
+      R,
+      placedBoard({ "0,0": { 资源: "RESOURCE_IRON" } },
+        { 已解锁科技: ["TECH_WRITING"] }),
+      at(0, 0), "DISTRICT_CAMPUS",
+    );
+    assert.equal(first(resource, "E07").layer, "地块");
+
+    const naturalWonder = validateDistrictPlacement(
+      R,
+      placedBoard({ "0,0": { 自然奇观: "FEATURE_ULURU" } },
+        { 已解锁科技: ["TECH_WRITING"] }),
+      at(0, 0), "DISTRICT_CAMPUS",
+    );
+    assert.equal(first(naturalWonder, "E08").layer, "地块");
+
+    const worldWonder = validateDistrictPlacement(
+      R,
+      placedBoard({ "0,0": { 世界奇观: "BUILDING_PYRAMIDS" } },
+        { 已解锁科技: ["TECH_WRITING"] }),
+      at(0, 0), "DISTRICT_CAMPUS",
+    );
+    assert.equal(first(worldWonder, "E09").layer, "地块");
+  });
 });

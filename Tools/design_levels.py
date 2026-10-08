@@ -473,8 +473,11 @@ def emit():
             continue
         center = [p for p, t in L["board"].tiles.items() if t["区域"] == CENTER][0]
         unlocked_techs, unlocked_civics = unlocked_for(L)
+        # 人口配额采用 floor(人口 / 3) + 1；给本关最多可放置的预算留足
+        # 专业化区域空间。挑战预算仍是独立的 Demo 操作预算。
+        population = max(4, 3 * (L["budget"] - 1))
         lv.append([L["lid"], L["name"], L["civ"], L["leader"],
-                   unlocked_techs, unlocked_civics, "%d,%d" % center, 4,
+                   unlocked_techs, unlocked_civics, "%d,%d" % center, population,
                    L["goal_kind"], L["goal_types"], L["goal_value"],
                    "区域数", L["budget"],
                    fmt(L["star3"]), fmt(L["star2"]), L["kind"],

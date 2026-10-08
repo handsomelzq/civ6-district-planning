@@ -34,8 +34,12 @@ export type District = {
   readonly 是否特色区域: boolean;
   readonly 替换区域id: string;    // 「无」表示不替换
   readonly 所属文明id: string[];
+  readonly 可建地形: ReadonlySet<string>;
   readonly 前置科技: string[];
   readonly 前置市政: string[];
+  readonly 是否占区域配额: boolean;
+  readonly 不可紧邻城市中心: boolean;
+  readonly 是否引水渠类: boolean;
   /** 每城上限 / 每玩家上限。`Infinity` = 配表里的「无限」（游戏侧 OnePerCity=false
    *  与 MaxPerPlayer=-1）。用 Infinity 而不是 -1 或 0 做哨兵，是为了让"不限"在比较
    *  里天然正确（`n < Infinity` 永真），少一处容易写反的分支。 */
@@ -71,6 +75,14 @@ export type TraitAdjacencyModifier = {
   readonly 每邻格加成: Rat;
 };
 
+export type ReligionBelief = {
+  readonly 信条id: string;
+  readonly 名称: string;
+  readonly 信条类别: string;
+  readonly 功能说明: string;
+  readonly 结构化效果: readonly string[];
+};
+
 /** 求值器需要的表。浏览器与 Node 各自负责把它们读成文本，`Rules` 只认文本 ——
  *  **核心层零 I/O**，这样同一份代码能跑在 Node、浏览器和将来任何宿主里。 */
 export const TABLE_FILES = [
@@ -79,6 +91,7 @@ export const TABLE_FILES = [
   // 只为把 id 显示成可读名（文明 / 领袖），求值本身用不到
   "civs.csv", "leaders.csv",
   "trait_adjacency_modifiers.csv",
+  "religion_beliefs.csv",
 ] as const;
 
 export type TableTexts = Record<(typeof TABLE_FILES)[number], string>;
@@ -93,12 +106,14 @@ export class Rules {
   /** 文明id 或 领袖id → 被排除的「原始标识」集合。求值顺序第 2 步用。 */
   readonly excluded: ReadonlyMap<string, ReadonlySet<string>>;
   readonly buildableTerrain: ReadonlySet<string>;
+  readonly buildableFeatures: ReadonlySet<string>;
   readonly removedByDistrict: ReadonlySet<string>;
   /** id → 中文名。拆解面板要显示「草原（山脉）」而不是 TERRAIN_GRASS_MOUNTAIN。 */
   readonly names: ReadonlyMap<string, string>;
   readonly traitAdjacency: ReadonlyMap<string, readonly TraitAdjacencyModifier[]>;
   readonly leadersByCiv: ReadonlyMap<string, readonly { id: string; 名称: string; 能力: string }[]>;
   readonly civAbility: ReadonlyMap<string, string>;
+  readonly religionBeliefs: ReadonlyMap<string, ReligionBelief>;
 
   /** 从 CSV 文本构造。读文件是宿主的事 —— Node 用 `src/rules_node.ts`，
    *  浏览器用构建期内联的 `web/dist/tables.js`。 */
@@ -144,8 +159,12 @@ export class Rules {
         是否特色区域: r["是否特色区域"] === "是",
         替换区域id: r["替换区域id"],
         所属文明id: parseList(r["所属文明id"]),
+        可建地形: new Set(parseList(r["可建地形"])),
         前置科技: parseList(r["前置科技"]),
         前置市政: parseList(r["前置市政"]),
+        是否占区域配额: r["是否占区域配额"] === "是",
+        不可紧邻城市中心: r["不可紧邻城市中心"] === "是",
+        是否引水渠类: r["是否引水渠类"] === "是",
         每城上限: parseLimit(r["每城上限"]),
         每玩家上限: parseLimit(r["每玩家上限"]),
       };
@@ -206,8 +225,10 @@ export class Rules {
     // 建区域会移除的地貌（features.是否需移除）。移除后它不再作为相邻目标被计入，
     // 这是文明 6 的实际行为 —— 原型上曾漏掉这一条，导致森林被重复计入。
     const removed = new Set<string>();
+    const buildableFeatures = new Set<string>();
     for (const r of load("features.csv")) {
       names.set(r["地貌id"], r["名称"]);
+      if (r["是否可建区域"] === "是") buildableFeatures.add(r["地貌id"]);
       if (r["是否需移除"] === "是") removed.add(r["地貌id"]);
     }
     for (const [id, d] of districts) names.set(id, d.名称);
@@ -237,6 +258,14 @@ export class Rules {
         每邻格加成: parseRat(r["每邻格加成"]) });
       traitAdjacency.set(owner, list);
     }
+    const religionBeliefs = new Map<string, ReligionBelief>();
+    for (const r of load("religion_beliefs.csv")) {
+      religionBeliefs.set(r["信条id"], {
+        信条id: r["信条id"], 名称: r["名称"], 信条类别: r["信条类别"],
+        功能说明: r["功能说明"], 结构化效果: parseList(r["结构化效果"]),
+      });
+      names.set(r["信条id"], r["名称"]);
+    }
 
     this.adjacency = adj;
     this.districts = districts;
@@ -245,11 +274,13 @@ export class Rules {
     this.replaces = replaces;
     this.excluded = excluded;
     this.buildableTerrain = buildable;
+    this.buildableFeatures = buildableFeatures;
     this.removedByDistrict = removed;
     this.names = names;
     this.traitAdjacency = traitAdjacency;
     this.leadersByCiv = leadersByCiv;
     this.civAbility = civAbility;
+    this.religionBeliefs = religionBeliefs;
   }
 
   /** id → 可读名。查不到就原样返回 id —— **绝不留空**，留空会让面板上出现
@@ -272,6 +303,17 @@ export class Rules {
     const out = new Set<string>(a ?? []);
     for (const x of b ?? []) out.add(x);
     return out;
+  }
+
+  /** 文明对“人口—专业化区域”上限的静态修正。
+   *
+   * 当前生成的文明表没有把 Modifier 图单独压平；德国的能力文本已经由
+   * 游戏本体数据导入，因此这里仅识别这条明确的“每座城市多一个区域”描述。
+   * 未命中时返回 0，不把其他文明能力的自然语言误当成数值规则。
+   */
+  populationDistrictQuotaBonus(civ?: string): number {
+    const ability = civ ? this.civAbility.get(civ) ?? "" : "";
+    return /多一个区域/.test(ability) ? 1 : 0;
   }
 }
 

@@ -25,6 +25,8 @@ export function board(
     领袖: opts.领袖,
     已解锁科技: new Set(opts.已解锁科技 ?? []),
     已解锁市政: new Set(opts.已解锁市政 ?? []),
+    已装配政策: new Set(),
+    已选宗教信条: new Set(),
   };
 }
 

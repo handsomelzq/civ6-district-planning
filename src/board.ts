@@ -10,6 +10,10 @@ import { type Axial, key, parseKey, neighbors, distance } from "./hex.ts";
 export type Tile = {
   readonly 地形: string;
   readonly 地貌?: string;
+  /** 显式淡水标记，供湖泊等不适合压缩成地形/地貌的来源使用。 */
+  readonly 淡水?: boolean;
+  /** 湖泊水面标记。湖泊仍使用浅水地形表现，但与海岸区分为淡水来源。 */
+  readonly 湖泊?: boolean;
   readonly 资源?: string;
   readonly 自然奇观?: string;
   readonly 世界奇观?: string;
@@ -23,6 +27,9 @@ export type Tile = {
 
 export type City = { readonly id: string; readonly 名称: string; readonly 中心: Axial; readonly 人口: number };
 
+/** 文明 VI 的城市中心间距：CITY_MIN_RANGE=3，故中心六边距离至少为 4。 */
+export const MIN_CITY_CENTER_DISTANCE = 4;
+
 export type BoardState = {
   readonly tiles: ReadonlyMap<string, Tile>;
   readonly 中心: Axial;
@@ -33,6 +40,10 @@ export type BoardState = {
   readonly 领袖?: string;
   readonly 已解锁科技: ReadonlySet<string>;
   readonly 已解锁市政: ReadonlySet<string>;
+  /** 当前政策栏中的政策卡 id。自由模式默认允许装配三张。 */
+  readonly 已装配政策: ReadonlySet<string>;
+  /** 当前采用的区域规划相关宗教信条。只记录信条选择，不模拟逐城宗教归属。 */
+  readonly 已选宗教信条: ReadonlySet<string>;
 };
 
 export const EMPTY_TILE: Tile = { 地形: "TERRAIN_GRASS" };
@@ -48,6 +59,18 @@ export function neighborTiles(b: BoardState, p: Axial): Tile[] {
     if (t) out.push(t);
   }
   return out;
+}
+
+/** 文明 VI 中可作为水渠/浴场引水来源的地块属性。
+ *
+ * 当前配置模型直接表达河流、绿洲和山脉；`淡水=true` 为湖泊等未来地块
+ * 预留，不把“临海”误当作淡水。
+ */
+export function isFreshWaterSource(t: Tile): boolean {
+  return t.淡水 === true || t.湖泊 === true ||
+    t.河流边 === true ||
+    t.地貌 === "FEATURE_OASIS" ||
+    t.地形.endsWith("_MOUNTAIN");
 }
 
 /** 放置一个区域，返回**新的**局面。原局面不被修改（I1）。
@@ -82,6 +105,37 @@ export function withBuilding(b: BoardState, p: Axial, buildingId: string): Board
   return { ...b, tiles };
 }
 
+/** 在自由模式中移动一个城市中心。旧中心恢复为普通地块，新中心接管宫殿与城市归属。 */
+export function moveCityCenter(b: BoardState, cityId: string, target: Axial): BoardState {
+  const city = b.城市?.find((c) => c.id === cityId);
+  if (!city) throw new Error(`城市不存在：${cityId}`);
+  const oldKey = key(city.中心);
+  const targetKey = key(target);
+  const oldTile = b.tiles.get(oldKey);
+  const targetTile = b.tiles.get(targetKey);
+  if (!oldTile || !targetTile) throw new Error(`城市中心坐标不在盘面上：${targetKey}`);
+  const tiles = new Map(b.tiles);
+  const { 区域: _oldDistrict, 建筑: _oldBuildings, 所属城市: _oldCity, ...oldRest } = oldTile;
+  tiles.set(oldKey, oldRest);
+  tiles.set(targetKey, {
+    ...targetTile,
+    区域: "DISTRICT_CITY_CENTER",
+    建筑: ["BUILDING_PALACE"],
+    所属城市: cityId,
+    地貌: undefined,
+    资源: undefined,
+    湖泊: false,
+  });
+  const cities = b.城市.map((c) =>
+    c.id === cityId ? { ...c, 中心: target } : c);
+  return {
+    ...b,
+    tiles,
+    城市: cities,
+    中心: cityId === cities[0]?.id ? target : b.中心,
+  };
+}
+
 /** 所有已放置区域的坐标，按坐标稳定排序（保证求值输出可复现）。 */
 export function districtPositions(b: BoardState): Axial[] {
   return [...b.tiles.entries()]
@@ -97,6 +151,18 @@ export function cityFor(b: BoardState, p: Axial): City | undefined {
   if (assigned) return b.城市.find((c) => c.id === assigned);
   return [...b.城市].sort((a, z) =>
     distance(a.中心, p) - distance(z.中心, p) || a.id.localeCompare(z.id))[0];
+}
+
+/** 地图展示用的城市领土归属：三格范围内取最近城市；等距地块保持中立。 */
+export function cityTerritoryOwner(b: BoardState, p: Axial): string | undefined {
+  if (!b.城市?.length) return undefined;
+  const candidates = b.城市
+    .map((city) => ({ city, distance: distance(city.中心, p) }))
+    .filter((item) => item.distance <= 3)
+    .sort((a, z) => a.distance - z.distance || a.city.id.localeCompare(z.city.id));
+  if (!candidates.length) return undefined;
+  if (candidates.length > 1 && candidates[0].distance === candidates[1].distance) return undefined;
+  return candidates[0].city.id;
 }
 
 export const inWorkRange = (b: BoardState, p: Axial, cityId?: string): boolean => {

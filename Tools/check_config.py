@@ -71,7 +71,7 @@ SCHEMA = {
     "districts.csv": dict(id="区域id", prov=True, cols=[
         "区域id", "名称", "区域类别", "基础产出", "生产成本", "前置科技",
         "前置市政", "是否占区域配额", "每城上限", "每玩家上限",
-        "可建地形", "是否特色区域",
+        "可建地形", "不可紧邻城市中心", "是否引水渠类", "是否特色区域",
         "替换区域id", "所属文明id", "备注"]),
     "buildings.csv": dict(id="建筑id", prov=True, cols=[
         "建筑id", "名称", "所属区域id", "基础产出", "生产成本",
@@ -321,6 +321,8 @@ def main(argv):
         check_enum("districts", i, "区域类别", r.get("区域类别", ""), "区域类别")
         check_kv("districts", i, "基础产出", r.get("基础产出", ""))
         check_bool("districts", i, "是否占区域配额", r.get("是否占区域配额", ""))
+        check_bool("districts", i, "不可紧邻城市中心", r.get("不可紧邻城市中心", ""))
+        check_bool("districts", i, "是否引水渠类", r.get("是否引水渠类", ""))
         check_bool("districts", i, "是否特色区域", r.get("是否特色区域", ""))
         # 规则 22：唯一性上限。取值必须是正整数或「无限」——
         #   「无」在本项目里表示"没有这个属性"，而这两列永远有值（游戏表结构给了默认值），

@@ -96,6 +96,27 @@ export function validateDistrictTile(
       position, id,
     ));
   }
+  if (tile.资源 !== undefined) {
+    out.push(issue(
+      "E07", "地块",
+      `${rules.name(id)} 不能占用已有资源（${rules.name(tile.资源)}）`,
+      position, id,
+    ));
+  }
+  if (tile.自然奇观 !== undefined) {
+    out.push(issue(
+      "E08", "地块",
+      `${rules.name(id)} 不能占用自然奇观（${rules.name(tile.自然奇观)}）`,
+      position, id,
+    ));
+  }
+  if (tile.世界奇观 !== undefined) {
+    out.push(issue(
+      "E09", "地块",
+      `${rules.name(id)} 不能占用世界奇观`,
+      position, id,
+    ));
+  }
 
   const adjacent = neighborTiles(board, position);
   const touchesCity = adjacent.some((neighbor) =>
@@ -123,17 +144,39 @@ const placementDistrictId = (
   rules: Rules, board: BoardState, districtId: string,
 ): string => rules.effective(districtId, board.文明);
 
+/** Civ VI GlobalParameters 中的区域人口分母；取整方式是本 Demo 的显式假设。
+ *
+ * 游戏 XML 只暴露分母 3，无法从静态表确定引擎是在 ceil(人口/3) 与
+ * floor(人口/3)+1 中采用哪一种。这里采用常见的“人口 1/4/7... 解锁”
+ * 语义，并在 SDD / 测试清单中保留待游戏内核对标记。
+ */
+export const DISTRICT_POPULATION_REQUIRED_PER = 3;
+
+export function districtPopulationQuota(
+  rules: Rules,
+  board: BoardState,
+  cityId?: string,
+): number {
+  const city = board.城市?.find((candidate) => candidate.id === cityId);
+  const population = city?.人口 ?? board.人口;
+  const base = Math.max(1, Math.floor(Math.max(0, population) /
+    DISTRICT_POPULATION_REQUIRED_PER) + 1);
+  return base + rules.populationDistrictQuotaBonus(board.文明);
+}
+
 const countDistricts = (
   rules: Rules,
   board: BoardState,
-  candidate: { position: Axial; districtId: string } | undefined,
+  candidate: { position: Axial; districtId: string; cityId?: string } | undefined,
 ): {
   byPlayer: Map<string, Axial[]>;
   byCity: Map<string, Axial[]>;
+  quotaByCity: Map<string, Axial[]>;
   candidateCityId?: string;
 } => {
   const byPlayer = new Map<string, Axial[]>();
   const byCity = new Map<string, Axial[]>();
+  const quotaByCity = new Map<string, Axial[]>();
   const add = (position: Axial, districtId: string, cityId: string): void => {
     const effective = placementDistrictId(rules, board, districtId);
     (byPlayer.get(effective) ?? byPlayer.set(effective, []).get(effective)!)
@@ -141,6 +184,10 @@ const countDistricts = (
     const cityKey = `${cityId}@${effective}`;
     (byCity.get(cityKey) ?? byCity.set(cityKey, []).get(cityKey)!)
       .push(position);
+    if (rules.districts.get(effective)?.是否占区域配额) {
+      (quotaByCity.get(cityId) ?? quotaByCity.set(cityId, []).get(cityId)!)
+        .push(position);
+    }
   };
   for (const position of districtPositions(board)) {
     const tile = tileAt(board, position);
@@ -149,10 +196,11 @@ const countDistricts = (
   }
   let candidateCityId: string | undefined;
   if (candidate) {
-    candidateCityId = candidateCityIdFor(board, candidate.position);
+    candidateCityId = candidate.cityId ??
+      candidateCityIdFor(board, candidate.position);
     add(candidate.position, candidate.districtId, candidateCityId);
   }
-  return { byPlayer, byCity, candidateCityId };
+  return { byPlayer, byCity, quotaByCity, candidateCityId };
 };
 
 const candidateCityIdFor = (board: BoardState, position: Axial): string =>
@@ -222,6 +270,26 @@ const limitIssues = (
   return out;
 };
 
+const populationIssues = (
+  rules: Rules,
+  board: BoardState,
+  position: Axial,
+  districtId: string,
+  counts: ReturnType<typeof countDistricts>,
+): LegalityIssue[] => {
+  const { id, district } = effectiveDistrict(rules, districtId, board);
+  if (!district?.是否占区域配额) return [];
+  const cityId = counts.candidateCityId ?? candidateCityIdFor(board, position);
+  const used = counts.quotaByCity.get(cityId)?.length ?? 0;
+  const limit = districtPopulationQuota(rules, board, cityId);
+  if (used <= limit) return [];
+  return [issue(
+    "E17p", "城市",
+    `${cityNameFor(board, cityId)}按人口可建 ${limit} 个专业化区域，当前需要 ${used} 个`,
+    position, id, cityId,
+  )];
+};
+
 const placementIssues = (
   rules: Rules,
   board: BoardState,
@@ -244,9 +312,11 @@ const placementIssues = (
     ));
   }
   out.push(...researchIssues(district, rules, board, position, id));
-  out.push(...limitIssues(rules, board, position, districtId, countDistricts(
-    rules, board, { position, districtId },
-  )));
+  const counts = countDistricts(rules, board, {
+    position, districtId, cityId: context?.selectedCityId,
+  });
+  out.push(...populationIssues(rules, board, position, districtId, counts));
+  out.push(...limitIssues(rules, board, position, districtId, counts));
   if (context?.mode === "挑战" &&
       (context.challengeBudgetRemaining ?? 0) <= 0) {
     out.push(issue(
@@ -276,6 +346,7 @@ export function validateBoard(
   const counts = countDistricts(rules, board, undefined);
   const emittedCityLimits = new Set<string>();
   const emittedPlayerLimits = new Set<string>();
+  const emittedPopulationLimits = new Set<string>();
   for (const position of districtPositions(board)) {
     const tile = tileAt(board, position);
     if (!tile?.区域) continue;
@@ -295,6 +366,17 @@ export function validateBoard(
       ));
     }
     out.push(...researchIssues(district, rules, board, position, id));
+    const quotaUsed = counts.quotaByCity.get(cityId)?.length ?? 0;
+    const quotaLimit = districtPopulationQuota(rules, board, cityId);
+    if (district.是否占区域配额 && quotaUsed > quotaLimit &&
+        !emittedPopulationLimits.has(cityId)) {
+      out.push(issue(
+        "E17p", "城市",
+        `${cityNameFor(board, cityId)}按人口可建 ${quotaLimit} 个专业化区域，当前已有 ${quotaUsed} 个`,
+        position, id, cityId,
+      ));
+      emittedPopulationLimits.add(cityId);
+    }
     const playerCount = counts.byPlayer.get(id)?.length ?? 0;
     const cityCount = counts.byCity.get(`${cityId}@${id}`)?.length ?? 0;
     const cityLimitKey = `${cityId}@${id}`;
@@ -322,8 +404,9 @@ export function validateBoard(
   return out.sort((a, b) => {
     const order = new Map([
       ["E00", 0], ["E01", 1], ["E02", 2], ["E03", 3], ["E04", 4],
-      ["E05", 5], ["E06", 6], ["E16", 7], ["E14t", 8], ["E14c", 9],
-      ["E17c", 10], ["E17b", 11], ["G5", 12],
+      ["E05", 5], ["E06", 6], ["E07", 7], ["E08", 8], ["E09", 9],
+      ["E16", 10], ["E14t", 11], ["E14c", 12],
+      ["E17p", 13], ["E17c", 14], ["E17b", 15], ["G5", 16],
     ]);
     return (order.get(a.code) ?? 99) - (order.get(b.code) ?? 99) ||
       (a.position?.q ?? 0) - (b.position?.q ?? 0) ||

@@ -3,8 +3,8 @@
  * 这条分工是架构的地基（GDD §1）。渲染层唯一被允许的"计算"是两次求值结果相减
  * （悬停预览），而那两次都是求值器算的。
  */
-import { type Axial, key, distance } from "../src/hex.ts";
-import { type BoardState, type Tile } from "../src/board.ts";
+import { type Axial, key, distance, DIRS } from "../src/hex.ts";
+import { cityTerritoryOwner, type BoardState, type Tile } from "../src/board.ts";
 import { type Rules } from "../src/rules.ts";
 import { type YieldTree, type Leaf } from "../src/evaluate.ts";
 import { fmt, isZero, type Rat, cmp, sub, add, ZERO } from "../src/rational.ts";
@@ -24,6 +24,111 @@ const hexPoints = (cx: number, cy: number): string => {
     pts.push(`${(cx + SIZE * Math.cos(a)).toFixed(1)},${(cy + SIZE * Math.sin(a)).toFixed(1)}`);
   }
   return pts.join(" ");
+};
+
+const hexCorners = (cx: number, cy: number): { x: number; y: number }[] => {
+  const pts = [];
+  for (let i = 0; i < 6; i++) {
+    const a = Math.PI / 180 * (60 * i - 90);
+    pts.push({ x: cx + SIZE * Math.cos(a), y: cy + SIZE * Math.sin(a) });
+  }
+  return pts;
+};
+
+/** `河流边=true` 是配置里的压缩字段；渲染时将一组相邻河流格画成一条连续折线。 */
+const riverComponents = (b: BoardState): Axial[][] => {
+  const marked = new Set([...b.tiles.entries()]
+    .filter(([, tile]) => tile.河流边)
+    .map(([id]) => id));
+  const components: Axial[][] = [];
+  while (marked.size) {
+    const startId = marked.values().next().value as string;
+    marked.delete(startId);
+    const queue = [startId];
+    const ids = [startId];
+    while (queue.length) {
+      const [q, r] = queue.shift()!.split(",").map(Number);
+      for (const dir of DIRS) {
+        const nextId = key({ q: q + dir.q, r: r + dir.r });
+        if (!marked.has(nextId)) continue;
+        marked.delete(nextId);
+        queue.push(nextId);
+        ids.push(nextId);
+      }
+    }
+    components.push(ids.map((id) => {
+      const [q, r] = id.split(",").map(Number);
+      return { q, r };
+    }));
+  }
+  return components;
+};
+
+const riverPath = (component: Axial[]): Axial[] | undefined => {
+  if (component.length < 2) return component;
+  const ids = new Set(component.map(key));
+  const neighbors = (p: Axial): Axial[] => DIRS
+    .map((dir) => ({ q: p.q + dir.q, r: p.r + dir.r }))
+    .filter((next) => ids.has(key(next)));
+  const degree = new Map(component.map((p) => [key(p), neighbors(p).length]));
+  // 分叉水系需要多条支流，不能强行压成一条错误的路径；预设河道是线性水系。
+  if ([...degree.values()].some((n) => n > 2)) return undefined;
+  const start = component.find((p) => degree.get(key(p)) === 1) ?? component[0];
+  const path: Axial[] = [];
+  let current = start;
+  let previous: Axial | undefined;
+  const visited = new Set<string>();
+  while (!visited.has(key(current))) {
+    visited.add(key(current));
+    path.push(current);
+    const next = neighbors(current).find((candidate) =>
+      key(candidate) !== (previous ? key(previous) : ""));
+    if (!next) break;
+    previous = current;
+    current = next;
+  }
+  return path.length === component.length ? path : undefined;
+};
+
+/** 将中心路径偏移到六边格边界附近，避免每段河流各自绘制而产生视觉断点。 */
+const riverPolyline = (path: Axial[]): string => path.map((p, index) => {
+  const here = hexCenter(p);
+  const prev = path[index - 1] ? hexCenter(path[index - 1]) : undefined;
+  const next = path[index + 1] ? hexCenter(path[index + 1]) : undefined;
+  const from = prev ?? here;
+  const to = next ?? here;
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const len = Math.hypot(dx, dy) || 1;
+  const offset = SIZE * 0.92;
+  const x = here.x - (dy / len) * offset;
+  const y = here.y + (dx / len) * offset;
+  return `${x.toFixed(1)},${y.toFixed(1)}`;
+}).join(" ");
+
+const riverEdges = (b: BoardState): string[] => {
+  const paths: string[] = [];
+  for (const component of riverComponents(b)) {
+    const path = riverPath(component);
+    if (path) {
+      paths.push(riverPolyline(path));
+      continue;
+    }
+    // 编辑器允许临时画出分叉水系：退化为逐条相邻边，但不会影响正式预设的连续河道。
+    const seen = new Set<string>();
+    for (const p of component) for (let i = 0; i < DIRS.length; i += 1) {
+      const next = { q: p.q + DIRS[i].q, r: p.r + DIRS[i].r };
+      const nextId = key(next);
+      if (!b.tiles.get(nextId)?.河流边) continue;
+      const edgeKey = [key(p), nextId].sort().join("|");
+      if (seen.has(edgeKey)) continue;
+      seen.add(edgeKey);
+      const here = hexCenter(p);
+      const target = hexCenter(next);
+      paths.push(`${here.x.toFixed(1)},${here.y.toFixed(1)} ${target.x.toFixed(1)},${target.y.toFixed(1)}`);
+    }
+  }
+  return paths;
 };
 
 // ── 地形配色。只为可读性，不承载规则 ──────────────────────────────────
@@ -80,6 +185,8 @@ export function renderMap(rules: Rules, b: BoardState, o: MapOpts = {}): string 
   }
   const pad = 8;
   const parts: string[] = [];
+  const rivers = riverEdges(b).map((points) =>
+    `<polyline points="${points}" class="river-edge"/>`).join("");
   for (const p of coords.sort((a, z) => a.r - z.r || a.q - z.q)) {
     const k = key(p);
     const t = b.tiles.get(k)!;
@@ -88,19 +195,21 @@ export function renderMap(rules: Rules, b: BoardState, o: MapOpts = {}): string 
     const isSel = o.selected && key(o.selected) === k;
     const isHov = o.hovered && key(o.hovered) === k;
     const blockedWhy = o.blocked?.get(k);
-    const neutral = b.城市?.length && b.城市.every((city) => distance(city.中心, p) > 3);
-    const cls = ["hex", neutral ? "neutral" : "", blockedWhy ? "blocked" : "", isSel ? "sel" : "",
+    const territory = cityTerritoryOwner(b, p);
+    const neutral = b.城市?.length && !territory;
+    const cls = ["hex", neutral ? "neutral" : "", territory ? `territory-${territory}` : "",
+                 blockedWhy ? "blocked" : "", isSel ? "sel" : "",
                  isHov ? "hov" : ""].filter(Boolean).join(" ");
-    parts.push(`<g class="${cls}" data-xy="${k}">`);
+    parts.push(`<g class="${cls}" data-xy="${k}"${territory ? ` data-city-territory="${esc(territory)}"` : ""}>`);
     parts.push(`<polygon points="${hexPoints(c.x, c.y)}" fill="${fill}"/>`);
-    const terrainIcon = !t.区域 && localIconSrc(t.地形);
-    if (terrainIcon) parts.push(`<image class="terrain-icon" href="${terrainIcon}" x="${(c.x - 10).toFixed(1)}" y="${(c.y - 10).toFixed(1)}" width="20" height="20"/>`);
-    if (t.河流边) {
-      parts.push(`<circle cx="${(c.x).toFixed(1)}" cy="${(c.y + SIZE * 0.7).toFixed(1)}" r="3.5" class="river"/>`);
+    if (t.湖泊) parts.push(`<polygon points="${hexPoints(c.x, c.y)}" class="lake-surface"/>`);
+    const terrainIcon = localIconSrc(t.地形);
+    if (terrainIcon) {
+      parts.push(`<image class="terrain-icon" href="${terrainIcon}" aria-label="${esc(rules.name(t.地形))}" x="${(c.x - 24).toFixed(1)}" y="${(c.y + 6).toFixed(1)}" width="16" height="16"/>`);
     }
-    if (t.地貌 && FEATURE_MARK[t.地貌]) {
+    if (t.地貌) {
       const featureIcon = localIconSrc(t.地貌);
-      if (featureIcon) parts.push(`<image href="${featureIcon}" x="${(c.x - 12).toFixed(1)}" y="${(c.y - 24).toFixed(1)}" width="24" height="24"/>`);
+      if (featureIcon) parts.push(`<image class="feature-icon" href="${featureIcon}" aria-label="${esc(rules.name(t.地貌))}" x="${(c.x - 22).toFixed(1)}" y="${(c.y - 24).toFixed(1)}" width="22" height="22"/>`);
       else parts.push(`<text x="${c.x.toFixed(1)}" y="${(c.y - 8).toFixed(1)}" class="feat">${FEATURE_MARK[t.地貌]}</text>`);
     }
     if (t.资源) {
@@ -145,7 +254,7 @@ export function renderMap(rules: Rules, b: BoardState, o: MapOpts = {}): string 
     }
     parts.push(`</g>`);
   }
-  return `<svg viewBox="${(minX - pad).toFixed(0)} ${(minY - pad).toFixed(0)} ${(maxX - minX + pad * 2).toFixed(0)} ${(maxY - minY + pad * 2).toFixed(0)}">${parts.join("")}</svg>`;
+  return `<svg viewBox="${(minX - pad).toFixed(0)} ${(minY - pad).toFixed(0)} ${(maxX - minX + pad * 2).toFixed(0)} ${(maxY - minY + pad * 2).toFixed(0)}"><g class="river-layer">${rivers}</g>${parts.join("")}</svg>`;
 }
 
 // ── 产出汇总 ──────────────────────────────────────────────────────────

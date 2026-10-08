@@ -1,0 +1,9 @@
+信条id,名称,信条类别,功能说明,结构化效果,数据来源,待核
+BELIEF_CHORAL_MUSIC,合唱圣歌,信徒,神社和寺庙提供的 文化值等于其固定产出的 信仰值。,建筑固定:BUILDING_SHRINE:文化:2|建筑固定:BUILDING_TEMPLE:文化:4,一手（Beliefs/BeliefModifiers/ModifierArguments）,否
+BELIEF_DANCE_OF_THE_AURORA,极光之舞,万神殿,圣地区域从相邻冻土单元格+1 信仰值 。,圣地地形相邻:TERRAIN_TUNDRA:信仰:1|圣地地形相邻:TERRAIN_TUNDRA_HILLS:信仰:1,一手（Beliefs/BeliefModifiers/ModifierArguments）,否
+BELIEF_DESERT_FOLKLORE,沙漠民俗,万神殿,圣地区域从相邻沙漠单元格+1 信仰值。,圣地地形相邻:TERRAIN_DESERT:信仰:1|圣地地形相邻:TERRAIN_DESERT_HILLS:信仰:1,一手（Beliefs/BeliefModifiers/ModifierArguments）,否
+BELIEF_DIVINE_INSPIRATION,神灵的启示,信徒,所有世界奇观+4 信仰值。,奇观固定:无:信仰:4,一手（Beliefs/BeliefModifiers/ModifierArguments）,否
+BELIEF_FEED_THE_WORLD,哺育世界,信徒,每座神社和寺庙提供的 食物+3、 住房+2。,建筑固定:BUILDING_SHRINE:粮食:3|建筑固定:BUILDING_TEMPLE:粮食:3,一手（Beliefs/BeliefModifiers/ModifierArguments）,否
+BELIEF_LAY_MINISTRY,民间宗教团,创始人,信仰此宗教的每座城市的每座圣地或剧院广场相应提供+1 信仰值或+1 文化值。,区域固定:DISTRICT_HOLY_SITE:信仰:1|区域固定:DISTRICT_THEATER:文化:1,一手（Beliefs/BeliefModifiers/ModifierArguments）,否
+BELIEF_SACRED_PATH,神圣道路,万神殿,圣地区域从相邻雨林单元格+1 信仰值。,圣地地貌相邻:FEATURE_JUNGLE:信仰:1,一手（Beliefs/BeliefModifiers/ModifierArguments）,否
+BELIEF_WORK_ETHIC,职业道德,信徒,圣地区域的 信仰值相邻加成也提供 生产力。,圣地相邻镜像:信仰:生产力:1,一手（Beliefs/BeliefModifiers/ModifierArguments）,否

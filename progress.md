@@ -1,5 +1,14 @@
 # 推进记录
 
+## 2026-10-03（区域合法性后续）
+
+- 修复人口配额运行时断链：`District` 现在解析 `是否占区域配额`，`npm test` 恢复为 101/101。
+- 人口配额以 `floor(人口 / 3) + 1` 加文明静态修正接入共享入口，德国额外 +1；公式仍标记为待游戏内核对。
+- 资源、自然奇观、世界奇观单格占用分别接入 `E07`、`E08`、`E09`。
+- 新增 `配置表/units.csv` 与 `配置表/combat_modifiers.csv` 的正式 schema 空表；军事生产数据仍待实测，不创建虚假数值。
+- 修订 `设计/SDD-区域合法性系统.md`、`配置表/字段说明.md`、`README.md`、`设计/GDD总纲.md`，清除 SDD 尾随空格。
+- 自动验收：`git diff --check`、配置检查、配置回归、197 条本地链接、smoke、gate 均通过；游戏内实测为 `NOT RUN`。详见 `production/qa/legality-followup-2026-10-03.md`。
+
 ## 2026-10-03
 
 - 完成共享区域合法性系统的 Task 4：挑战模式加载时拦截非法初始局面，关卡列表显示具体原因并禁用开始；`node --test tests/levels.test.ts tests/interface-changes.test.ts` 31/31 通过。

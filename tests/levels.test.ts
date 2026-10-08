@@ -78,6 +78,7 @@ describe(`关卡阈值对账（${CASES.length} 关）`, () => {
       const level = LEVEL_BY_ID.get(c.关卡id)!;
       let b: BoardState = board(spec as never, {
         文明: c.文明,
+        人口: Number(level["人口"]),
         已解锁科技: parseList(level["已解锁科技"]),
         已解锁市政: parseList(level["已解锁市政"]),
       });

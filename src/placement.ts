@@ -28,6 +28,7 @@ export function cityCenterPlacementConstraint(
   if (!current) return "未找到所选城市";
   if (key(current.中心) === key(p)) return "";
   if (tile.区域) return "目标地块已有区域";
+  if (tile.资源) return "城市中心不能放在资源上";
   if (tile.世界奇观 || tile.自然奇观) return "城市中心不能放在奇观上";
   if (tile.地形 === "TERRAIN_OCEAN" || tile.地形.endsWith("_MOUNTAIN")) {
     return "城市中心不能放在海洋或山脉上";

@@ -22,16 +22,33 @@ export type PolicyCard = {
   readonly tag: string;
 };
 
+export type ReligionBelief = {
+  readonly id: string;
+  readonly name: string;
+  readonly beliefClass: string;
+  readonly functionText: string;
+  readonly effects: readonly string[];
+};
+
 export type ProgressionTexts = {
   readonly tech_tree: string;
   readonly civic_tree: string;
   readonly policy_cards: string;
+  readonly religion_beliefs: string;
 };
 
 export type ProgressionData = {
   readonly techs: ReadonlyMap<string, ProgressionNode>;
   readonly civics: ReadonlyMap<string, ProgressionNode>;
   readonly policies: readonly PolicyCard[];
+  readonly beliefs: readonly ReligionBelief[];
+};
+
+export type ProgressionLayoutPoint = {
+  readonly x: number;
+  readonly y: number;
+  readonly column: number;
+  readonly row: number;
 };
 
 const nodeMap = (text: string, idCol: string): Map<string, ProgressionNode> => {
@@ -61,10 +78,15 @@ export function loadProgression(texts: ProgressionTexts): ProgressionData {
     functionText: row["功能说明"],
     tag: row["规划标签"],
   }));
+  const beliefs = parseCsv(texts.religion_beliefs).map((row): ReligionBelief => ({
+    id: row["信条id"], name: row["名称"], beliefClass: row["信条类别"],
+    functionText: row["功能说明"], effects: parseList(row["结构化效果"]),
+  }));
   return {
     techs: nodeMap(texts.tech_tree, "科技id"),
     civics: nodeMap(texts.civic_tree, "市政id"),
     policies,
+    beliefs,
   };
 }
 
@@ -100,3 +122,86 @@ export const eraIndex = (id: string): number => {
   const index = ERA_ORDER.indexOf(id as (typeof ERA_ORDER)[number]);
   return index < 0 ? ERA_ORDER.length : index;
 };
+
+/**
+ * 按真实前置图分层，而不是按时代硬切列。
+ *
+ * 文明 VI 的时代是内容标签，不是研究树的几何约束：同一时代里可能有多个
+ * 分叉。这里用「官方时代顺序的横向下限 + 前置关系的最长距离」作为研究层，
+ * 再按前置节点的稳定顺序排列同层节点。这样没有显式前置的后期节点也不会
+ * 跑到最左侧，同时仍保留真实前置关系造成的分叉。
+ */
+export function progressionGraphLayout(
+  nodes: ReadonlyMap<string, ProgressionNode>,
+): Map<string, ProgressionLayoutPoint> {
+  const depthMemo = new Map<string, number>();
+  const visiting = new Set<string>();
+  const depthOf = (id: string): number => {
+    const known = depthMemo.get(id);
+    if (known !== undefined) return known;
+    // 数据应当是 DAG；遇到坏配置时保留节点并截断回路，避免 UI 递归死循环。
+    if (visiting.has(id)) return eraIndex(nodes.get(id)?.era ?? "");
+    visiting.add(id);
+    const node = nodes.get(id);
+    const eraColumn = node ? eraIndex(node.era) : 0;
+    const prereqColumn = node && node.prereqs.length
+      ? Math.max(...node.prereqs.map(depthOf).filter((value) => Number.isFinite(value)), -1) + 1
+      : 0;
+    // 时代是官方研究树的横向位置下限；前置关系可以把同一时代的
+    // 分支再向右推一列，但不能让后期节点出现在早期节点左侧。
+    const depth = Math.max(eraColumn, prereqColumn);
+    visiting.delete(id);
+    depthMemo.set(id, depth);
+    return depth;
+  };
+
+  const columns = new Map<number, ProgressionNode[]>();
+  for (const node of nodes.values()) {
+    const column = depthOf(node.id);
+    (columns.get(column) ?? columns.set(column, []).get(column)!).push(node);
+  }
+
+  const rank = new Map<string, number>();
+  const maxColumn = Math.max(...columns.keys(), 0);
+  let maxRows = 1;
+  for (let column = 0; column <= maxColumn; column += 1) {
+    const group = columns.get(column) ?? [];
+    group.sort((a, b) => {
+      const parentRank = (node: ProgressionNode): number => {
+        if (!node.prereqs.length) return -1;
+        const values = node.prereqs
+          .map((parent) => rank.get(parent))
+          .filter((value): value is number => value !== undefined);
+        return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : -1;
+      };
+      return parentRank(a) - parentRank(b)
+        || Number(b.focus) - Number(a.focus)
+        || eraIndex(a.era) - eraIndex(b.era)
+        || a.name.localeCompare(b.name, "zh-CN")
+        || a.id.localeCompare(b.id);
+    });
+    group.forEach((node, row) => rank.set(node.id, row));
+    maxRows = Math.max(maxRows, group.length);
+  }
+
+  // 研究树是横向浏览的工作区。纵向必须在单页内收束，不能把每一层
+  // 撑成另一条滚动轴；详细功能放到悬停面板，不把长文案塞进节点。
+  const colWidth = 288;
+  const rowHeight = 38;
+  const left = 52;
+  const top = 46;
+  const out = new Map<string, ProgressionLayoutPoint>();
+  for (let column = 0; column <= maxColumn; column += 1) {
+    const group = columns.get(column) ?? [];
+    const offset = ((maxRows - group.length) * rowHeight) / 2;
+    group.forEach((node, row) => {
+      out.set(node.id, {
+        x: left + column * colWidth,
+        y: top + offset + row * rowHeight,
+        column,
+        row,
+      });
+    });
+  }
+  return out;
+}

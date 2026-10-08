@@ -870,15 +870,17 @@ def gen_districts(db, loc):
             per_city,
             per_player,
             joiner(terr),
+            "是" if db.boolean("Districts", r, "NoAdjacentCity") else "否",
+            "是" if db.boolean("Districts", r, "Aqueduct") else "否",
             "是" if uniq else "否",
             rep if uniq else NONE,
             joiner(civs) if uniq else NONE,
             joiner(note) if note else NONE] + PROV)
     rows.sort(key=lambda x: x[0])
     return ["区域id", "名称", "区域类别", "基础产出", "生产成本", "前置科技",
-            "前置市政", "是否占区域配额", "每城上限", "每玩家上限",
-            "可建地形", "是否特色区域",
-            "替换区域id", "所属文明id", "备注", "数据来源", "待核"], rows
+        "前置市政", "是否占区域配额", "每城上限", "每玩家上限",
+        "可建地形", "不可紧邻城市中心", "是否引水渠类", "是否特色区域",
+        "替换区域id", "所属文明id", "备注", "数据来源", "待核"], rows
 
 
 def gen_buildings(db, loc):

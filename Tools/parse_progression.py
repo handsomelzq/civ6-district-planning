@@ -30,6 +30,29 @@ POLICY_FOCUS = {
     "POLICY_PUBLIC_WORKS": "建造者",
 }
 
+# 只收录当前静态局面能完整结算的信条。效果值来自 BeliefModifiers →
+# Modifiers → ModifierArguments；这里将游戏的通用 Modifier 图压成求值器可读的窄表。
+RELIGION_EFFECTS = {
+    "BELIEF_DANCE_OF_THE_AURORA": (
+        "圣地地形相邻:TERRAIN_TUNDRA:信仰:1|"
+        "圣地地形相邻:TERRAIN_TUNDRA_HILLS:信仰:1"),
+    "BELIEF_DESERT_FOLKLORE": (
+        "圣地地形相邻:TERRAIN_DESERT:信仰:1|"
+        "圣地地形相邻:TERRAIN_DESERT_HILLS:信仰:1"),
+    "BELIEF_SACRED_PATH": "圣地地貌相邻:FEATURE_JUNGLE:信仰:1",
+    "BELIEF_WORK_ETHIC": "圣地相邻镜像:信仰:生产力:1",
+    "BELIEF_LAY_MINISTRY": (
+        "区域固定:DISTRICT_HOLY_SITE:信仰:1|"
+        "区域固定:DISTRICT_THEATER:文化:1"),
+    "BELIEF_DIVINE_INSPIRATION": "奇观固定:无:信仰:4",
+    "BELIEF_CHORAL_MUSIC": (
+        "建筑固定:BUILDING_SHRINE:文化:2|"
+        "建筑固定:BUILDING_TEMPLE:文化:4"),
+    "BELIEF_FEED_THE_WORLD": (
+        "建筑固定:BUILDING_SHRINE:粮食:3|"
+        "建筑固定:BUILDING_TEMPLE:粮食:3"),
+}
+
 SLOT_ZH = {
     "SLOT_ECONOMIC": "经济",
     "SLOT_MILITARY": "军事",
@@ -44,7 +67,7 @@ def load_parser():
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     extra = [
-        "TechnologyPrereqs", "CivicPrereqs", "Policies",
+        "TechnologyPrereqs", "CivicPrereqs", "Policies", "Beliefs", "BeliefClasses",
     ]
     for table in extra:
         if table not in mod.NEEDED_TABLES:
@@ -159,9 +182,31 @@ def build_policies(db, loc):
     return header, out
 
 
+def build_religion_beliefs(db, loc):
+    """生成区域规划信条窄表；不表达宗教传播、城市归属或宗教胜利。"""
+    classes = {r["BeliefClassType"]: loc(r.get("Name"))
+               for r in db.rows("BeliefClasses")}
+    beliefs = {r["BeliefType"]: r for r in db.rows("Beliefs")}
+    header = ["信条id", "名称", "信条类别", "功能说明", "结构化效果",
+              "数据来源", "待核"]
+    out = []
+    missing = sorted(set(RELIGION_EFFECTS) - set(beliefs))
+    if missing:
+        raise RuntimeError("最终游戏数据缺少精选信条：" + ", ".join(missing))
+    for bid in sorted(RELIGION_EFFECTS):
+        row = beliefs[bid]
+        out.append([
+            bid, loc(row.get("Name")),
+            classes.get(row.get("BeliefClassType"), row.get("BeliefClassType", "无")),
+            loc(row.get("Description")), RELIGION_EFFECTS[bid],
+            "一手（Beliefs/BeliefModifiers/ModifierArguments）", "否",
+        ])
+    return header, out
+
+
 def main(argv=None):
     parser = load_parser()
-    ap = argparse.ArgumentParser(description="生成文明 VI 科技树、文化树和精选政策卡")
+    ap = argparse.ArgumentParser(description="生成文明 VI 科技树、文化树、精选政策卡和宗教信条")
     ap.add_argument("--assets", default=parser.DEFAULT_ASSETS)
     ap.add_argument("--out", default=str(ROOT / "配置表"))
     args = ap.parse_args(argv)
@@ -184,10 +229,13 @@ def main(argv=None):
     csv_write(out / "civic_tree.csv", h, rows)
     h, rows = build_policies(db, loc)
     csv_write(out / "policy_cards.csv", h, rows)
-    print("tech_tree.csv %d 行｜civic_tree.csv %d 行｜policy_cards.csv %d 行" %
+    h, rows = build_religion_beliefs(db, loc)
+    csv_write(out / "religion_beliefs.csv", h, rows)
+    print("tech_tree.csv %d 行｜civic_tree.csv %d 行｜policy_cards.csv %d 行｜religion_beliefs.csv %d 行" %
           (len(build_techs(db, loc, parser)[1]),
            len(build_civics(db, loc, parser)[1]),
-           len(build_policies(db, loc)[1])))
+           len(build_policies(db, loc)[1]),
+           len(build_religion_beliefs(db, loc)[1])))
 
 
 if __name__ == "__main__":
