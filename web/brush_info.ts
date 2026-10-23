@@ -25,8 +25,16 @@ export function formatResearchAlert(
 }
 export type InfoBrush =
   | { kind: "区域" | "地形" | "地貌" | "世界奇观"; id: string }
+  | { kind: "丘陵" }
   | { kind: "城市中心" }
-  | { kind: "移除" };
+  | { kind: "移除" }
+  | { kind: "清除资源" };
+
+/** 通用丘陵笔刷的只读地形映射；五种陆地对应游戏 Terrains 表里的丘陵变体。 */
+export function hillsTerrainId(terrain: string): string | undefined {
+  const land = /^TERRAIN_(GRASS|PLAINS|DESERT|TUNDRA|SNOW)(?:_(HILLS|MOUNTAIN))?$/.exec(terrain);
+  return land ? `TERRAIN_${land[1]}_HILLS` : undefined;
+}
 
 const yieldText = (s: string): string => {
   const parts = [...parseKv(s)];
@@ -38,6 +46,22 @@ export function brushInfo(
   texts: Record<string, string>,
 ): BrushInfo {
   if (brush.kind === "移除") return { title: "移除区域", lines: ["点击已放置的区域格以移除区域及其建筑。"] };
+  if (brush.kind === "清除资源") return {
+    title: "清除加成资源",
+    lines: [
+      "点击可收获的加成资源格将其清除；需要先解锁对应科技。",
+      "奢侈、战略与文物资源不能用此工具清除。",
+      "本 Demo 暂不结算收获资源带来的粮食、生产力或金币。",
+    ],
+  };
+  if (brush.kind === "丘陵") return {
+    title: "丘陵",
+    lines: [
+      "丘陵属于地形，可与森林、雨林等地貌叠加。",
+      "点击陆地，保留草原、平原、沙漠、冻土或雪地类型，改为其丘陵变体。",
+      "海岸与湖泊、海洋不能设置丘陵。选择对应的普通地形可恢复平地。",
+    ],
+  };
   if (brush.kind === "城市中心") return {
     title: "移动城市中心",
     lines: ["先在右侧选择城市，再点击地图上的目标陆地格。", "城市中心至少相隔 4 格；旧城市领土会保留为中立地块。"],

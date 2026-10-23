@@ -11,7 +11,9 @@ import {
 } from "../web/progression.ts";
 import { evaluate } from "../src/evaluate.ts";
 import { distance } from "../src/hex.ts";
-import { cityTerritoryOwner, MIN_CITY_CENTER_DISTANCE } from "../src/board.ts";
+import {
+  cityTerritoryOwner, cityTerritoryOwners, MIN_CITY_CENTER_DISTANCE,
+} from "../src/board.ts";
 import { R, board } from "./helpers.ts";
 import { localIconSrc } from "../web/local_icons.ts";
 import {
@@ -85,12 +87,15 @@ test("入口页提供模式选择、设置入口和拆解文档入口", () => {
   assert.match(appSource, /TABLE_TEXTS\["tech_tree\.csv"\]/);
   assert.match(appSource, /TABLE_TEXTS\["civic_tree\.csv"\]/);
   assert.match(appSource, /TABLE_TEXTS\["policy_cards\.csv"\]/);
-  assert.match(page, /dist\/app\.bundle\.js\?v=20260929-4/);
+  const release = JSON.parse(readFileSync(join(root, "..", "web", "dist", "release.json"), "utf8"));
+  assert.ok(page.includes(`dist/app.bundle.js?v=${release.version}`),
+    "页面缓存版本必须与构建发布版本一致");
+  assert.match(release.revision, /^[0-9a-f]{12}$/);
   assert.match(page, /id="home-settings"/);
   assert.match(page, /id="settings-modal"/);
   assert.match(page, /\/tree\/main\/设计/);
   assert.match(page, /DISTRICT_CITY_CENTER\.png/);
-  assert.match(page, /<script src="dist\/app\.bundle\.js\?v=20260929-4"><\/script>/);
+  assert.ok(page.includes(`<script src="dist/app.bundle.js?v=${release.version}"></script>`));
   assert.match(buildSource, /emitBrowserBundle\(\)/);
   assert.match(bundle, /data-enter-mode/);
   assert.match(bundle, /enterMode/);
@@ -285,6 +290,23 @@ test("河流以连续边界折线呈现，湖泊以整格水面显示并提供�
   assert.match(page, /\.lake-surface/);
 });
 
+test("河流使用深蓝分层水色，所有城市边境使用同色虚线", () => {
+  const riverRules = [...page.matchAll(/\.river-edge\s*\{([^}]*)\}/g)]
+    .map((match) => match[1]).join("\n");
+  assert.match(riverRules, /stroke:\s*#1f6686/i,
+    "河流主线应使用深蓝色，而不是荧光浅蓝");
+  assert.doesNotMatch(riverRules, /#74d7ee|#8ad9e8/i);
+
+  const borderRule = page.match(/\.territory-border\s*\{([^}]*)\}/)?.[1] ?? "";
+  assert.match(borderRule, /stroke:\s*#d8c99b/i,
+    "城市边境应从统一基础样式继承同一种颜色");
+  assert.match(borderRule, /stroke-dasharray:\s*7\s+5/i,
+    "城市边境应为清晰但克制的虚线");
+  assert.doesNotMatch(page,
+    /\.territory-border-[A-D]\s*\{[^}]*stroke\s*:/i,
+    "不得重新引入按城市分色的边境线");
+});
+
 test("自由模式预设河流至少两段且属于同一连续河道", () => {
   for (const preset of PRESETS) {
     const river = [...sandboxBoard(preset.id).tiles.entries()]
@@ -331,6 +353,54 @@ test("随机城市模板包含多城、合法中心间距、连续河流与中�
   }
 });
 
+test("相邻城市使用唯一共享边界：地块不重叠，等距格有稳定归属", () => {
+  const b = board({
+    "0,0": { 区域: "DISTRICT_CITY_CENTER", 所属城市: "A" },
+    "1,0": {}, "2,0": {}, "3,0": {},
+    "4,0": { 区域: "DISTRICT_CITY_CENTER", 所属城市: "B" },
+  }, { 城市: [
+    { id: "A", 名称: "甲城", 中心: { q: 0, r: 0 }, 人口: 10 },
+    { id: "B", 名称: "乙城", 中心: { q: 4, r: 0 }, 人口: 10 },
+  ] });
+  const owners = cityTerritoryOwners(b);
+  assert.equal(owners.size, 5);
+  assert.equal(owners.get("2,0"), "A", "等距格按稳定规则归属，不留下夹在两城之间的裂缝");
+  assert.equal(cityTerritoryOwner(b, { q: 2, r: 0 }), "A");
+  assert.equal(cityTerritoryOwner(b, { q: 3, r: 0 }), "B");
+  assert.match(renderMap(R, b, { terrainArt: false }), /class="territory-border territory-border-A"/);
+  assert.match(renderMap(R, b, { terrainArt: false }), /class="territory-border territory-border-B"/);
+});
+
+test("城市边境只画领土外缘和一条共享边，不画城市内部格边", () => {
+  const b = board({
+    "0,0": { 区域: "DISTRICT_CITY_CENTER", 所属城市: "A" },
+    "1,0": {}, "2,0": {}, "3,0": {},
+    "4,0": { 区域: "DISTRICT_CITY_CENTER", 所属城市: "B" },
+  }, { 城市: [
+    { id: "A", 名称: "甲城", 中心: { q: 0, r: 0 }, 人口: 10 },
+    { id: "B", 名称: "乙城", 中心: { q: 4, r: 0 }, 人口: 10 },
+  ] });
+  const html = renderMap(R, b, { terrainArt: false });
+  const lines = [...html.matchAll(
+    /<line x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)" class="territory-border ([^"]+)"\/>/g,
+  )];
+  assert.equal(lines.length, 23,
+    "五格连续领土有22条地图外缘，再加两城之间一条共享边");
+  const edgeIds = lines.map((line) =>
+    [[line[1], line[2]].join(","), [line[3], line[4]].join(",")].sort().join("|"));
+  assert.equal(new Set(edgeIds).size, edgeIds.length,
+    "共享边只能输出一次，同城内部格边不得输出");
+});
+
+test("自由模式提供清除加成资源工具并按共享规则反馈原因", () => {
+  assert.match(appSource, /kind: "清除资源"/);
+  assert.match(appSource, /resourceClearanceConstraint/);
+  assert.match(appSource, /withoutResource/);
+  assert.match(appSource, /清除加成资源/);
+  assert.match(appSource, /cityTerritoryOwner\(app\.board, p\)/,
+    "地块信息应展示动态领土，而不是只读取区域落位时的静态所属城市");
+});
+
 test("所有配置中的地形与地貌都有本地 Civ VI 图标路径", () => {
   const all = [
     ...readFileSync(join(root, "terrains.csv"), "utf8").split("\n").slice(1)
@@ -351,7 +421,7 @@ test("区域缺少科技或市政时会生成弹窗提示，并把城市中心�
   assert.match(appSource, /function showPlacementAlert/);
   assert.match(appSource, /formatResearchAlert/);
   assert.match(appSource, /cityCenterPlacementConstraint/);
-  assert.match(appSource, /random-template/);
+  assert.match(appSource, /map-generator/);
   assert.match(page, /id="placement-alert"/);
   assert.match(appSource, /移动城市中心/);
 });

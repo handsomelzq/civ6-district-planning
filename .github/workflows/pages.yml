@@ -26,16 +26,14 @@ jobs:
         with:
           node-version: "24"
       # 全部工具只用标准库，没有 npm install / pip install 这一步
-      - name: 求值器测试（44 条）
-        run: npm test
-      - name: 配置表跨表校验
-        run: python3 Tools/check_config.py
-      - name: 校验器自己的回归测试（66 条断言）
-        run: python3 Tools/test_check_config.py
-      - name: 关卡母题验证（先校准，校准不过就停）
-        run: python3 Tools/motif_check.py
-      - name: 文档坏链检查
-        run: python3 Tools/check_links.py
+      - name: 完整发布验收（测试、严格配置、关卡、链接和构建）
+        run: node Tools/studio_check.mjs --mode gate
+      - name: 保存验收报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-checks
+          path: production/qa/studio-gate-*.md
 
   deploy:
     name: 部署
@@ -51,6 +49,10 @@ jobs:
           node-version: "24"
       - name: 构建网页
         run: node Tools/build_web.mjs
+        env:
+          CIV6_TERRAIN_ART: "off"
+      - name: 验证浏览器入口
+        run: node --check web/dist/app.bundle.js
       - uses: actions/configure-pages@v5
       # 只把 web/ 当站点根目录，链接因此是 .../civ6-district-planning/ 而不是 /web/
       - uses: actions/upload-pages-artifact@v3

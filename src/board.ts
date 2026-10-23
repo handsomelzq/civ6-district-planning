@@ -27,11 +27,17 @@ export type Tile = {
 
 export type City = { readonly id: string; readonly 名称: string; readonly 中心: Axial; readonly 人口: number };
 
+/** 精确六边形顶点格网，不是SVG像素坐标。 */
+export type RiverVertex = { readonly x: number; readonly y: number };
+export type RiverPath = readonly RiverVertex[];
+
 /** 文明 VI 的城市中心间距：CITY_MIN_RANGE=3，故中心六边距离至少为 4。 */
 export const MIN_CITY_CENTER_DISTANCE = 4;
 
 export type BoardState = {
   readonly tiles: ReadonlyMap<string, Tile>;
+  /** 源头到出口的真实格边路径。缺省兼容旧临河标记，空列表明确表示无河。 */
+  readonly 河道?: readonly RiverPath[];
   readonly 中心: Axial;
   readonly 人口: number;
   /** 多城自由模式；旧关卡没有此字段，仍按单城局面处理。 */
@@ -105,6 +111,17 @@ export function withBuilding(b: BoardState, p: Axial, buildingId: string): Board
   return { ...b, tiles };
 }
 
+/** 清除目标格资源，保留地形、地貌、河岸和其他地块属性。 */
+export function withoutResource(b: BoardState, p: Axial): BoardState {
+  const k = key(p);
+  const old = b.tiles.get(k);
+  if (!old) throw new Error(`坐标不在盘面上：${k}`);
+  const { 资源: _resource, ...rest } = old;
+  const tiles = new Map(b.tiles);
+  tiles.set(k, rest);
+  return { ...b, tiles };
+}
+
 /** 在自由模式中移动一个城市中心。旧中心恢复为普通地块，新中心接管宫殿与城市归属。 */
 export function moveCityCenter(b: BoardState, cityId: string, target: Axial): BoardState {
   const city = b.城市?.find((c) => c.id === cityId);
@@ -123,7 +140,6 @@ export function moveCityCenter(b: BoardState, cityId: string, target: Axial): Bo
     建筑: ["BUILDING_PALACE"],
     所属城市: cityId,
     地貌: undefined,
-    资源: undefined,
     湖泊: false,
   });
   const cities = b.城市.map((c) =>
@@ -153,16 +169,36 @@ export function cityFor(b: BoardState, p: Axial): City | undefined {
     distance(a.中心, p) - distance(z.中心, p) || a.id.localeCompare(z.id))[0];
 }
 
-/** 地图展示用的城市领土归属：三格范围内取最近城市；等距地块保持中立。 */
+/** 多城静态领土：三格范围内归最近城市；等距时按坐标散列稳定打破平局。
+ *  这让相邻城市共享一条唯一边界且略有起伏。它是本 Demo 的规划分区，
+ *  不模拟文明 VI 的文化扩张、购买地块或换城系统。 */
+export function cityTerritoryOwners(b: BoardState): ReadonlyMap<string, string> {
+  const out = new Map<string, string>();
+  if (!b.城市?.length) return out;
+  const cities = [...b.城市].sort((a, z) => a.id.localeCompare(z.id));
+  for (const id of b.tiles.keys()) {
+    const p = parseKey(id);
+    const center = cities.find((city) => key(city.中心) === id);
+    if (center) {
+      out.set(id, center.id);
+      continue;
+    }
+    const candidates = cities
+      .map((city) => ({ city, gap: distance(city.中心, p) }))
+      .filter((item) => item.gap <= 3)
+      .sort((a, z) => a.gap - z.gap || a.city.id.localeCompare(z.city.id));
+    if (!candidates.length) continue;
+    const bestGap = candidates[0].gap;
+    const tied = candidates.filter((item) => item.gap === bestGap);
+    // 同距边界按坐标交错，避免总是用一条笔直的垂直切线。
+    const pick = Math.abs(p.q * 31 + p.r * 17) % tied.length;
+    out.set(id, tied[pick].city.id);
+  }
+  return out;
+}
+
 export function cityTerritoryOwner(b: BoardState, p: Axial): string | undefined {
-  if (!b.城市?.length) return undefined;
-  const candidates = b.城市
-    .map((city) => ({ city, distance: distance(city.中心, p) }))
-    .filter((item) => item.distance <= 3)
-    .sort((a, z) => a.distance - z.distance || a.city.id.localeCompare(z.city.id));
-  if (!candidates.length) return undefined;
-  if (candidates.length > 1 && candidates[0].distance === candidates[1].distance) return undefined;
-  return candidates[0].city.id;
+  return cityTerritoryOwners(b).get(key(p));
 }
 
 export const inWorkRange = (b: BoardState, p: Axial, cityId?: string): boolean => {

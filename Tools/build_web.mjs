@@ -10,15 +10,26 @@
  * 代价是 dist 里有一份表的副本 —— 它是生成产物，改表后重跑本脚本即可。
  */
 import { stripTypeScriptTypes } from "node:module";
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, existsSync } from "node:fs";
+import { TERRAIN_ART_FILES } from "../web/terrain_art.ts";
 import { fileURLToPath } from "node:url";
+import { createHash } from "node:crypto";
 import * as path from "node:path";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "web", "dist");
+const PACKAGE_VERSION = JSON.parse(readFileSync(path.join(ROOT, "package.json"), "utf8")).version;
+const INDEX_SOURCE = readFileSync(path.join(ROOT, "web", "index.html"), "utf8");
+const INDEX_VERSION = /app\.bundle\.js\?v=([^"']+)/.exec(INDEX_SOURCE)?.[1];
+if (!PACKAGE_VERSION || INDEX_VERSION !== PACKAGE_VERSION) {
+  throw new Error(`页面缓存版本 ${INDEX_VERSION ?? "缺失"} 与 package.json ${PACKAGE_VERSION ?? "缺失"} 不一致`);
+}
+const terrainArtInstalled = process.env.CIV6_TERRAIN_ART !== "off" && TERRAIN_ART_FILES.every((file) =>
+  existsSync(path.join(ROOT, "web", "civ6-terrain", file)));
 const TABLES = [
   "adjacency_rules.csv", "districts.csv", "buildings.csv",
   "resources.csv", "terrains.csv", "features.csv", "excluded_adjacencies.csv",
+  "improvements.csv",
   "civs.csv", "leaders.csv", "trait_adjacency_modifiers.csv",
   "tech_tree.csv", "civic_tree.csv", "policy_cards.csv", "religion_beliefs.csv",
 ];
@@ -59,6 +70,19 @@ function bundleModule(file, source) {
     exported.add(match[1]);
   }
   js = js.replace(/\bexport\s+(?=(?:const|let|var|function|class)\b)/g, "");
+  js = js.replace(/export\s*\{([\s\S]*?)\}\s*from\s*["']([^"']+)["']\s*;?/g,
+    (_, inner, spec) => {
+      const names = inner.split(",").map((part) => part.trim())
+        .filter((part) => part && !part.startsWith("type "));
+      if (!names.length) return "";
+      const temp = `__reexport_${id.replace(/\W/g, "_")}`;
+      const assignments = names.map((part) => {
+        const [imported, alias] = part.split(/\s+as\s+/).map((s) => s.trim());
+        const exportedName = alias ?? imported;
+        return `__exports.${exportedName} = ${temp}.${imported};`;
+      }).join("\n");
+      return `const ${temp} = __require("${resolveModule(id, spec)}");\n${assignments}`;
+    });
   js = js.replace(/export\s*\{([\s\S]*?)\}\s*;?/g, (_, inner) => {
     for (const raw of inner.split(",")) {
       const item = raw.trim();
@@ -98,6 +122,7 @@ function emitBrowserBundle() {
       .map((f) => path.join("web", f)),
     path.join("web", "tables.gen.js"),
     path.join("web", "levels.gen.js"),
+    path.join("web", "build.gen.js"),
   ];
   const modules = files.map((file) =>
     bundleModule(file, readFileSync(
@@ -124,7 +149,8 @@ function emit(fromDir, names, outSub = "") {
   const outDir = path.join(DIST, outSub);
   mkdirSync(outDir, { recursive: true });
   for (const n of names) {
-    const src = readFileSync(path.join(fromDir, n), "utf8");
+    let src = readFileSync(path.join(fromDir, n), "utf8");
+    if (n === "terrain_art.ts") src = src.replace("/* LOCAL_TERRAIN_ART */ false", String(terrainArtInstalled));
     writeFileSync(path.join(outDir, n.replace(/\.ts$/, ".js")), transpile(src));
   }
   return names.length;
@@ -159,6 +185,16 @@ writeFileSync(path.join(genDir, "levels.gen.js"),
   `/* 由 Tools/build_web.mjs 生成，勿手改。 */\n` +
   `export const LEVEL_TEXTS = {\n${inline(["levels.csv", "level_tiles.csv"])}\n};\n`);
 
+const fingerprint = createHash("sha256");
+fingerprint.update(JSON.stringify({ terrainArtInstalled }));
+for (const file of ["package.json", "Tools/build_web.mjs", "web/index.html", ...coreNames.map(n => `src/${n}`),
+  ...uiNames.map(n => `web/${n}`), ...[...TABLES, "levels.csv", "level_tiles.csv"].map(n => `配置表/${n}`)].sort()) {
+  fingerprint.update(file); fingerprint.update(readFileSync(path.join(ROOT, file)));
+}
+const buildInfo = { version: PACKAGE_VERSION, revision: fingerprint.digest("hex").slice(0, 12),
+  terrainArt: terrainArtInstalled };
+writeFileSync(path.join(genDir, "build.gen.js"), `export const BUILD_INFO = ${JSON.stringify(buildInfo)};\n`);
+writeFileSync(path.join(DIST, "release.json"), JSON.stringify(buildInfo, null, 2) + "\n");
 emitBrowserBundle();
 
 const kb = (p) => (readFileSync(p).length / 1024).toFixed(1);
@@ -167,3 +203,4 @@ console.log(`  tables.gen.js ${kb(path.join(genDir, "tables.gen.js"))} KB` +
             `｜levels.gen.js ${kb(path.join(genDir, "levels.gen.js"))} KB` +
             `｜app.bundle.js ${kb(path.join(DIST, "app.bundle.js"))} KB`);
 console.log("打开方式：直接双击 web/index.html，或 node Tools/serve.mjs");
+console.log(`  地形素材：${terrainArtInstalled ? "本机战略视图已启用" : "未安装或禁用，使用原图标"}`);

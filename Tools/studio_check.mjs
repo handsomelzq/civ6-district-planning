@@ -82,20 +82,21 @@ function main() {
     const tests = fs.readdirSync(path.join(ROOT, "tests"))
       .filter(n => n.endsWith(".test.ts")).sort().map(n => `tests/${n}`);
     const commands = [
+      ["Web build", process.execPath, ["Tools/build_web.mjs"]],
+      ["Browser bundle syntax", process.execPath, ["--check", "web/dist/app.bundle.js"]],
       ["Node tests", process.execPath, ["--test", ...tests]],
       ["Config development", python, ["Tools/check_config.py"]],
       ["Config validator regression", python, ["Tools/test_check_config.py"]],
       ["Document links", python, ["Tools/check_links.py"]],
-      ["Web build", process.execPath, ["Tools/build_web.mjs"]],
-      ["Browser bundle syntax", process.execPath, ["--check", "web/dist/app.bundle.js"]],
       ["Git diff whitespace", "git", ["diff", "--check"]],
+      ["Git staged whitespace", "git", ["diff", "--cached", "--check"]],
     ];
     if (mode === "gate") commands.push(
       ["Existing CI motif check", python, ["Tools/motif_check.py"]],
       ["Config delivery", python, ["Tools/check_config.py", "--delivery"]],
     );
     for (const [label, command, argv] of commands) {
-      if (label === "Browser bundle syntax" && checks.find(c => c.label === "Web build")?.status !== "PASS") {
+      if (["Browser bundle syntax", "Node tests"].includes(label) && checks.find(c => c.label === "Web build")?.status !== "PASS") {
         checks.push({ label, command: [command, ...argv], status: "NOT RUN", exitCode: null,
           output: "Skipped because the current build did not pass; do not validate a stale bundle." });
       } else {
@@ -130,7 +131,7 @@ function main() {
   const folder = path.join(ROOT, "production", "qa");
   fs.mkdirSync(folder, { recursive: true });
   const file = path.join(folder, `studio-${mode}-${timestamp.replace(/[:.]/g, "-")}-${process.pid}.md`);
-  fs.writeFileSync(file, lines.join("\n"), { flag: "wx" });
+  fs.writeFileSync(file, lines.join("\n").replace(/[ \t]+$/gm, ""), { flag: "wx" });
   console.log(`Automatic checks: ${success ? "PASS" : "FAIL"}\nReport: ${file}`);
   return success ? 0 : 1;
 }

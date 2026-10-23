@@ -97,6 +97,9 @@ from collections import OrderedDict, defaultdict
 # 声明，只有在别人的机器上也成立时才算数。
 CIV6_ASSETS_ENV = "CIV6_ASSETS"
 _CANDIDATES = [
+    # 本项目由 backup_civ6_reference.py 生成的本机参考档案（受 gitignore 排除）
+    str(pathlib.Path(__file__).resolve().parent.parent /
+        "local-civ6-reference/Assets"),
     # macOS（Steam）
     "~/Library/Application Support/Steam/steamapps/common/"
     "Sid Meier's Civilization VI/Civ6.app/Contents/Assets",
@@ -132,7 +135,7 @@ NEEDED_TABLES = [
     "Types",
     "Terrains", "Terrain_YieldChanges",
     "Features", "Feature_YieldChanges",
-    "Resources", "Resource_YieldChanges",
+    "Resources", "Resource_YieldChanges", "Resource_Harvests",
     "Technologies", "Civics", "Eras", "Yields",
     "Improvements", "Improvement_YieldChanges", "Improvement_ValidTerrains",
     "Districts", "District_ValidTerrains", "District_Adjacencies",
@@ -715,6 +718,11 @@ def gen_features(db, loc):
 
 
 def gen_resources(db, loc):
+    harvest_techs = defaultdict(list)
+    for h in db.rows("Resource_Harvests"):
+        tech = db.get("Resource_Harvests", h, "PrereqTech", "")
+        if tech:
+            harvest_techs[h.get("ResourceType")].append(tech)
     rows = []
     for r in db.rows("Resources"):
         rid = r["ResourceType"]
@@ -728,11 +736,16 @@ def gen_resources(db, loc):
         sea_freq = str(db.get("Resources", r, "SeaFrequency", "0")).strip()
         sea = (db.boolean("Resources", r, "AdjacentToLand")
                or (sea_freq not in ("", "0")))
+        harvests = [h for h in db.rows("Resource_Harvests")
+                    if h.get("ResourceType") == rid]
         rows.append([rid, loc(r.get("Name")), zh, "是" if sea else "否",
+                     "是" if harvests else "否",
+                     joiner(sorted(set(harvest_techs.get(rid, [])))),
                      yields_of(db, "Resource_YieldChanges", "ResourceType", rid),
                      NONE] + PROV)
     rows.sort(key=lambda x: x[0])
-    return ["资源id", "名称", "资源类别", "是否海洋资源", "基础产出", "备注",
+    return ["资源id", "名称", "资源类别", "是否海洋资源", "是否可收获",
+            "收获前置科技", "基础产出", "备注",
             "数据来源", "待核"], rows
 
 

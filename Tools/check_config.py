@@ -58,7 +58,8 @@ SCHEMA = {
     "features.csv": dict(id="地貌id", prov=True, cols=[
         "地貌id", "名称", "基础产出", "是否可建区域", "是否需移除", "备注"]),
     "resources.csv": dict(id="资源id", prov=True, cols=[
-        "资源id", "名称", "资源类别", "是否海洋资源", "基础产出", "备注"]),
+        "资源id", "名称", "资源类别", "是否海洋资源", "是否可收获",
+        "收获前置科技", "基础产出", "备注"]),
     "wonders.csv": dict(id="奇观id", prov=True, cols=[
         "奇观id", "名称", "基础产出", "占用格数", "备注"]),
     "techs.csv": dict(id="科技id", prov=True, cols=[
@@ -310,6 +311,9 @@ def main(argv):
         i = r.get("资源id", "?")
         check_enum("resources", i, "资源类别", r.get("资源类别", ""), "资源类别")
         check_bool("resources", i, "是否海洋资源", r.get("是否海洋资源", ""))
+        check_bool("resources", i, "是否可收获", r.get("是否可收获", ""))
+        check_fk("resources", i, "收获前置科技", r.get("收获前置科技", ""),
+                 pool("techs.csv"), "科技")
         check_kv("resources", i, "基础产出", r.get("基础产出", ""))
 
     for r in rows_of("wonders.csv"):

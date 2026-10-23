@@ -2,3 +2,8 @@ node_modules/
 *.log
 .DS_Store
 web/dist/
+# Optional official terrain art stays local; public builds use the existing icon fallback.
+web/civ6-terrain/
+# Local first-party Civ VI reference archive. Contains copyrighted source
+# files retained only for this machine; never commit or publish it.
+local-civ6-reference/

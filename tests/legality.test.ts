@@ -8,7 +8,12 @@ import {
 import { evaluate, total } from "../src/evaluate.ts";
 import { fmt } from "../src/rational.ts";
 import { R, at, board } from "./helpers.ts";
-import { type BoardState } from "../src/board.ts";
+import {
+  moveCityCenter, withoutResource, type BoardState,
+} from "../src/board.ts";
+import {
+  cityCenterPlacementConstraint, resourceClearanceConstraint,
+} from "../src/placement.ts";
 
 const codes = (issues: readonly LegalityIssue[]): string[] =>
   issues.map((issue) => issue.code);
@@ -330,14 +335,73 @@ describe("共享区域合法性入口", () => {
     assert.equal(issues.some((candidate) => candidate.code === "E17p"), false);
   });
 
-  test("资源、自然奇观和世界奇观都不能被区域占用", () => {
-    const resource = validateDistrictPlacement(
+  test("奢侈与战略资源阻止区域；加成资源按收获科技判断", () => {
+    const strategic = validateDistrictPlacement(
       R,
       placedBoard({ "0,0": { 资源: "RESOURCE_IRON" } },
         { 已解锁科技: ["TECH_WRITING"] }),
       at(0, 0), "DISTRICT_CAMPUS",
     );
-    assert.equal(first(resource, "E07").layer, "地块");
+    assert.match(first(strategic, "E07").message, /战略资源.*铁/);
+
+    const luxury = validateDistrictPlacement(
+      R,
+      placedBoard({ "0,0": { 资源: "RESOURCE_WINE" } },
+        { 已解锁科技: ["TECH_WRITING"] }),
+      at(0, 0), "DISTRICT_CAMPUS",
+    );
+    assert.match(first(luxury, "E07").message, /奢侈资源.*葡萄酒/);
+
+    const stoneBeforeMasonry = validateDistrictPlacement(
+      R,
+      placedBoard({ "0,0": { 资源: "RESOURCE_STONE" } },
+        { 已解锁科技: ["TECH_WRITING"] }),
+      at(0, 0), "DISTRICT_CAMPUS",
+    );
+    assert.match(first(stoneBeforeMasonry, "E07").message, /需要先解锁(?:砌砖|TECH_MASONRY)/);
+
+    const stoneAfterMasonry = validateDistrictPlacement(
+      R,
+      placedBoard({ "0,0": { 资源: "RESOURCE_STONE" } },
+        { 已解锁科技: ["TECH_WRITING", "TECH_MASONRY"] }),
+      at(0, 0), "DISTRICT_CAMPUS",
+    );
+    assert.match(first(stoneAfterMasonry, "E07").message, /需要先清除资源/);
+
+    const cattleBeforeHusbandry = validateDistrictPlacement(
+      R,
+      placedBoard({ "0,0": { 资源: "RESOURCE_CATTLE" } },
+        { 已解锁科技: ["TECH_WRITING"] }),
+      at(0, 0), "DISTRICT_CAMPUS",
+    );
+    assert.match(first(cattleBeforeHusbandry, "E07").message,
+      /需要先解锁(?:畜牧业|TECH_ANIMAL_HUSBANDRY)/);
+  });
+
+  test("自由模式只能在解锁科技后清除可收获加成资源", () => {
+    const before = placedBoard({
+      "0,0": { 资源: "RESOURCE_STONE", 地貌: "FEATURE_FOREST", 河流边: true },
+    });
+    assert.match(resourceClearanceConstraint(R, before, at(0, 0)),
+      /需要先解锁(?:砌砖|TECH_MASONRY)/);
+
+    const unlocked = { ...before, 已解锁科技: new Set(["TECH_MASONRY"]) };
+    assert.equal(resourceClearanceConstraint(R, unlocked, at(0, 0)), "");
+    const cleared = withoutResource(unlocked, at(0, 0));
+    assert.equal(cleared.tiles.get("0,0")?.资源, undefined);
+    assert.equal(cleared.tiles.get("0,0")?.地貌, "FEATURE_FOREST");
+    assert.equal(cleared.tiles.get("0,0")?.河流边, true);
+    assert.equal(before.tiles.get("0,0")?.资源, "RESOURCE_STONE",
+      "清除资源不得修改原局面");
+
+    const luxury = placedBoard({ "0,0": { 资源: "RESOURCE_WINE" } }, {
+      已解锁科技: ["TECH_IRRIGATION"],
+    });
+    assert.match(resourceClearanceConstraint(R, luxury, at(0, 0)),
+      /奢侈资源.*不能清除/);
+  });
+
+  test("自然奇观和世界奇观都不能被区域占用", () => {
 
     const naturalWonder = validateDistrictPlacement(
       R,
@@ -354,5 +418,62 @@ describe("共享区域合法性入口", () => {
       at(0, 0), "DISTRICT_CAMPUS",
     );
     assert.equal(first(worldWonder, "E09").layer, "地块");
+  });
+
+  test("城市中心可以移到资源格且移动后资源保留", () => {
+    const b = placedBoard({
+      "0,0": { 区域: "DISTRICT_CITY_CENTER", 所属城市: "A" },
+      "1,0": { 资源: "RESOURCE_WINE" },
+    }, { 城市: [{ id: "A", 名称: "甲城", 中心: at(0, 0), 人口: 10 }] });
+    assert.equal(cityCenterPlacementConstraint(b, at(1, 0), "A"), "");
+    const moved = moveCityCenter(b, "A", at(1, 0));
+    assert.equal(moved.tiles.get("1,0")?.资源, "RESOURCE_WINE");
+  });
+
+  test("区域只能建在所选城市的明确领土内，不能跨到相邻城市", () => {
+    const b = placedBoard({
+      "0,0": { 区域: "DISTRICT_CITY_CENTER", 所属城市: "A" },
+      "1,0": {}, "2,0": {}, "3,0": {},
+      "0,4": {},
+      "4,0": { 区域: "DISTRICT_CITY_CENTER", 所属城市: "B" },
+    }, {
+      已解锁科技: ["TECH_WRITING"],
+      城市: [
+        { id: "A", 名称: "甲城", 中心: at(0, 0), 人口: 10 },
+        { id: "B", 名称: "乙城", 中心: at(4, 0), 人口: 10 },
+      ],
+    });
+    const own = validateDistrictPlacement(
+      R, b, at(1, 0), "DISTRICT_CAMPUS", { selectedCityId: "A" },
+    );
+    assert.equal(own.some((candidate) => candidate.code === "E16b"), false);
+
+    const neutral = validateDistrictPlacement(
+      R, b, at(0, 4), "DISTRICT_CAMPUS", { selectedCityId: "A" },
+    );
+    assert.match(first(neutral, "E16b").message, /没有归属任何城市/);
+
+    const crossed = validateDistrictPlacement(
+      R, b, at(3, 0), "DISTRICT_CAMPUS", { selectedCityId: "A" },
+    );
+    assert.match(first(crossed, "E16b").message, /属于乙城/);
+  });
+
+  test("移动城市中心后，旧区域跨越新边境会进入完整局面诊断", () => {
+    const b = placedBoard({
+      "0,0": { 区域: "DISTRICT_CITY_CENTER", 所属城市: "A" },
+      "1,0": { 区域: "DISTRICT_CAMPUS", 所属城市: "A" },
+      "3,-3": { 区域: "DISTRICT_CITY_CENTER", 所属城市: "B" },
+      "-2,0": {},
+    }, {
+      已解锁科技: ["TECH_WRITING"],
+      城市: [
+        { id: "A", 名称: "甲城", 中心: at(0, 0), 人口: 10 },
+        { id: "B", 名称: "乙城", 中心: at(3, -3), 人口: 10 },
+      ],
+    });
+    const moved = moveCityCenter(b, "A", at(-2, 0));
+    const issues = validateBoard(R, moved);
+    assert.match(first(issues, "E16b").message, /归属甲城.*属于乙城/);
   });
 });

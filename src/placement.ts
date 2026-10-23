@@ -28,7 +28,6 @@ export function cityCenterPlacementConstraint(
   if (!current) return "未找到所选城市";
   if (key(current.中心) === key(p)) return "";
   if (tile.区域) return "目标地块已有区域";
-  if (tile.资源) return "城市中心不能放在资源上";
   if (tile.世界奇观 || tile.自然奇观) return "城市中心不能放在奇观上";
   if (tile.地形 === "TERRAIN_OCEAN" || tile.地形.endsWith("_MOUNTAIN")) {
     return "城市中心不能放在海洋或山脉上";
@@ -41,4 +40,25 @@ export function cityCenterPlacementConstraint(
     }
   }
   return "";
+}
+
+/** 自由模式清除资源的共享规则。只有已经满足科技条件的可收获加成资源可清除。 */
+export function resourceClearanceConstraint(
+  rules: Rules, board: BoardState, p: Axial,
+): string {
+  const tile = tileAt(board, p);
+  if (!tile) return "不在盘面上";
+  if (!tile.资源) return "目标地块没有资源";
+  const resource = rules.resources.get(tile.资源);
+  const name = rules.name(tile.资源);
+  if (!resource) return `资源（${name}）缺少配置，不能清除`;
+  if (resource.资源类别 !== "加成") {
+    return `${resource.资源类别}资源（${name}）不能清除`;
+  }
+  if (!resource.是否可收获) return `加成资源（${name}）不能清除`;
+  const missing = resource.收获前置科技.filter((tech) =>
+    !board.已解锁科技.has(tech));
+  return missing.length
+    ? `清除加成资源（${name}）需要先解锁${missing.map(rules.name.bind(rules)).join("、")}`
+    : "";
 }

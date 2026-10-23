@@ -1,8 +1,13 @@
 /** 自由模式的起始环境。坐标共享一张地图，每座城市有独立的三格工作范围。 */
-import { disc, key, distance, type Axial } from "../src/hex.ts";
+import { disc, key, distance, neighbors, type Axial } from "../src/hex.ts";
 import {
   MIN_CITY_CENTER_DISTANCE, type BoardState, type City, type Tile,
 } from "../src/board.ts";
+import { isWaterTile } from "../src/river.ts";
+import {
+  generateMapCandidate, MAP_PRESETS,
+} from "../src/map_generator.ts";
+import { RANDOM_PLANNING_RADIUS } from "./random_rivers.ts";
 
 export const PRESETS = [
   { id: "mountain", name: "山林双城", hint: "山脉、森林、河流；适合比较学院与圣地" },
@@ -15,17 +20,6 @@ const city = (id: string, 名称: string, q: number, r: number): City =>
   ({ id, 名称, 中心: { q, r }, 人口: 10 });
 
 const CITY_NAMES = ["山麓城", "河畔城", "林间城", "高原城"];
-
-const seeded = (seed: number): (() => number) => {
-  let state = seed >>> 0;
-  return () => {
-    state += 0x6D2B79F5;
-    let t = state;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-};
 
 const shuffled = <T>(items: T[], random: () => number): T[] => {
   const out = [...items];
@@ -101,93 +95,47 @@ export function sandboxBoard(preset: PresetId = "mountain"): BoardState {
 
 /** 生成可复现的自由模式多城模板；不把随机结果混进求值器。 */
 export function randomSandboxBoard(seed = randomSeed()): BoardState {
-  const random = seeded(seed);
-  const map = disc(7);
-  const tiles = new Map<string, Tile>();
-  for (const p of map) {
-    const roll = random();
-    let terrain = "TERRAIN_GRASS";
-    if (roll < 0.17) terrain = "TERRAIN_PLAINS";
-    else if (roll < 0.30) terrain = "TERRAIN_TUNDRA";
-    else if (roll < 0.42) terrain = "TERRAIN_DESERT";
-    const hills = random() < 0.18;
-    if (hills && ["TERRAIN_GRASS", "TERRAIN_PLAINS", "TERRAIN_TUNDRA", "TERRAIN_DESERT"].includes(terrain)) {
-      terrain = `${terrain}_HILLS`;
-    }
-    if (random() < 0.08 && terrain.endsWith("_HILLS")) {
-      terrain = terrain.replace("_HILLS", "_MOUNTAIN");
-    }
-    const tile: Tile = { 地形: terrain };
-    const featureRoll = random();
-    if (!terrain.endsWith("_MOUNTAIN") && featureRoll < 0.10) tile.地貌 = "FEATURE_FOREST";
-    else if (!terrain.endsWith("_MOUNTAIN") && featureRoll < 0.16) tile.地貌 = "FEATURE_JUNGLE";
-    else if (!terrain.endsWith("_MOUNTAIN") && featureRoll < 0.20) tile.地貌 = "FEATURE_MARSH";
-    else if (terrain === "TERRAIN_DESERT" && featureRoll < 0.25) tile.地貌 = "FEATURE_OASIS";
-    tiles.set(key(p), tile);
-  }
-
-  // 东南边缘形成一片海岸，地图中间保留连续陆地，方便多城规划。
-  for (const p of map) {
-    if ((p.q >= 5 && p.r >= 0) || (p.r >= 6 && p.q >= -1)) {
-      const t = tiles.get(key(p))!;
-      if (!t.区域) tiles.set(key(p), { 地形: "TERRAIN_COAST" });
-    }
-  }
-
-  const candidates = shuffled(map.filter((p) =>
-    distance(p, { q: 0, r: 0 }) <= 5 &&
-    tiles.get(key(p))!.地形 !== "TERRAIN_COAST" &&
-    tiles.get(key(p))!.地形 !== "TERRAIN_OCEAN" &&
-    !tiles.get(key(p))!.地形.endsWith("_MOUNTAIN")), random);
-  const centers: Axial[] = [{ q: 0, r: 0 }];
-  for (const candidate of candidates) {
-    if (centers.every((center) =>
-      distance(center, candidate) >= MIN_CITY_CENTER_DISTANCE &&
-      distance(center, candidate) <= 6)) {
-      centers.push(candidate);
-    }
-    if (centers.length >= 2 + Math.floor(random() * 3)) break;
-  }
-  // 极端随机种子下仍保证至少两座城市。
-  if (centers.length < 2) centers.push({ q: 4, r: 0 });
-
-  // 一条连续河道，方向每次随机，但不穿过海岸。
-  const riverR = Math.floor(random() * 5) - 2;
-  for (let q = -5; q <= 4; q += 1) {
-    const p = { q, r: riverR };
-    const t = tiles.get(key(p));
-    if (t && t.地形 !== "TERRAIN_COAST") tiles.set(key(p), { ...t, 河流边: true });
-  }
-
-  // 一小片湖泊与若干资源，确保随机模板有可辨认的规划目标。
-  for (const p of [{ q: 2, r: 3 }, { q: 3, r: 3 }, { q: 2, r: 4 }]) {
-    const t = tiles.get(key(p));
-    if (t && !centers.some((c) => distance(c, p) < 2)) {
-      tiles.set(key(p), { ...t, 地形: "TERRAIN_COAST", 湖泊: true, 地貌: undefined });
-    }
-  }
-  for (const p of shuffled(map, random).slice(0, 8)) {
-    const t = tiles.get(key(p));
-    if (t && t.地形 !== "TERRAIN_COAST" && !t.地形.endsWith("_MOUNTAIN")) {
-      tiles.set(key(p), { ...t, 资源: random() < 0.5 ? "RESOURCE_STONE" : "RESOURCE_IRON" });
-    }
-  }
-
-  const cities = centers.map((center, index) =>
-    city(String.fromCharCode(65 + index), CITY_NAMES[index], center.q, center.r));
-  for (const c of cities) {
-    const t = tiles.get(key(c.中心))!;
-    const land = t.地形.endsWith("_MOUNTAIN") ? "TERRAIN_GRASS" :
-      t.地形.endsWith("_HILLS") ? t.地形.replace("_HILLS", "") : t.地形;
-    tiles.set(key(c.中心), {
-      ...t, 地形: land,
-      地貌: undefined, 河流边: false, 湖泊: false,
-      区域: "DISTRICT_CITY_CENTER", 建筑: ["BUILDING_PALACE"], 所属城市: c.id,
-    });
-  }
-  return {
-    tiles, 城市: cities, 中心: cities[0].中心, 人口: cities[0].人口,
-    已解锁科技: new Set<string>(), 已解锁市政: new Set<string>(),
-    已装配政策: new Set<string>(), 已选宗教信条: new Set<string>(),
-  };
+  return generateMapCandidate({ ...MAP_PRESETS.balanced, seed }, seed);
 }
+
+/** 有界组合搜索：城距不变，优先多座临河城市，不贪心固定第一座城。 */
+export function selectRiverCityCenters(
+  tiles: ReadonlyMap<string, Tile>, random: () => number,
+): readonly Axial[] {
+  const candidates = shuffled([...tiles].filter(([id, t]) =>
+    distance(parseCoord(id), { q: 0, r: 0 }) <= RANDOM_PLANNING_RADIUS && !isWaterTile(t) &&
+    !t.地形.endsWith("_MOUNTAIN")).map(([id]) => parseCoord(id)), random);
+  const target = 2 + Math.floor(random() * 3);
+  const scores = candidates.map((p) => {
+    const t = tiles.get(key(p))!;
+    return (t.河流边 ? 1000 : 0) +
+      (neighbors(p).some((n) => tiles.get(key(n))?.湖泊) ? 5 : 0) -
+      (t.地形.endsWith("_HILLS") ? 10 : 0);
+  });
+  const ranked = (groups: number[][]): number[][] => groups.sort((a, b) =>
+    b.reduce((s, i) => s + scores[i], 0) - a.reduce((s, i) => s + scores[i], 0));
+  let beam = ranked(candidates.map((_, i) => [i])).slice(0, 128);
+  let best: number[] | undefined;
+  for (let depth = 2; depth <= target; depth++) {
+    const expanded = new Map<string, number[]>();
+    for (const chosen of beam) for (let i = 0; i < candidates.length; i++) {
+      if (chosen.includes(i) || !chosen.every((j) => {
+        const d = distance(candidates[j], candidates[i]);
+        return d >= MIN_CITY_CENTER_DISTANCE && d <= 6;
+      })) continue;
+      const next = [...chosen, i].sort((a, b) => a - b);
+      expanded.set(next.join(","), next);
+    }
+    if (!expanded.size) break;
+    beam = ranked([...expanded.values()]).slice(0, 128);
+    const riverside = beam.find((ids) => ids.some((i) => tiles.get(key(candidates[i]))!.河流边));
+    if (riverside) best = riverside;
+  }
+  if (!best) throw new Error(`无法找到至少一城临河且满足间距的双城城址（可建候选${candidates.length}，临河${candidates.filter((p) => tiles.get(key(p))!.河流边).length}）`);
+  return best.map((i) => candidates[i]);
+}
+
+const parseCoord = (id: string): Axial => {
+  const [q, r] = id.split(",").map(Number);
+  return { q, r };
+};

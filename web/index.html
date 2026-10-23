@@ -155,21 +155,13 @@ aside{background:rgba(13,24,31,.70);border-right:1px solid var(--line)}
 #map.multi svg{min-width:1050px}svg{width:100%;height:auto;display:block}
 g.hex polygon{stroke:#081117;stroke-width:1.4}g.hex{cursor:pointer}
 g.hex:hover polygon:first-child{stroke:var(--teal);stroke-width:2.7}g.hex.sel polygon:first-child{stroke:#fff1bc;stroke-width:2.5}
-g.hex.blocked{cursor:not-allowed}g.hex.neutral polygon:first-child{filter:saturate(.45) brightness(.68);stroke:#789097;stroke-dasharray:3 2}
-.territory-A polygon:first-child{stroke:#b79a58;stroke-width:1.8}
-.territory-B polygon:first-child{stroke:#649ca0;stroke-width:1.8}
-.territory-C polygon:first-child{stroke:#9b718e;stroke-width:1.8}
-.territory-D polygon:first-child{stroke:#7fa56f;stroke-width:1.8}
-.territory-A polygon:first-child{stroke:#b79a58;stroke-width:1.8}
-.territory-B polygon:first-child{stroke:#649ca0;stroke-width:1.8}
-.territory-C polygon:first-child{stroke:#9b718e;stroke-width:1.8}
-.territory-D polygon:first-child{stroke:#7fa56f;stroke-width:1.8}
+g.hex.blocked{cursor:not-allowed}g.hex.neutral polygon:first-child{filter:saturate(.45) brightness(.68)}
 .veil{fill:rgba(5,10,13,.57);stroke:none;pointer-events:none}.dist{fill:rgba(9,18,24,.82);stroke:#d5e1de;stroke-width:1.3}
 .dist.center{stroke:var(--gold);stroke-width:2.1}.dist.center.chosen{stroke:var(--teal);stroke-width:3.1}
 text{text-anchor:middle;pointer-events:none;font-family:var(--sans)}.dname{font-size:12px;font-weight:700;fill:#eaf3fb}
 .dname2{font-size:9px;fill:#b7c8c9}.bcount{font-size:9px;fill:var(--gold-hot)}.feat{font-size:15px;fill:rgba(255,255,255,.72)}
 .res{fill:var(--gold);stroke:#302714;stroke-width:1}.resource-icon{paint-order:stroke;stroke:#081117;stroke-width:2}
-.river-edge{fill:none;stroke:#74d7ee;stroke-width:5;stroke-linecap:round;filter:drop-shadow(0 0 2px rgba(31,120,163,.8));pointer-events:none}
+.river-edge{pointer-events:none}
 .lake-surface{fill:#397ca3;stroke:#7ecde3;stroke-width:1.2;opacity:.94;pointer-events:none}
 .wonder{font-size:13px;fill:var(--gold-hot)}.pv{font-size:14px;font-weight:800;paint-order:stroke;stroke:#081117;stroke-width:3.5}
 
@@ -201,6 +193,10 @@ text{text-anchor:middle;pointer-events:none;font-family:var(--sans)}.dname{font-
 .settings-card h3{font-size:18px;margin-bottom:7px;color:#edf2e8}.settings-card p,.settings-card a{display:block;color:var(--muted);font-size:11px;margin:5px 0}
 .settings-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:15px}.switch-row{display:grid;grid-template-columns:auto 1fr;gap:2px 8px;align-items:center;color:var(--ink);font-size:12px;margin-top:15px}
 .switch-row input{accent-color:var(--teal)}.switch-row small{grid-column:2;color:var(--muted);font-size:10px}
+.map-generator-card{width:min(980px,100%);max-height:calc(100vh - 36px);overflow:auto}.map-presets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.map-preset{display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-height:76px;padding:11px;border:1px solid var(--line);background:rgba(7,16,22,.55)}.map-preset.on{border-color:var(--gold);background:rgba(201,168,92,.12)}.map-preset b{color:var(--ink);font:16px var(--display)}.map-preset small{color:var(--muted);margin-top:6px}
+.map-options{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.map-option{display:flex;gap:7px;flex-wrap:wrap;padding:9px;border:1px solid var(--line)}.map-option legend{padding:0 5px;color:var(--gold);font-size:11px}.map-option label{font-size:11px;color:var(--ink)}.map-option input{accent-color:var(--teal)}
+.map-seed,.map-actions,.report-summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}.map-seed input{width:150px}.map-target-hint{color:var(--muted);font-size:10px}.map-report{margin-top:16px;padding:12px;border:1px solid var(--line);background:rgba(5,13,18,.62)}.map-report.warning{border-color:#c69a51}.map-report h3{color:var(--gold-hot);font:19px var(--display)}.map-report p{font-size:11px;color:var(--muted)}.report-summary span{padding:4px 7px;border:1px solid var(--line);font-size:10px}.map-report details{margin-top:10px}.map-report table{width:100%;border-collapse:collapse;font-size:10px}.map-report th,.map-report td{padding:5px;border-bottom:1px solid var(--line);text-align:left}.report-check{margin:4px 0}.report-check.pass{color:var(--green)}
 
 .progression-modal{place-items:stretch;padding:0;background:rgba(3,8,11,.92)}.progression-modal .modal-card{width:100%;height:100%;min-width:0;max-width:none;display:flex;flex-direction:column;padding:22px 26px 24px;border:0}
 .progression-modal .modal-head{margin-bottom:10px;flex:0 0 auto}.progression-modal .modal-head h2{font-size:27px}
@@ -256,7 +252,7 @@ text{text-anchor:middle;pointer-events:none;font-family:var(--sans)}.dname{font-
   header{padding:0 10px;gap:6px}.brand{min-width:0}.brand small{display:none}.brand h1{font-size:14px}.tabs{margin-left:auto}.tab{padding:0 7px}
   .header-tools{gap:2px}.header-tools .header-tool{padding:6px 7px;font-size:10px}
   main{display:block}.palette-items{max-height:none}aside{border-right:0;border-bottom:1px solid var(--line)}#right{display:block}
-  .prow{grid-template-columns:repeat(3,minmax(0,1fr))}.settings-grid{grid-template-columns:1fr}.progression-modal .modal-card{padding:14px}.progression-hover{grid-template-columns:1fr}.progression-hover small{grid-column:1}.belief-grid{grid-template-columns:1fr}
+  .prow{grid-template-columns:repeat(3,minmax(0,1fr))}.settings-grid{grid-template-columns:1fr}.map-presets,.map-options{grid-template-columns:1fr}.progression-modal .modal-card{padding:14px}.progression-hover{grid-template-columns:1fr}.progression-hover small{grid-column:1}.belief-grid{grid-template-columns:1fr}
 }
 
 /* ── Civ VI visual pass ─────────────────────────────────────────────
@@ -346,8 +342,37 @@ g.hex.sel polygon:first-child{stroke:#fff0b5;stroke-width:3}
 .dist.center{stroke:#e5bc61;stroke-width:2.5}
 .dist.center.chosen{stroke:#8de0d5;stroke-width:3.5}
 .river-layer{pointer-events:none}
-.river-edge{stroke:#8ad9e8;stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round;fill:none;filter:drop-shadow(0 0 3px rgba(38,135,167,.95))}
+.river-edge{
+  fill:none;
+  stroke:#1f6686;
+  stroke-width:5.5;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  filter:
+    drop-shadow(0 1.5px 0 rgba(5,29,43,.92))
+    drop-shadow(0 -1px 0 rgba(112,181,200,.58))
+    drop-shadow(0 0 2px rgba(6,39,58,.72));
+}
 .lake-surface{fill:#2d7395;stroke:#9bdae3;stroke-width:1.5;opacity:.96}
+.terrain-art-group,.terrain-base,.terrain-sprite,.hex-outline{pointer-events:none}
+g.hex .hex-outline{fill:none;stroke:#263a30;stroke-width:1.2}
+g.hex.neutral .terrain-art-group{filter:saturate(.65) brightness(.8)}
+g.hex.neutral .hex-outline{stroke:#52656a;stroke-dasharray:3 2}
+.territory-A polygon:first-child{fill-opacity:.92}.territory-B polygon:first-child{fill-opacity:.90}
+.territory-C polygon:first-child{fill-opacity:.88}.territory-D polygon:first-child{fill-opacity:.86}
+.territory-border-layer{pointer-events:none}
+.territory-border{
+  fill:none;
+  stroke:#d8c99b;
+  stroke-width:2.6;
+  stroke-dasharray:7 5;
+  stroke-linecap:round;
+  vector-effect:non-scaling-stroke;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.82));
+}
+g.hex:hover .hex-outline,g.hex.hov .hex-outline{stroke:#f0d486;stroke-width:2.8}
+g.hex.sel .hex-outline{stroke:#fff0b5;stroke-width:3}
+.dname2,.bcount{paint-order:stroke;stroke:#142522;stroke-width:2.5;stroke-linejoin:round}
 #right>h4{color:#d2b56c;letter-spacing:.18em;border-bottom:1px solid rgba(210,180,108,.2);padding-bottom:6px}
 .tot{padding:10px 9px;background:rgba(9,18,22,.22)}
 .tot:hover,.tot.hi{background:linear-gradient(90deg,rgba(210,180,108,.13),transparent)}
@@ -403,6 +428,19 @@ g.hex.sel polygon:first-child{stroke:#fff0b5;stroke-width:3}
 .notice-card p{margin:10px 0 18px;color:var(--text);line-height:1.7}
 .notice-card .notice-hint{color:var(--muted);font-size:12px}
 .city-move-on{border-color:#7bd2c7!important;color:#eaf8e9!important;background:linear-gradient(145deg,#285b54,#143936)!important}
+.plan-slots{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+.plan-slots button{margin:5px 6px 0 0}.plan-confirm{border:1px solid var(--gold);padding:14px;margin:16px 0;background:#203038}
+#plans-content small,#save-status{color:var(--muted)}#save-status{display:block;font-size:11px;padding:6px 0}
+#quick-guide{border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px;font-size:12px}
+#quick-guide p{line-height:1.8;margin-bottom:0}#impact{font-size:12px;border:1px solid var(--line);padding:12px;max-height:320px;overflow:auto}
+.change-row{display:grid;gap:4px;padding:10px 0;border-bottom:1px solid var(--line)}.change-row span{color:var(--gold-hot)}
+.change-row small{color:var(--muted);line-height:1.5}.change-row code{overflow-wrap:anywhere;font-size:10px}
+.level-route{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
+.route-card{display:flex;flex-direction:column;gap:12px;text-align:left;padding:20px 14px;min-height:135px;background:linear-gradient(145deg,#20343d,#0c191f);border:1px solid var(--line)}
+.route-card small{color:var(--gold)}.route-card span{font-size:11px;color:var(--muted)}
+.lesson{border-left:2px solid var(--gold);padding:8px 14px;margin:14px 0}.lesson p{font-size:12px;line-height:1.7}
+.import-plan{display:flex;gap:8px;align-items:center}.import-plan input{max-width:210px}
+@media(max-width:700px){.plan-slots{grid-template-columns:1fr}.header-tools{flex-wrap:wrap}}
 </style>
 
 <div id="home-screen">
@@ -432,7 +470,7 @@ g.hex.sel polygon:first-child{stroke:#fff0b5;stroke-width:3}
       <a class="home-tool" href="https://github.com/handsomelzq/civ6-district-planning/tree/main/设计" target="_blank" rel="noreferrer">▱ 拆解文档 ↗</a>
       <a class="home-tool" href="https://github.com/handsomelzq/civ6-district-planning/blob/main/README.md" target="_blank" rel="noreferrer">⌘ 项目说明 ↗</a>
     </div>
-    <div class="home-footer"><span>DATA-DRIVEN · EVERY YIELD HAS A SOURCE</span><span>个人学习与求职展示</span></div>
+    <div class="home-footer"><span data-build-version></span><span>个人学习与求职展示</span></div>
   </div>
 </div>
 
@@ -448,6 +486,8 @@ g.hex.sel polygon:first-child{stroke:#fff0b5;stroke-width:3}
     </div>
     <div class="header-tools">
       <button class="header-tool" id="home">入口</button>
+      <button class="header-tool" id="plans">方案</button>
+      <button class="header-tool" id="map-generator">地图生成</button>
       <button class="header-tool" id="policies">政策</button>
       <button class="header-tool" id="religion">宗教</button>
       <button class="header-tool" id="tech-tree">科技树</button>
@@ -459,14 +499,19 @@ g.hex.sel polygon:first-child{stroke:#fff0b5;stroke-width:3}
     <aside id="palette"></aside>
     <section>
       <div id="modebar"></div>
+      <small id="save-status" role="status"></small>
+      <div id="map-generation-summary" hidden></div>
       <div id="levellist" style="display:none"></div>
       <div id="play">
+        <div id="quick-guide"></div>
         <div id="tileinfo"></div>
         <div id="map"></div>
         <div id="diag"></div>
       </div>
     </section>
     <section id="right">
+      <h4>放置影响</h4>
+      <div id="impact"></div>
       <h4>产出</h4>
       <div id="totals"></div>
       <h4 style="margin-top:18px">城市</h4>
@@ -477,10 +522,23 @@ g.hex.sel polygon:first-child{stroke:#fff0b5;stroke-width:3}
   </main>
 </div>
 
+<div id="plans-modal" class="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="plans-title">
+    <div class="modal-head"><h2 id="plans-title">规划方案</h2><button class="modal-close" id="plans-close" aria-label="关闭">×</button></div>
+    <div id="plans-content"></div>
+  </div>
+</div>
 <div id="settings-modal" class="modal" hidden>
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="settings-title">
     <div class="modal-head"><h2 id="settings-title">设置</h2><button class="modal-close" id="settings-close" aria-label="关闭">×</button></div>
     <div id="settings-content"></div>
+  </div>
+</div>
+
+<div id="map-generator-modal" class="modal" hidden>
+  <div class="modal-card map-generator-card" role="dialog" aria-modal="true" aria-labelledby="map-generator-title">
+    <div class="modal-head"><h2 id="map-generator-title">随机地图规划器</h2><button class="modal-close" id="map-generator-close" aria-label="关闭">×</button></div>
+    <div id="map-generator-content"></div>
   </div>
 </div>
 
@@ -499,9 +557,9 @@ g.hex.sel polygon:first-child{stroke:#fff0b5;stroke-width:3}
       <button class="modal-close" id="placement-alert-close" aria-label="关闭">×</button>
     </div>
     <p id="placement-alert-body"></p>
-    <div class="notice-hint">打开科技树或文化树，点击对应节点后再尝试建造。</div>
+    <div class="notice-hint">请检查上方条件。自由模式可解锁研究；挑战模式须在给定条件内调整位置。</div>
   </div>
 </div>
 
 <!-- 使用单文件入口，保证本地 file:// 与 GitHub Pages 都能正常执行模式按钮。 -->
-<script src="dist/app.bundle.js?v=20260929-4"></script>
+<script src="dist/app.bundle.js?v=0.5.1"></script>

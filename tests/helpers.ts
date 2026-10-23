@@ -10,7 +10,7 @@ export const NO_TECH: ReadonlySet<string> = new Set();
 /** 从 {"q,r": Tile} 直接建局面。中心默认 (0,0)，人口默认 4。 */
 export function board(
   spec: Record<string, Partial<Tile>>,
-  opts: Partial<Pick<BoardState, "中心" | "人口" | "文明" | "领袖">> &
+  opts: Partial<Pick<BoardState, "中心" | "人口" | "文明" | "领袖" | "城市">> &
     { 已解锁科技?: string[]; 已解锁市政?: string[] } = {},
 ): BoardState {
   const tiles = new Map<string, Tile>();
@@ -23,6 +23,7 @@ export function board(
     人口: opts.人口 ?? 4,
     文明: opts.文明,
     领袖: opts.领袖,
+    城市: opts.城市,
     已解锁科技: new Set(opts.已解锁科技 ?? []),
     已解锁市政: new Set(opts.已解锁市政 ?? []),
     已装配政策: new Set(),

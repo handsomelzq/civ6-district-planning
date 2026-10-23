@@ -12,6 +12,7 @@ import {
   isFreshWaterSource,
   neighborTiles,
   tileAt,
+  cityTerritoryOwner,
 } from "./board.ts";
 import { type District, type Rules } from "./rules.ts";
 
@@ -97,11 +98,27 @@ export function validateDistrictTile(
     ));
   }
   if (tile.资源 !== undefined) {
-    out.push(issue(
-      "E07", "地块",
-      `${rules.name(id)} 不能占用已有资源（${rules.name(tile.资源)}）`,
-      position, id,
-    ));
+    const resource = rules.resources.get(tile.资源);
+    const name = rules.name(tile.资源);
+    if (!resource || resource.资源类别 !== "加成") {
+      const kind = resource?.资源类别 ?? "未知";
+      out.push(issue(
+        "E07", "地块", `${kind}资源（${name}）不能被区域覆盖`, position, id,
+      ));
+    } else if (!resource.是否可收获) {
+      out.push(issue(
+        "E07", "地块", `加成资源（${name}）不能被移除`, position, id,
+      ));
+    } else {
+      const missing = resource.收获前置科技.filter((tech) =>
+        !board.已解锁科技.has(tech));
+      const suffix = missing.length
+        ? `需要先解锁${missing.map(rules.name.bind(rules)).join("、")}并清除`
+        : "需要先清除资源";
+      out.push(issue(
+        "E07", "地块", `加成资源（${name}）${suffix}`, position, id,
+      ));
+    }
   }
   if (tile.自然奇观 !== undefined) {
     out.push(issue(
@@ -304,6 +321,20 @@ const placementIssues = (
   if (!district) return out;
 
   const cityId = context?.selectedCityId ?? candidateCityIdFor(board, position);
+  if (board.城市?.length && context?.selectedCityId) {
+    const territory = cityTerritoryOwner(board, position);
+    if (territory !== context.selectedCityId) {
+      const territoryName = territory
+        ? cityNameFor(board, territory)
+        : "没有归属任何城市";
+      out.push(issue(
+        "E16b", "城市",
+        territory ? `目标地块属于${territoryName}，不能跨城修建区域`
+          : "目标地块没有归属任何城市，不能修建区域",
+        position, id, context.selectedCityId,
+      ));
+    }
+  }
   if (!inWorkRange(board, position, context?.selectedCityId)) {
     out.push(issue(
       "E16", "城市",
@@ -358,6 +389,17 @@ export function validateBoard(
     if (!district) continue;
     const city = cityFor(board, position);
     const cityId = city?.id ?? "未归属";
+    if (board.城市?.length && tile.所属城市) {
+      const territory = cityTerritoryOwner(board, position);
+      if (territory !== tile.所属城市) {
+        const owner = territory ? cityNameFor(board, territory) : "中立地块";
+        out.push(issue(
+          "E16b", "城市",
+          `${rules.name(id)} 归属${cityNameFor(board, tile.所属城市)}，但所在位置属于${owner}`,
+          position, id, tile.所属城市,
+        ));
+      }
+    }
     if (!inWorkRange(board, position, city?.id)) {
       out.push(issue(
         "E16", "城市",
@@ -405,8 +447,8 @@ export function validateBoard(
     const order = new Map([
       ["E00", 0], ["E01", 1], ["E02", 2], ["E03", 3], ["E04", 4],
       ["E05", 5], ["E06", 6], ["E07", 7], ["E08", 8], ["E09", 9],
-      ["E16", 10], ["E14t", 11], ["E14c", 12],
-      ["E17p", 13], ["E17c", 14], ["E17b", 15], ["G5", 16],
+      ["E16b", 10], ["E16", 11], ["E14t", 12], ["E14c", 13],
+      ["E17p", 14], ["E17c", 15], ["E17b", 16], ["G5", 17],
     ]);
     return (order.get(a.code) ?? 99) - (order.get(b.code) ?? 99) ||
       (a.position?.q ?? 0) - (b.position?.q ?? 0) ||

@@ -52,6 +52,8 @@ export type Resource = {
   readonly 名称: string;
   readonly 资源类别: string;
   readonly 是否海洋资源: boolean;
+  readonly 是否可收获: boolean;
+  readonly 收获前置科技: readonly string[];
 };
 
 export type Building = {
@@ -202,6 +204,8 @@ export class Rules {
         名称: r["名称"],
         资源类别: r["资源类别"],
         是否海洋资源: r["是否海洋资源"] === "是",
+        是否可收获: r["是否可收获"] === "是",
+        收获前置科技: parseList(r["收获前置科技"]),
       });
     }
 
